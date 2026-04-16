@@ -26,6 +26,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
+gem "mission_control-jobs"
 gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -57,6 +58,11 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  gem "letter_opener"
+
+  gem "bullet"
+  gem "rack-mini-profiler"
 end
 
 group :test do

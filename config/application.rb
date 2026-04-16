@@ -23,5 +23,7 @@ module RubyEmbassy
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    MissionControl::Jobs.http_basic_auth_user = ENV["MISSION_CONTROL_USER"]
+    MissionControl::Jobs.http_basic_auth_password = ENV["MISSION_CONTROL_PASSWORD"]
   end
 end
