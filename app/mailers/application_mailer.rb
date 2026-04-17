@@ -1,4 +1,8 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
+  include Configuration::Configurable
+
+  configure_with from: :email_from
+  default from: from
+
   layout "mailer"
 end

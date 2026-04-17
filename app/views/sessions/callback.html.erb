@@ -1,0 +1,16 @@
+<div class="max-w-sm mx-auto py-16 text-center">
+  <h1 class="text-2xl font-bold mb-4">Signing you in&hellip;</h1>
+  <noscript>
+    <p class="text-gray-600 mb-8">Click the button below to sign in to Ruby Embassy.</p>
+  </noscript>
+
+  <%= form_with url: callback_session_path, method: :post, id: "login-callback", class: "inline" do |f| %>
+    <%= f.hidden_field :token, value: @token %>
+    <noscript>
+      <%= f.submit "Sign in",
+            class: "bg-[#C0392B] text-white py-2 px-6 rounded font-medium hover:bg-[#a5321f] cursor-pointer" %>
+    </noscript>
+  <% end %>
+</div>
+
+<script>document.getElementById("login-callback").requestSubmit()</script>
