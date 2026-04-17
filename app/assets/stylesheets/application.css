@@ -1,10 +1,252 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* ============================================================
+ * Ruby Embassy — plain CSS that mirrors the blueridgeruby.com
+ * styling. The HTML uses the same Tailwind-style class names
+ * the real site uses, so the markup is copy-paste compatible.
+ * Only the specific utilities used on that page are defined.
+ * ============================================================ */
+
+
+/* ---------- Reset & base ---------------------------------- */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html {
+  font-family: 'colfax-web', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #404040;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { min-height: 100vh; }
+
+img, svg { display: block; max-width: 100%; }
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+  transition: opacity 0.15s ease;
+}
+
+a:hover { opacity: 0.85; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+ul, ol { list-style: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+p { line-height: 1.5; }
+
+sup { font-size: 0.75em; vertical-align: super; }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9em;
+  background-color: rgba(38, 114, 181, 0.08);
+  color: #0C2866;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.125rem;
+}
+
+
+/* ---------- Screen-reader only ---------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+
+/* ---------- Sizing ---------------------------------------- */
+
+.min-h-screen { min-height: 100vh; }
+
+.max-w-10xl { max-width: 100rem; }
+.max-w-5xl  { max-width: 64rem; }
+.max-w-2xl  { max-width: 42rem; }
+
+.h-5 { height: 1.25rem; }
+.w-5 { width: 1.25rem; }
+.h-6 { height: 1.5rem; }
+.w-6 { width: 1.5rem; }
+
+
+/* ---------- Margin & padding ------------------------------ */
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.mr-0\.5 { margin-right: 0.125rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-12 { margin-bottom: 3rem; }
+
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-8 { padding-left: 2rem; padding-right: 2rem; }
+
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+.pb-32 { padding-bottom: 8rem; }
+
+.p-2 { padding: 0.5rem; }
+
+
+/* ---------- Display & flex -------------------------------- */
+
+.block { display: block; }
+.inline-flex { display: inline-flex; }
+.flex { display: flex; }
+.hidden { display: none; }
+
+.flex-col { flex-direction: column; }
+
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+
+.shrink-0 { flex-shrink: 0; }
+
+.gap-x-3 { column-gap: 0.75rem; }
+.gap-x-4 { column-gap: 1rem; }
+.gap-y-2 { row-gap: 0.5rem; }
+
+
+/* ---------- Typography ------------------------------------ */
+
+.text-lg { font-size: 1.125rem; line-height: 1.5; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+/* Arbitrary sizes used on the real site */
+.text-hero { font-size: 2.375rem; }      /* 38px — main page title */
+.text-section { font-size: 1.75rem; }    /* 28px — section heading */
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.font-medium { font-weight: 500; }
+
+.leading-tight { line-height: 1.25; }
+.leading-relaxed { line-height: 1.625; }
+
+.underline { text-decoration: underline; }
+
+
+/* ---------- Colors (from the real site) ------------------- */
+
+.text-blue  { color: #2672B5; }
+.text-navy  { color: #0C2866; }
+.text-gray  { color: #404040; }
+.text-white { color: #ffffff; }
+
+/* Red register button — exact gradient from the real site */
+.bg-red-gradient {
+  background: linear-gradient(to top, #C41C1C, #DD423E);
+}
+
+
+/* ---------- Borders, shadows, cursors --------------------- */
+
+.rounded-sm { border-radius: 0.125rem; }
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+.cursor-pointer { cursor: pointer; }
+
+.focus\:outline-hidden:focus { outline: none; }
+
+
+/* ---------- List utilities -------------------------------- */
+
+.list-disc {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+
+/* ---------- Spacing between children (space-y-*) ---------- */
+
+.space-y-8 > * + * { margin-top: 2rem; }
+.space-y-2 > * + * { margin-top: 0.5rem; }
+
+
+/* ---------- Page backgrounds (from the real site) --------- */
+
+.bg-ridge {
+  background-color: #ffffff;
+  background-image: url("/images/ridge.jpg");
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: 50% 100%;
+}
+
+.bg-mountains {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(to top, transparent, #ffffff),
+    linear-gradient(to bottom, transparent, #0C2866),
+    url("/images/mountains.jpg"),
+    linear-gradient(to bottom, #ffffff 0% 50%, #0C2866 50% 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 100px, 100% 100px, 1800px auto, 100% 100%;
+  background-position: 50% 0%, 50% 100%, 50% 50%, 50% 0%;
+}
+
+@media (min-width: 550px) {
+  .bg-mountains {
+    background-position: 50% 0%, 50% 100%, 50% 100%, 50% 0%;
+  }
+}
+
+
+/* ---------- Content styles for <hr> inside prose ---------- */
+
+hr {
+  border: 0;
+  border-top: 1px solid #d9dee1;
+}
+
+
+/* ============================================================
+ * Responsive utilities
+ * sm: 640px   md: 768px   lg: 1024px
+ * ============================================================ */
+
+@media (min-width: 640px) {
+  .sm\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+}
+
+@media (min-width: 768px) {
+  .md\:block { display: block; }
+  .md\:flex-row { flex-direction: row; }
+  .md\:justify-between { justify-content: space-between; }
+  .md\:items-center { align-items: center; }
+  .md\:text-right { text-align: right; }
+  .md\:text-hero { font-size: 2.375rem; }
+  .md\:leading-tight { line-height: 1.25; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:block { display: block; }
+  .lg\:hidden { display: none; }
+}

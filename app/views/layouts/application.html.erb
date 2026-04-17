@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Ruby Embassy" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,19 +11,26 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%# Typekit: colfax-web font %>
+    <link rel="stylesheet" href="https://use.typekit.net/bzt5uqd.css">
+
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <%= yield %>
+    <div class="<%= content_for(:page_bg) || 'bg-ridge' %> min-h-screen">
+      <%= render "shared/navbar" %>
+
+      <main>
+        <%= yield %>
+      </main>
+
+      <%= render "shared/footer" %>
+    </div>
   </body>
 </html>
