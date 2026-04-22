@@ -1,0 +1,20 @@
+<section class="plan-day" id="<%= day[:anchor] %>">
+  <header class="plan-day__header">
+    <h2 class="plan-day__label"><%= day[:label] %></h2>
+    <span class="plan-day__date"><%= day[:date] %></span>
+  </header>
+
+  <% if day[:items].any? %>
+    <div class="plan-items">
+      <% day[:items].each do |item| %>
+        <%= render "plan_item", item: item %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="empty-day">Nothing planned yet.</p>
+  <% end %>
+
+  <button type="button" class="custom-block-btn">
+    + Add custom block
+  </button>
+</section>

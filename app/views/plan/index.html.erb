@@ -1,0 +1,31 @@
+<% content_for(:title, "My Plan · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-3xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      My Plan
+    </h1>
+
+    <p class="plan-intro">
+      Your personal conference itinerary. Notes and travel times are saved locally.
+    </p>
+
+    <div class="travel-section">
+      <h2 class="travel-section__title">Travel</h2>
+      <div class="travel-grid">
+        <div class="travel-row">
+          <label for="arrival">Arriving</label>
+          <input type="datetime-local" id="arrival" name="arrival" value="<%= @travel[:arrival] %>">
+        </div>
+        <div class="travel-row">
+          <label for="departure">Departing</label>
+          <input type="datetime-local" id="departure" name="departure" value="<%= @travel[:departure] %>">
+        </div>
+      </div>
+    </div>
+
+    <% @days.each do |day| %>
+      <%= render "day", day: day %>
+    <% end %>
+  </div>
+</section>

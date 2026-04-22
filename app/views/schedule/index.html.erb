@@ -1,0 +1,23 @@
+<% content_for(:title, "Schedule · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-5xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Schedule
+    </h1>
+
+    <p class="text-lg leading-relaxed text-gray text-center max-w-2xl mx-auto mb-8">
+      Browse the full conference agenda. Tap <span class="font-medium">Add</span> on any session to save it to your Plan.
+    </p>
+
+    <nav class="day-nav" aria-label="Jump to day">
+      <% @days.each do |day| %>
+        <a href="#<%= day[:anchor] %>"><%= day[:label] %></a>
+      <% end %>
+    </nav>
+
+    <% @days.each do |day| %>
+      <%= render "day", day: day %>
+    <% end %>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+<%
+  custom_class = item[:custom] ? "plan-item--custom" : ""
+%>
+
+<article class="plan-item <%= custom_class %>">
+  <div class="plan-item__time"><%= item[:time] %></div>
+
+  <div class="plan-item__content">
+    <h3 class="plan-item__title"><%= item[:title] %></h3>
+
+    <% if item[:talk_title].present? %>
+      <p class="plan-item__talk-title">&ldquo;<%= item[:talk_title] %>&rdquo;</p>
+    <% end %>
+
+    <% if item[:location].present? %>
+      <p class="plan-item__location"><%= item[:location] %></p>
+    <% end %>
+
+    <% if item[:custom] %>
+      <div><span class="item-badge item-badge--custom">Custom</span></div>
+    <% end %>
+
+    <% if item[:notes].present? %>
+      <p class="plan-item__notes"><%= item[:notes] %></p>
+    <% else %>
+      <p class="plan-item__note-add">+ Add a note</p>
+    <% end %>
+  </div>
+
+  <button type="button" class="plan-item__remove" aria-label="Remove from plan">&times;</button>
+</article>

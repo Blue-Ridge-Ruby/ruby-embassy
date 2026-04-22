@@ -23,4 +23,7 @@ Rails.application.routes.draw do
 
   # Public landing page
   root "pages#home"
+
+  get "schedule", to: "schedule#index"
+  get "plan", to: "plan#index"
 end

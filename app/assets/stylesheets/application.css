@@ -253,15 +253,15 @@ hr {
 
 
 /* ============================================================
- * App-specific additions (extends the template utilities for
- * forms, cards, buttons, and tables used in auth + admin UIs).
+ * App extensions — schedule, plan, auth, admin
  * ============================================================ */
 
 
-/* ---------- Additional sizing/spacing --------------------- */
+/* ---------- Extra utilities -------------------------------- */
 
 .max-w-md { max-width: 28rem; }
 .max-w-xl { max-width: 36rem; }
+.max-w-3xl { max-width: 48rem; }
 .max-w-4xl { max-width: 56rem; }
 
 .w-full { width: 100%; }
@@ -275,6 +275,7 @@ hr {
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .mb-8 { margin-bottom: 2rem; }
+.mb-16 { margin-bottom: 4rem; }
 
 .ml-2 { margin-left: 0.5rem; }
 
@@ -284,66 +285,554 @@ hr {
 
 .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
 .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+.py-5 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
 .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
 
 .pt-4 { padding-top: 1rem; }
 
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
 
-/* ---------- Typography extras ----------------------------- */
-
-.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-.text-xs { font-size: 0.75rem; line-height: 1rem; }
-.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-
-.font-bold { font-weight: 700; }
-.font-semibold { font-weight: 600; }
-
-.uppercase { text-transform: uppercase; }
-.tracking-wide { letter-spacing: 0.025em; }
-.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-
-/* ---------- Colors (palette extensions) ------------------- */
-
-.text-blue-dark { color: #1d5a94; }
-.text-red { color: #C41C1C; }
-.text-muted { color: #6b7280; }
-
-.bg-white { background-color: #ffffff; }
-.bg-gray-50 { background-color: #f9fafb; }
-.bg-gray-100 { background-color: #f3f4f6; }
-.bg-gray-200 { background-color: #e5e7eb; }
-.bg-navy { background-color: #0C2866; }
-.bg-blue { background-color: #2672B5; }
-.bg-green-50 { background-color: #f0fdf4; }
-.bg-red-50 { background-color: #fef2f2; }
-
-.text-green-dark { color: #166534; }
-.text-red-dark { color: #991b1b; }
-
-.border-gray { border: 1px solid #d9dee1; }
-.border-navy { border: 1px solid #0C2866; }
-.border-t-gray { border-top: 1px solid #e5e7eb; }
-
-
-/* ---------- Layout extras --------------------------------- */
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.space-y-12 > * + * { margin-top: 3rem; }
 
 .grid { display: grid; }
 .inline-block { display: inline-block; }
-.gap-3 { gap: 0.75rem; }
-.gap-4 { gap: 1rem; }
-.space-y-4 > * + * { margin-top: 1rem; }
-.space-y-6 > * + * { margin-top: 1.5rem; }
 
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-xs { font-size: 0.75rem;  line-height: 1rem; }
+.text-xl { font-size: 1.25rem;  line-height: 1.75rem; }
 
-/* ---------- Borders & shadows ----------------------------- */
+.font-bold     { font-weight: 700; }
+.font-semibold { font-weight: 600; }
 
-.rounded { border-radius: 0.25rem; }
-.rounded-md { border-radius: 0.375rem; }
-.rounded-lg { border-radius: 0.5rem; }
+.uppercase     { text-transform: uppercase; }
+.tracking-wide { letter-spacing: 0.025em; }
+.italic        { font-style: italic; }
+.truncate      { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.text-blue-dark  { color: #1d5a94; }
+.text-red        { color: #C41C1C; }
+.text-muted      { color: #6b7280; }
+.text-green-dark { color: #166534; }
+.text-red-dark   { color: #991b1b; }
+
+.bg-white     { background-color: #ffffff; }
+.bg-gray-50   { background-color: #f9fafb; }
+.bg-gray-100  { background-color: #f3f4f6; }
+.bg-gray-200  { background-color: #e5e7eb; }
+.bg-navy      { background-color: #0C2866; }
+.bg-blue      { background-color: #2672B5; }
+.bg-green-50  { background-color: #f0fdf4; }
+.bg-red-50    { background-color: #fef2f2; }
+
+.border-gray    { border: 1px solid #d9dee1; }
+.border-navy    { border: 1px solid #0C2866; }
+.border-t-gray  { border-top: 1px solid #e5e7eb; }
+
+.rounded      { border-radius: 0.25rem; }
+.rounded-md   { border-radius: 0.375rem; }
+.rounded-lg   { border-radius: 0.5rem; }
 .rounded-full { border-radius: 9999px; }
-.shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1); }
+.shadow       { box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1); }
+
+
+/* ---------- Day anchor nav (Wed / Thu / Fri / Sat) -------- */
+
+.day-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 3rem;
+}
+
+.day-nav a {
+  display: inline-block;
+  padding: 0.375rem 1rem;
+  border: 1px solid #d9dee1;
+  border-radius: 999px;
+  color: #2672B5;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.day-nav a:hover {
+  background-color: #f4f7fa;
+  border-color: #2672B5;
+  opacity: 1;
+}
+
+
+/* ---------- Schedule day sections ------------------------- */
+
+.schedule-day {
+  padding-top: 2rem;
+  border-top: 1px solid #d9dee1;
+}
+
+.schedule-day + .schedule-day {
+  margin-top: 3rem;
+}
+
+.schedule-day__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .schedule-day__header {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1rem;
+  }
+}
+
+.schedule-day__label {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #0C2866;
+  line-height: 1.1;
+}
+
+.schedule-day__date {
+  font-size: 1.125rem;
+  color: #404040;
+}
+
+.schedule-day__subtitle {
+  font-size: 0.95rem;
+  color: #7a8189;
+  font-style: italic;
+}
+
+
+/* ---------- Schedule item rows ---------------------------- */
+
+.schedule-item {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1rem;
+  padding: 1.125rem 0;
+  border-top: 1px solid #edeff1;
+}
+
+.schedule-item:first-child {
+  border-top: 0;
+}
+
+.schedule-item--flexible {
+  border-top: 1px dashed #c8cdd1;
+}
+
+.schedule-item--flexible + .schedule-item--flexible {
+  border-top: 1px dashed #c8cdd1;
+}
+
+.schedule-item__time {
+  font-size: 0.9375rem;
+  color: #404040;
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.125rem;
+}
+
+.schedule-item--flexible .schedule-item__time {
+  color: #7a8189;
+  font-style: italic;
+}
+
+.schedule-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.schedule-item__title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #0C2866;
+  line-height: 1.3;
+}
+
+.schedule-item__talk-title {
+  font-size: 1rem;
+  color: #404040;
+  line-height: 1.4;
+}
+
+.schedule-item__location {
+  font-size: 0.875rem;
+  color: #7a8189;
+}
+
+.schedule-item__badges {
+  display: flex;
+  gap: 0.375rem;
+  margin-top: 0.125rem;
+  flex-wrap: wrap;
+}
+
+
+/* ---------- Type badges ----------------------------------- */
+
+.item-badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.125rem;
+  line-height: 1.5;
+}
+
+.item-badge--talk {
+  background-color: #0C2866;
+  color: #ffffff;
+}
+
+.item-badge--social {
+  background-color: #FEF3C7;
+  color: #8A5A00;
+}
+
+.item-badge--logistics {
+  background-color: #EEF1F4;
+  color: #525C66;
+}
+
+.item-badge--activity {
+  background-color: #FDE8E8;
+  color: #C41C1C;
+}
+
+.item-badge--lightning {
+  background-color: #FEF9C3;
+  color: #8A6500;
+}
+
+.item-badge--custom {
+  background-color: transparent;
+  color: #C41C1C;
+  border: 1px solid #C41C1C;
+  padding: 0.0625rem 0.4375rem;
+}
+
+.item-badge--tbd {
+  background-color: transparent;
+  color: #7a8189;
+  border: 1px dashed #c8cdd1;
+  padding: 0.0625rem 0.4375rem;
+}
+
+
+/* ---------- Add-to-plan button ---------------------------- */
+
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #C41C1C;
+  background-color: transparent;
+  border: 1px solid #C41C1C;
+  border-radius: 0.125rem;
+  min-width: 72px;
+  line-height: 1.2;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.add-btn:hover {
+  background-color: #fdf2f2;
+}
+
+.add-btn--added {
+  color: #ffffff;
+  background: linear-gradient(to top, #C41C1C, #DD423E);
+  border-color: #C41C1C;
+}
+
+.add-btn--added:hover {
+  opacity: 0.92;
+  background: linear-gradient(to top, #C41C1C, #DD423E);
+}
+
+.add-btn__check {
+  display: inline-block;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+
+/* ---------- Plan page ------------------------------------- */
+
+.plan-intro {
+  text-align: center;
+  font-size: 1.0625rem;
+  color: #404040;
+  margin-bottom: 2rem;
+}
+
+
+/* ---- Travel section ---- */
+
+.travel-section {
+  background-color: #f7f9fb;
+  border: 1px solid #e3e7eb;
+  border-radius: 0.375rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.travel-section__title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0C2866;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+}
+
+.travel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .travel-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.travel-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.travel-row label {
+  font-size: 0.8125rem;
+  color: #7a8189;
+  font-weight: 500;
+}
+
+.travel-row input {
+  font: inherit;
+  color: #0C2866;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid #d9dee1;
+  border-radius: 0.25rem;
+  background-color: #ffffff;
+  font-weight: 500;
+}
+
+.travel-row input:focus {
+  outline: 2px solid rgba(38, 114, 181, 0.3);
+  outline-offset: 1px;
+  border-color: #2672B5;
+}
+
+
+/* ---- Plan day sections ---- */
+
+.plan-day {
+  padding-top: 2rem;
+  border-top: 1px solid #d9dee1;
+}
+
+.plan-day + .plan-day {
+  margin-top: 2.5rem;
+}
+
+.plan-day__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.plan-day__label {
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: #0C2866;
+}
+
+.plan-day__date {
+  font-size: 0.9375rem;
+  color: #7a8189;
+}
+
+
+/* ---- Plan items (cards) ---- */
+
+.plan-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.plan-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 1rem 1.125rem;
+  background-color: #ffffff;
+  border: 1px solid #d9dee1;
+  border-radius: 0.375rem;
+  transition: box-shadow 0.15s ease;
+}
+
+.plan-item:hover {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.plan-item--custom {
+  border-left: 3px solid #C41C1C;
+}
+
+.plan-item__time {
+  font-size: 0.9375rem;
+  color: #404040;
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.1875rem;
+}
+
+.plan-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.plan-item__title {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: #0C2866;
+  line-height: 1.3;
+}
+
+.plan-item__talk-title {
+  font-size: 0.9375rem;
+  color: #404040;
+}
+
+.plan-item__location {
+  font-size: 0.8125rem;
+  color: #7a8189;
+}
+
+.plan-item__notes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: #525C66;
+  font-style: italic;
+  margin-top: 0.125rem;
+}
+
+.plan-item__notes::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid #C41C1C;
+  margin-right: 0.125rem;
+}
+
+.plan-item__note-add {
+  font-size: 0.8125rem;
+  color: #2672B5;
+  font-style: normal;
+  margin-top: 0.125rem;
+  cursor: pointer;
+}
+
+.plan-item__remove {
+  align-self: start;
+  color: #b4bbc1;
+  font-size: 1.125rem;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.plan-item__remove:hover {
+  color: #C41C1C;
+  background-color: #fdf2f2;
+}
+
+
+/* ---- Custom block + empty day ---- */
+
+.custom-block-btn {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #7a8189;
+  background-color: transparent;
+  border: 1px dashed #c8cdd1;
+  border-radius: 0.375rem;
+  text-align: center;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.custom-block-btn:hover {
+  color: #C41C1C;
+  border-color: #C41C1C;
+  background-color: #fdf2f2;
+}
+
+.empty-day {
+  text-align: center;
+  color: #7a8189;
+  font-style: italic;
+  padding: 1.5rem 0 0.25rem;
+  font-size: 0.9375rem;
+}
+
+
+/* ---- Responsive: tighten grid on mobile ---- */
+
+@media (max-width: 480px) {
+  .schedule-item,
+  .plan-item {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    gap: 0.625rem;
+  }
+
+  .schedule-item__time,
+  .plan-item__time {
+    font-size: 0.875rem;
+  }
+
+  .add-btn {
+    min-width: 0;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+  }
+}
+
+
+/* ============================================================
+ * Auth + admin UI components
+ * ============================================================ */
 
 
 /* ---------- Card ------------------------------------------ */
@@ -563,4 +1052,100 @@ hr {
   color: #6b7280;
   font-size: 1rem;
   margin-bottom: 2rem;
+}
+
+
+/* ---------- Dashboard action grid ------------------------- */
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .action-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.action-card {
+  position: relative;
+  display: block;
+  padding: 1.5rem 1.75rem;
+  background-color: #ffffff;
+  border: 1px solid #d9dee1;
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.action-card:hover {
+  border-color: #C41C1C;
+  box-shadow: 0 4px 12px -4px rgba(196, 28, 28, 0.15);
+  opacity: 1;
+}
+
+.action-card__title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #0C2866;
+  line-height: 1.25;
+  padding-right: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.action-card__description {
+  font-size: 0.9375rem;
+  color: #525C66;
+  line-height: 1.45;
+}
+
+.action-card__arrow {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.75rem;
+  color: #C41C1C;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.action-card:hover .action-card__arrow {
+  transform: translateX(2px);
+}
+
+.action-card--soon {
+  background-color: #fafbfc;
+  border-style: dashed;
+  cursor: default;
+}
+
+.action-card--soon:hover {
+  border-color: #d9dee1;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.action-card--soon .action-card__title {
+  color: #525C66;
+}
+
+.action-card--soon .action-card__description {
+  color: #7a8189;
+}
+
+.action-card__badge {
+  display: inline-block;
+  margin-top: 0.875rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a8189;
+  background-color: #eef1f4;
+  border-radius: 999px;
 }
