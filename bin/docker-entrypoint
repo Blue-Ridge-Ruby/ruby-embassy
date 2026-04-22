@@ -5,6 +5,10 @@ if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   echo "Running database setup for all databases..."
   ./bin/rails db:prepare
   echo "Database setup complete"
+
+  # Railway assigns $PORT; Thruster reads $HTTP_PORT. Bridge them so the
+  # proxy binds where the platform routes traffic.
+  export HTTP_PORT="${HTTP_PORT:-${PORT:-80}}"
 fi
 
 exec "${@}"
