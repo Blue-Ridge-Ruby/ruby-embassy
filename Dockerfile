@@ -72,8 +72,9 @@ COPY --chown=rails:rails --from=build /rails /rails
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start Rails bound to Railway's $PORT. Uses JSON form (required by the
-# Dockerfile linter) with `sh -c` for shell expansion, and `exec` so
-# SIGTERM is delivered directly to the Rails process for graceful shutdown.
+# Start server via Thruster, which reads $PORT from the environment (Railway
+# sets this automatically). JSON form satisfies the Dockerfile linter; the
+# last two args (./bin/rails server) let bin/docker-entrypoint detect a
+# server start and run db:prepare before booting.
 EXPOSE 80
-CMD ["sh", "-c", "exec bin/rails server -b 0.0.0.0 -p ${PORT:-3000}"]
+CMD ["./bin/thrust", "./bin/rails", "server"]
