@@ -10,7 +10,6 @@ Rails.application.routes.draw do
 
   # Authenticated user dashboard
   get "dashboard", to: "dashboard#show", as: :dashboard
-  root "dashboard#show"
 
   # Admin area
   namespace :admin do
@@ -22,4 +21,7 @@ Rails.application.routes.draw do
 
   # Background jobs dashboard (admin-only mount inside /admin/)
   mount MissionControl::Jobs::Engine, at: "/admin/jobs"
+
+  # Public landing page
+  root "pages#home"
 end
