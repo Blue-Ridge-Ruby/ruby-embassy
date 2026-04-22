@@ -1053,3 +1053,99 @@ hr {
   font-size: 1rem;
   margin-bottom: 2rem;
 }
+
+
+/* ---------- Dashboard action grid ------------------------- */
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .action-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.action-card {
+  position: relative;
+  display: block;
+  padding: 1.5rem 1.75rem;
+  background-color: #ffffff;
+  border: 1px solid #d9dee1;
+  border-radius: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.action-card:hover {
+  border-color: #C41C1C;
+  box-shadow: 0 4px 12px -4px rgba(196, 28, 28, 0.15);
+  opacity: 1;
+}
+
+.action-card__title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #0C2866;
+  line-height: 1.25;
+  padding-right: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.action-card__description {
+  font-size: 0.9375rem;
+  color: #525C66;
+  line-height: 1.45;
+}
+
+.action-card__arrow {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.75rem;
+  color: #C41C1C;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.action-card:hover .action-card__arrow {
+  transform: translateX(2px);
+}
+
+.action-card--soon {
+  background-color: #fafbfc;
+  border-style: dashed;
+  cursor: default;
+}
+
+.action-card--soon:hover {
+  border-color: #d9dee1;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.action-card--soon .action-card__title {
+  color: #525C66;
+}
+
+.action-card--soon .action-card__description {
+  color: #7a8189;
+}
+
+.action-card__badge {
+  display: inline-block;
+  margin-top: 0.875rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a8189;
+  background-color: #eef1f4;
+  border-radius: 999px;
+}

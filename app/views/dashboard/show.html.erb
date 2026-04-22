@@ -1,7 +1,7 @@
 <% content_for(:title, "Dashboard — Ruby Embassy") %>
 
 <section class="pb-32">
-  <div class="max-w-xl mx-auto px-8 py-10">
+  <div class="max-w-4xl mx-auto px-8 py-10">
     <% if flash[:notice] %>
       <div class="alert alert-notice"><%= flash[:notice] %></div>
     <% end %>
@@ -9,32 +9,46 @@
     <h1 class="text-hero leading-tight font-medium text-navy mb-4">
       Welcome<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
     </h1>
-    <p class="text-lg text-gray mb-8">
-      You're signed in to Ruby Embassy.
+    <p class="text-lg text-gray mb-12">
+      What would you like to do?
     </p>
 
-    <div class="card space-y-4">
-      <div>
-        <div class="text-sm text-muted uppercase tracking-wide">Name</div>
-        <div class="text-lg font-medium text-navy"><%= current_user.full_name %></div>
-      </div>
-      <div>
-        <div class="text-sm text-muted uppercase tracking-wide">Email</div>
-        <div class="text-lg font-medium text-navy"><%= current_user.email %></div>
-      </div>
-      <div>
-        <div class="text-sm text-muted uppercase tracking-wide">Role</div>
-        <div class="mt-1">
-          <span class="badge badge-<%= current_user.role %>"><%= current_user.role.humanize %></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex gap-3 mt-8">
-      <% if current_user.admin? %>
-        <%= link_to "Admin", admin_users_path, class: "btn btn-navy" %>
+    <div class="action-grid">
+      <%= link_to schedule_path, class: "action-card" do %>
+        <h2 class="action-card__title">See the schedule</h2>
+        <p class="action-card__description">Browse all four days of talks, activities, and Ruby Embassy blocks.</p>
+        <span class="action-card__arrow" aria-hidden="true">&rarr;</span>
       <% end %>
-      <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-muted" %>
+
+      <div class="action-card action-card--soon">
+        <h2 class="action-card__title">Host an Activity</h2>
+        <p class="action-card__description">Lead a meetup, group hike, or informal gathering.</p>
+        <span class="action-card__badge">Coming soon</span>
+      </div>
+
+      <%= link_to plan_path, class: "action-card" do %>
+        <h2 class="action-card__title">Plan your trip</h2>
+        <p class="action-card__description">Save sessions, add notes, and set your arrival and departure.</p>
+        <span class="action-card__arrow" aria-hidden="true">&rarr;</span>
+      <% end %>
+
+      <a href="https://blueridgeruby.com/guide" class="action-card" target="_blank" rel="noopener">
+        <h2 class="action-card__title">Explore Asheville</h2>
+        <p class="action-card__description">Local picks for food, coffee, hikes, and things to do off-schedule.</p>
+        <span class="action-card__arrow" aria-hidden="true">&#8599;</span>
+      </a>
+
+      <div class="action-card action-card--soon">
+        <h2 class="action-card__title">Get your Ashevillagers</h2>
+        <p class="action-card__description">Claim your conference crew for meals, walks, and hangs.</p>
+        <span class="action-card__badge">Coming soon</span>
+      </div>
+
+      <div class="action-card action-card--soon">
+        <h2 class="action-card__title">Book a Ruby Embassy Appointment</h2>
+        <p class="action-card__description">Pick a time block to stop by the Ruby Embassy.</p>
+        <span class="action-card__badge">Coming soon</span>
+      </div>
     </div>
   </div>
 </section>
