@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Admin — Ruby Embassy" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,32 +11,32 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
 
+    <link rel="stylesheet" href="https://use.typekit.net/bzt5uqd.css">
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body class="bg-gray-50">
-    <nav class="bg-gray-900 text-white px-6 py-3 flex items-center gap-6">
-      <span class="font-bold">Ruby Embassy — Admin</span>
-      <%= link_to "Users", admin_users_path, class: "hover:underline" %>
-      <%= link_to "Configurations", admin_configurations_path, class: "hover:underline" %>
-      <%= link_to "Jobs", "/admin/jobs", class: "hover:underline" %>
+    <nav class="admin-nav">
+      <span class="font-semibold">Ruby Embassy Admin</span>
+      <%= link_to "Users", admin_users_path %>
+      <%= link_to "Configurations", admin_configurations_path %>
+      <%= link_to "Jobs", "/admin/jobs" %>
       <span class="ml-auto flex items-center gap-4">
-        <%= link_to "Dashboard", dashboard_path, class: "hover:underline" %>
-        <%= button_to "Sign out", session_path, method: :delete,
-              class: "bg-gray-700 text-white py-1 px-3 rounded hover:bg-gray-600 cursor-pointer" %>
+        <%= link_to "Dashboard", dashboard_path %>
+        <%= button_to "Sign out", session_path, method: :delete, class: "admin-nav-btn" %>
       </span>
     </nav>
 
-    <main class="px-6 py-8">
-      <% if flash[:notice] %>
-        <div class="max-w-4xl mx-auto mb-4 p-3 rounded bg-green-100 text-green-800"><%= flash[:notice] %></div>
-      <% end %>
-      <% if flash[:alert] %>
-        <div class="max-w-4xl mx-auto mb-4 p-3 rounded bg-red-100 text-red-800"><%= flash[:alert] %></div>
-      <% end %>
-
+    <main class="px-8 py-10">
       <div class="max-w-4xl mx-auto">
+        <% if flash[:notice] %>
+          <div class="alert alert-notice"><%= flash[:notice] %></div>
+        <% end %>
+        <% if flash[:alert] %>
+          <div class="alert alert-error"><%= flash[:alert] %></div>
+        <% end %>
+
         <%= yield %>
       </div>
     </main>

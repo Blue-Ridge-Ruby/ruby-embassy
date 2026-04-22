@@ -33,7 +33,7 @@ class User < ApplicationRecord
   end
 
   def full_name
-    [first_name, last_name].compact.join(" ").presence || email
+    [ first_name, last_name ].compact.join(" ").presence || email
   end
 
   private

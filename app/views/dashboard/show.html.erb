@@ -1,32 +1,40 @@
-<div class="max-w-2xl mx-auto py-16">
-  <% if flash[:notice] %>
-    <div class="mb-6 p-3 rounded bg-green-100 text-green-800"><%= flash[:notice] %></div>
-  <% end %>
+<% content_for(:title, "Dashboard — Ruby Embassy") %>
 
-  <h1 class="text-3xl font-bold mb-2">Welcome to Ruby Embassy</h1>
-  <p class="text-gray-600 mb-8">You're signed in.</p>
-
-  <div class="bg-white rounded shadow p-6 space-y-3">
-    <div>
-      <div class="text-sm text-gray-500">Name</div>
-      <div class="text-lg font-medium"><%= current_user.full_name %></div>
-    </div>
-    <div>
-      <div class="text-sm text-gray-500">Email</div>
-      <div class="text-lg font-medium"><%= current_user.email %></div>
-    </div>
-    <div>
-      <div class="text-sm text-gray-500">Role</div>
-      <div class="text-lg font-medium"><%= current_user.role.humanize %></div>
-    </div>
-  </div>
-
-  <div class="mt-8 flex gap-3">
-    <% if current_user.admin? %>
-      <%= link_to "Admin", admin_users_path,
-            class: "bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700" %>
+<section class="pb-32">
+  <div class="max-w-xl mx-auto px-8 py-10">
+    <% if flash[:notice] %>
+      <div class="alert alert-notice"><%= flash[:notice] %></div>
     <% end %>
-    <%= button_to "Sign out", session_path, method: :delete,
-          class: "bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300 cursor-pointer" %>
+
+    <h1 class="text-hero leading-tight font-medium text-navy mb-4">
+      Welcome<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
+    </h1>
+    <p class="text-lg text-gray mb-8">
+      You're signed in to Ruby Embassy.
+    </p>
+
+    <div class="card space-y-4">
+      <div>
+        <div class="text-sm text-muted uppercase tracking-wide">Name</div>
+        <div class="text-lg font-medium text-navy"><%= current_user.full_name %></div>
+      </div>
+      <div>
+        <div class="text-sm text-muted uppercase tracking-wide">Email</div>
+        <div class="text-lg font-medium text-navy"><%= current_user.email %></div>
+      </div>
+      <div>
+        <div class="text-sm text-muted uppercase tracking-wide">Role</div>
+        <div class="mt-1">
+          <span class="badge badge-<%= current_user.role %>"><%= current_user.role.humanize %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-8">
+      <% if current_user.admin? %>
+        <%= link_to "Admin", admin_users_path, class: "btn btn-navy" %>
+      <% end %>
+      <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-muted" %>
+    </div>
   </div>
-</div>
+</section>

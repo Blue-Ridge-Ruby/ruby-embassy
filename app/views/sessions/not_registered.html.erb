@@ -1,20 +1,28 @@
-<div class="max-w-md mx-auto py-16 text-center">
-  <h1 class="text-2xl font-bold mb-4">No Ticket Found</h1>
+<% content_for(:title, "No ticket found — Ruby Embassy") %>
 
-  <p class="text-gray-700 mb-6">
-    We couldn't find a Blue Ridge Ruby ticket for
-    <strong class="text-gray-900"><%= @email %></strong>.
-  </p>
+<section class="pb-32">
+  <div class="max-w-md mx-auto px-8 py-10 text-center">
+    <h1 class="text-hero leading-tight font-medium text-navy mb-4">
+      No ticket found
+    </h1>
 
-  <p class="text-gray-600 mb-8">
-    You need a ticket to sign in. Register on the Blue Ridge Ruby website to get started.
-  </p>
+    <p class="text-lg text-gray mb-6">
+      We couldn't find a Blue Ridge Ruby ticket for
+      <br>
+      <strong class="text-navy"><%= @email %></strong>.
+    </p>
 
-  <%= link_to "Register for Blue Ridge Ruby", @register_url,
-        class: "inline-block bg-[#C0392B] text-white py-3 px-6 rounded font-medium hover:bg-[#a5321f]" %>
+    <p class="text-lg text-gray mb-8">
+      You'll need a ticket before you can sign in. Register on the Blue Ridge Ruby site to get started.
+    </p>
 
-  <p class="text-sm text-gray-500 mt-8">
-    Typed the wrong email?
-    <%= link_to "Try again", new_session_path, class: "text-[#C0392B] hover:underline" %>
-  </p>
-</div>
+    <a href="<%= @register_url %>" class="btn btn-red">
+      Register for Blue Ridge Ruby
+    </a>
+
+    <p class="text-sm text-muted mt-8">
+      Typed the wrong email?
+      <%= link_to "Try again", new_session_path, class: "text-blue underline" %>
+    </p>
+  </div>
+</section>

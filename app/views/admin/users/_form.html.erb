@@ -1,6 +1,6 @@
 <% if user.errors.any? %>
-  <div class="mb-4 p-3 rounded bg-red-100 text-red-800">
-    <ul>
+  <div class="alert alert-error">
+    <ul class="list-disc">
       <% user.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
@@ -8,33 +8,35 @@
   </div>
 <% end %>
 
-<%= form_with model: user,
-      url: user.persisted? ? admin_user_path(user) : admin_users_path,
-      class: "space-y-4" do |f| %>
-  <div>
-    <label class="block text-sm font-medium mb-1">First Name</label>
-    <%= f.text_field :first_name, required: true, class: "w-full border rounded px-3 py-2" %>
-  </div>
+<div class="card card-compact">
+  <%= form_with model: user,
+        url: user.persisted? ? admin_user_path(user) : admin_users_path,
+        class: "space-y-4" do |f| %>
+    <div>
+      <%= f.label :first_name, class: "label" %>
+      <%= f.text_field :first_name, required: true, class: "input" %>
+    </div>
 
-  <div>
-    <label class="block text-sm font-medium mb-1">Last Name</label>
-    <%= f.text_field :last_name, required: true, class: "w-full border rounded px-3 py-2" %>
-  </div>
+    <div>
+      <%= f.label :last_name, class: "label" %>
+      <%= f.text_field :last_name, required: true, class: "input" %>
+    </div>
 
-  <div>
-    <label class="block text-sm font-medium mb-1">Email</label>
-    <%= f.email_field :email, required: true, class: "w-full border rounded px-3 py-2" %>
-  </div>
+    <div>
+      <%= f.label :email, class: "label" %>
+      <%= f.email_field :email, required: true, class: "input" %>
+    </div>
 
-  <div>
-    <label class="block text-sm font-medium mb-1">Role</label>
-    <%= f.select :role, User.roles.keys.map { |r| [r.humanize, r] },
-          {}, class: "w-full border rounded px-3 py-2" %>
-  </div>
+    <div>
+      <%= f.label :role, class: "label" %>
+      <%= f.select :role,
+            User.roles.keys.map { |r| [r.humanize, r] },
+            {}, class: "select" %>
+    </div>
 
-  <div class="flex gap-2">
-    <%= f.submit class: "bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 cursor-pointer" %>
-    <%= link_to "Cancel", admin_users_path,
-          class: "bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300" %>
-  </div>
-<% end %>
+    <div class="flex gap-3 pt-4">
+      <%= f.submit class: "btn btn-navy" %>
+      <%= link_to "Cancel", admin_users_path, class: "btn btn-muted" %>
+    </div>
+  <% end %>
+</div>

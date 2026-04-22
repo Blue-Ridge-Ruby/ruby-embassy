@@ -7,8 +7,8 @@ class Configuration < ApplicationRecord
   def self.expect(*names, &block)
     names = names.map(&:to_s)
     expected_names.merge(names)
-    case [names, block]
-    in [name], nil then self[name]
+    case [ names, block ]
+    in [ name ], nil then self[name]
     in Array, nil then values_at(*names)
     else
       callback = -> { block.call(*values_at(*names)) }
