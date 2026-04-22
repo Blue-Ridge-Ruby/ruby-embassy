@@ -1,8 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  include Configuration::Configurable
-
-  configure_with from: :email_from
-  default from: from
-
+  default from: "hello@blueridgeruby.com"
   layout "mailer"
 end
