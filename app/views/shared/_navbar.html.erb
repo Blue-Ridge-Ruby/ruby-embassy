@@ -9,10 +9,19 @@
 
       <div class="hidden lg:block">
         <div class="flex items-center gap-x-3">
-          <a href="/schedule" class="text-blue px-3 py-1 text-lg font-medium">Schedule</a>
-          <a href="https://blueridgeruby.com/#speakers" class="text-blue px-3 py-1 text-lg font-medium">Speakers</a>
-          <a href="/plan" class="text-blue px-3 py-1 text-lg font-medium">Login</a>
-          <a href="https://blueridgeruby.com/#register" class="bg-red-gradient text-white font-medium py-2 px-4 shadow-sm rounded-sm cursor-pointer">Register</a>
+          <% if current_user %>
+            <%= link_to "Schedule", schedule_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
+            <%= link_to "My Plan", plan_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
+            <% if admin? %>
+              <%= link_to "Admin", admin_users_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
+            <% end %>
+            <%= button_to "Sign Out", session_path, method: :delete, class: "text-blue px-3 py-1 text-lg font-medium cursor-pointer" %>
+          <% else %>
+            <a href="https://blueridgeruby.com/schedule" class="text-blue px-3 py-1 text-lg font-medium">Schedule</a>
+            <a href="https://blueridgeruby.com/#speakers" class="text-blue px-3 py-1 text-lg font-medium">Speakers</a>
+            <%= link_to "Log In", new_session_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
+            <a href="https://blueridgeruby.com/#register" class="bg-red-gradient text-white font-medium py-2 px-4 shadow-sm rounded-sm cursor-pointer">Register</a>
+          <% end %>
         </div>
       </div>
 
@@ -28,12 +37,21 @@
 
     <div data-toggle-target="toggleable" class="hidden lg:hidden">
       <div class="flex flex-col py-4 gap-y-2">
-        <a href="/schedule" class="text-blue block py-2 font-medium">Schedule</a>
-        <a href="https://blueridgeruby.com/#speakers" class="text-blue block py-2 font-medium">Speakers</a>
-        <a href="/plan" class="text-blue block py-2 font-medium">Login</a>
-        <div class="py-2">
-          <a href="https://blueridgeruby.com/#register" class="bg-red-gradient text-white font-medium py-2 px-4 shadow-sm rounded-sm cursor-pointer">Register</a>
-        </div>
+        <% if current_user %>
+          <%= link_to "Schedule", schedule_path, class: "text-blue block py-2 font-medium" %>
+          <%= link_to "My Plan", plan_path, class: "text-blue block py-2 font-medium" %>
+          <% if admin? %>
+            <%= link_to "Admin", admin_users_path, class: "text-blue block py-2 font-medium" %>
+          <% end %>
+          <%= button_to "Sign Out", session_path, method: :delete, class: "text-blue block py-2 font-medium text-left cursor-pointer" %>
+        <% else %>
+          <a href="https://blueridgeruby.com/schedule" class="text-blue block py-2 font-medium">Schedule</a>
+          <a href="https://blueridgeruby.com/#speakers" class="text-blue block py-2 font-medium">Speakers</a>
+          <%= link_to "Log In", new_session_path, class: "text-blue block py-2 font-medium" %>
+          <div class="py-2">
+            <a href="https://blueridgeruby.com/#register" class="bg-red-gradient text-white font-medium py-2 px-4 shadow-sm rounded-sm cursor-pointer">Register</a>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
