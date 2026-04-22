@@ -72,6 +72,9 @@ COPY --chown=rails:rails --from=build /rails /rails
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start server via Thruster by default, this can be overwritten at runtime
+# Start server via Thruster, which reads $PORT from the environment (Railway
+# sets this automatically). JSON form satisfies the Dockerfile linter; the
+# last two args (./bin/rails server) let bin/docker-entrypoint detect a
+# server start and run db:prepare before booting.
 EXPOSE 80
-CMD bin/rails server -b 0.0.0.0 -p ${PORT}
+CMD ["./bin/thrust", "./bin/rails", "server"]

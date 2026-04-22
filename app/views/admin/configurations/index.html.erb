@@ -1,0 +1,39 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-navy">Configurations</h1>
+  <%= link_to "Add configuration", new_admin_configuration_path, class: "btn btn-red" %>
+</div>
+
+<p class="text-sm text-muted mb-4">
+  Expected keys: <code>tito_api_token</code>, <code>tito_account_slug</code>, <code>tito_event_slug</code>, <code>email_from</code>
+</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width: 260px;">Name</th>
+      <th>Value</th>
+      <th style="width: 160px;"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @configurations.each do |configuration| %>
+      <tr>
+        <td><code><%= configuration.name %></code></td>
+        <% if configuration.persisted? %>
+          <td><code class="block truncate"><%= configuration.display_value %></code></td>
+          <td class="text-right">
+            <%= link_to "Edit", edit_admin_configuration_path(configuration), class: "text-blue underline" %>
+            <%= button_to "Delete", admin_configuration_path(configuration), method: :delete,
+                  data: { turbo_confirm: "Remove #{configuration.name}?" },
+                  style: "display:inline;background:transparent;border:0;color:#C41C1C;padding:0;margin-left:0.5rem;box-shadow:none;text-decoration:underline;cursor:pointer" %>
+          </td>
+        <% else %>
+          <td class="text-muted">not set</td>
+          <td class="text-right">
+            <%= link_to "Create", new_admin_configuration_path(name: configuration.name), class: "text-blue underline" %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

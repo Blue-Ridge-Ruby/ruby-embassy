@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "Admin — Ruby Embassy" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <link rel="stylesheet" href="https://use.typekit.net/bzt5uqd.css">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50">
+    <nav class="admin-nav">
+      <span class="font-semibold">Ruby Embassy Admin</span>
+      <%= link_to "Users", admin_users_path %>
+      <%= link_to "Configurations", admin_configurations_path %>
+      <%= link_to "Jobs", "/admin/jobs" %>
+      <span class="ml-auto flex items-center gap-4">
+        <%= link_to "Dashboard", dashboard_path %>
+        <%= button_to "Sign out", session_path, method: :delete, class: "admin-nav-btn" %>
+      </span>
+    </nav>
+
+    <main class="px-8 py-10">
+      <div class="max-w-4xl mx-auto">
+        <% if flash[:notice] %>
+          <div class="alert alert-notice"><%= flash[:notice] %></div>
+        <% end %>
+        <% if flash[:alert] %>
+          <div class="alert alert-error"><%= flash[:alert] %></div>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>
