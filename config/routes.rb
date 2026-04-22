@@ -16,7 +16,6 @@ Rails.application.routes.draw do
     resources :users do
       post :sync, on: :collection
     end
-    resources :configurations
   end
 
   # Background jobs dashboard (admin-only mount inside /admin/)
