@@ -1,0 +1,9 @@
+Sign in to Ruby Embassy
+
+Hi <%= @user.first_name.presence || "there" %>,
+
+Click the link below to sign in to Ruby Embassy:
+
+<%= @login_url %>
+
+This link will expire in 30 days. If you didn't request this, you can safely ignore this email.

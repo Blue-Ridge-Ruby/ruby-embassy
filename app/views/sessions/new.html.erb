@@ -1,0 +1,42 @@
+<% content_for(:title, "Sign in — Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-md mx-auto px-8 py-10">
+    <h1 class="text-hero leading-tight font-medium text-center text-navy mb-4">
+      Sign in
+    </h1>
+    <p class="text-lg text-center text-gray mb-8">
+      Enter the email you used to register for Blue Ridge Ruby. We'll send you a login link.
+    </p>
+
+    <% if flash[:notice] %>
+      <div class="alert alert-notice"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="alert alert-error"><%= flash[:alert] %></div>
+    <% end %>
+
+    <div class="card">
+      <%= form_with url: session_path, method: :post, class: "space-y-4" do |f| %>
+        <div>
+          <%= f.label :email, "Email address", class: "label" %>
+          <%= f.email_field :email,
+                required: true,
+                autofocus: true,
+                value: params[:email],
+                placeholder: "you@example.com",
+                class: "input" %>
+        </div>
+
+        <%= f.submit "Send login link", class: "btn btn-red btn-full" %>
+      <% end %>
+    </div>
+
+    <p class="text-sm text-center text-muted mt-6">
+      Don't have a ticket yet?
+      <a href="https://blueridgeruby.com/#register" class="text-blue underline">
+        Register for Blue Ridge Ruby
+      </a>
+    </p>
+  </div>
+</section>

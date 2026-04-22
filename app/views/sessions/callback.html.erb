@@ -1,0 +1,24 @@
+<% content_for(:title, "Signing you in — Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-md mx-auto px-8 py-16 text-center">
+    <h1 class="text-hero leading-tight font-medium text-navy mb-4">
+      Signing you in&hellip;
+    </h1>
+
+    <noscript>
+      <p class="text-lg text-gray mb-8">
+        JavaScript is disabled. Click the button below to sign in.
+      </p>
+    </noscript>
+
+    <%= form_with url: callback_session_path, method: :post, id: "login-callback" do |f| %>
+      <%= f.hidden_field :token, value: @token %>
+      <noscript>
+        <%= f.submit "Sign in", class: "btn btn-red" %>
+      </noscript>
+    <% end %>
+  </div>
+</section>
+
+<script>document.getElementById("login-callback").requestSubmit()</script>

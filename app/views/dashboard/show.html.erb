@@ -1,0 +1,40 @@
+<% content_for(:title, "Dashboard — Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-xl mx-auto px-8 py-10">
+    <% if flash[:notice] %>
+      <div class="alert alert-notice"><%= flash[:notice] %></div>
+    <% end %>
+
+    <h1 class="text-hero leading-tight font-medium text-navy mb-4">
+      Welcome<% if current_user.first_name.present? %>, <%= current_user.first_name %><% end %>
+    </h1>
+    <p class="text-lg text-gray mb-8">
+      You're signed in to Ruby Embassy.
+    </p>
+
+    <div class="card space-y-4">
+      <div>
+        <div class="text-sm text-muted uppercase tracking-wide">Name</div>
+        <div class="text-lg font-medium text-navy"><%= current_user.full_name %></div>
+      </div>
+      <div>
+        <div class="text-sm text-muted uppercase tracking-wide">Email</div>
+        <div class="text-lg font-medium text-navy"><%= current_user.email %></div>
+      </div>
+      <div>
+        <div class="text-sm text-muted uppercase tracking-wide">Role</div>
+        <div class="mt-1">
+          <span class="badge badge-<%= current_user.role %>"><%= current_user.role.humanize %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-8">
+      <% if current_user.admin? %>
+        <%= link_to "Admin", admin_users_path, class: "btn btn-navy" %>
+      <% end %>
+      <%= button_to "Sign out", session_path, method: :delete, class: "btn btn-muted" %>
+    </div>
+  </div>
+</section>

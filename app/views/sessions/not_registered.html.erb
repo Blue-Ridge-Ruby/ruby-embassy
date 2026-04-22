@@ -1,0 +1,28 @@
+<% content_for(:title, "No ticket found — Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-md mx-auto px-8 py-10 text-center">
+    <h1 class="text-hero leading-tight font-medium text-navy mb-4">
+      No ticket found
+    </h1>
+
+    <p class="text-lg text-gray mb-6">
+      We couldn't find a Blue Ridge Ruby ticket for
+      <br>
+      <strong class="text-navy"><%= @email %></strong>.
+    </p>
+
+    <p class="text-lg text-gray mb-8">
+      You'll need a ticket before you can sign in. Register on the Blue Ridge Ruby site to get started.
+    </p>
+
+    <a href="<%= @register_url %>" class="btn btn-red">
+      Register for Blue Ridge Ruby
+    </a>
+
+    <p class="text-sm text-muted mt-8">
+      Typed the wrong email?
+      <%= link_to "Try again", new_session_path, class: "text-blue underline" %>
+    </p>
+  </div>
+</section>

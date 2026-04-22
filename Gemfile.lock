@@ -119,6 +119,12 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
+    faraday (2.14.1)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     ffi (1.17.4-aarch64-linux-gnu)
     ffi (1.17.4-aarch64-linux-musl)
     ffi (1.17.4-arm-linux-gnu)
@@ -199,6 +205,8 @@ GEM
       stimulus-rails
       turbo-rails
     msgpack (1.8.0)
+    net-http (0.9.1)
+      uri (>= 0.11.1)
     net-imap (0.6.3)
       date
       net-protocol
@@ -242,6 +250,11 @@ GEM
     pg (1.6.3-x86_64-darwin)
     pg (1.6.3-x86_64-linux)
     pg (1.6.3-x86_64-linux-musl)
+    postmark (1.25.1)
+      json
+    postmark-rails (0.22.1)
+      actionmailer (>= 3.0.0)
+      postmark (>= 1.21.3, < 2.0)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -381,6 +394,9 @@ GEM
     thruster (0.1.20-x86_64-darwin)
     thruster (0.1.20-x86_64-linux)
     timeout (0.6.1)
+    tito_ruby (0.3.0)
+      activemodel (>= 7.1, < 9.0)
+      faraday (~> 2.0)
     tsort (0.2.0)
     turbo-rails (2.0.23)
       actionpack (>= 7.1.0)
@@ -432,6 +448,7 @@ DEPENDENCIES
   letter_opener
   mission_control-jobs
   pg (~> 1.1)
+  postmark-rails
   propshaft
   puma (>= 5.0)
   rack-mini-profiler
@@ -443,6 +460,7 @@ DEPENDENCIES
   solid_queue
   stimulus-rails
   thruster
+  tito_ruby
   turbo-rails
   tzinfo-data
   web-console
