@@ -12,4 +12,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "pages#home"
+
+  get "schedule", to: "schedule#index"
+  get "plan", to: "plan#index"
 end

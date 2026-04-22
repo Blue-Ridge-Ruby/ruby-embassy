@@ -1,0 +1,15 @@
+<section class="schedule-day" id="<%= day[:anchor] %>">
+  <header class="schedule-day__header">
+    <h2 class="schedule-day__label"><%= day[:label] %></h2>
+    <span class="schedule-day__date"><%= day[:date] %></span>
+    <% if day[:subtitle].present? %>
+      <span class="schedule-day__subtitle"><%= day[:subtitle] %></span>
+    <% end %>
+  </header>
+
+  <div class="schedule-day__items">
+    <% day[:items].each do |item| %>
+      <%= render "session_item", item: item %>
+    <% end %>
+  </div>
+</section>

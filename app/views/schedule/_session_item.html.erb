@@ -1,0 +1,49 @@
+<%
+  type = item[:type].to_s
+  type_label = {
+    "talk"       => "Talk",
+    "social"     => "Social",
+    "logistics"  => "Logistics",
+    "activity"   => "Activity",
+    "lightning"  => "Lightning"
+  }[type]
+  flexible_classes = item[:flexible] ? "schedule-item--flexible" : ""
+%>
+
+<article class="schedule-item <%= flexible_classes %>">
+  <div class="schedule-item__time">
+    <%= item[:time] %>
+  </div>
+
+  <div class="schedule-item__content">
+    <h3 class="schedule-item__title"><%= item[:title] %></h3>
+
+    <% if item[:talk_title].present? %>
+      <p class="schedule-item__talk-title">&ldquo;<%= item[:talk_title] %>&rdquo;</p>
+    <% end %>
+
+    <% if item[:location].present? %>
+      <p class="schedule-item__location"><%= item[:location] %></p>
+    <% end %>
+
+    <div class="schedule-item__badges">
+      <% if type_label.present? %>
+        <span class="item-badge item-badge--<%= type %>"><%= type_label %></span>
+      <% end %>
+      <% if item[:flexible] %>
+        <span class="item-badge item-badge--tbd">TBD</span>
+      <% end %>
+    </div>
+  </div>
+
+  <% if item[:added] %>
+    <button type="button" class="add-btn add-btn--added" aria-pressed="true">
+      <span class="add-btn__check" aria-hidden="true">✓</span>
+      Added
+    </button>
+  <% else %>
+    <button type="button" class="add-btn" aria-pressed="false">
+      + Add
+    </button>
+  <% end %>
+</article>
