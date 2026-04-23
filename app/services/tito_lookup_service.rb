@@ -7,7 +7,7 @@ class TitoLookupService
 
     ticket = User.tito_client.tickets
                  .where(state: %w[complete])
-                 .find { |t| t.email.to_s.downcase == normalized }
+                 .detect { |t| t.email.to_s.downcase == normalized }
 
     return Result.new(status: :not_found, user: nil) unless ticket
 
