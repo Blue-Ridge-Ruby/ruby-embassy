@@ -32,16 +32,26 @@ class PlanItemsController < ApplicationController
   end
 
   def destroy
-    schedule_item = @plan_item.schedule_item
+    schedule_item    = @plan_item.schedule_item
+    plan_item_dom_id = helpers.dom_id(@plan_item)
     @plan_item.destroy
 
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace(
-          helpers.dom_id(schedule_item),
-          partial: "schedule/session_item",
-          locals: { item: schedule_item, planned: false }
-        )
+        # Emit both actions. Turbo applies stream actions globally; targets
+        # that don't exist in the current DOM are silent no-ops. So this
+        # single response handles both pages:
+        #   - on /plan, the plan_item frame is removed (row disappears)
+        #   - on /schedule, the session_item frame is swapped back to the
+        #     "+ Add to plan" / "+ RSVP" state with updated count
+        render turbo_stream: [
+          turbo_stream.remove(plan_item_dom_id),
+          turbo_stream.replace(
+            helpers.dom_id(schedule_item),
+            partial: "schedule/session_item",
+            locals: { item: schedule_item, planned: false }
+          )
+        ]
       }
       format.html { redirect_back fallback_location: plan_path }
     end

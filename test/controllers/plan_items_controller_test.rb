@@ -65,4 +65,17 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     assert_not_equal "injected", other_plan.reload.notes
   end
+
+  test "turbo_stream DELETE response removes plan_item frame AND updates schedule_item frame" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    delete plan_item_path(plan), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    assert_response :success
+
+    # /plan uses this to make the row disappear.
+    assert_match %r{<turbo-stream action="remove" target="plan_item_#{plan.id}">}, response.body
+    # /schedule uses this to revert the button to "+ Add to plan" / "+ RSVP".
+    assert_match %r{<turbo-stream action="replace" target="schedule_item_#{@item.id}">}, response.body
+  end
 end
