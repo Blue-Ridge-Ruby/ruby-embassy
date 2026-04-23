@@ -1,0 +1,15 @@
+<% content_for(:title, "Propose an activity · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Propose an activity
+    </h1>
+
+    <p class="plan-intro">
+      Add a dinner, hike, or meetup. Keep it private (just you) or share it with all attendees so they can RSVP.
+    </p>
+
+    <%= render "form", schedule_item: @schedule_item %>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+attendee_one:
+  email: alice@example.com
+  first_name: Alice
+  last_name: Attendee
+  role: 0
+
+volunteer_one:
+  email: vic@example.com
+  first_name: Vic
+  last_name: Volunteer
+  role: 1
+
+jeremy:
+  email: jeremy@blueridgeruby.com
+  first_name: Jeremy
+  last_name: Smith
+  role: 2
+
+katya:
+  email: katyasarmientodev@gmail.com
+  first_name: Katya
+  last_name: Sarmiento
+  role: 2

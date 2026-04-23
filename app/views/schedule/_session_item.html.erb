@@ -1,49 +1,75 @@
 <%
-  type = item[:type].to_s
-  type_label = {
-    "talk"       => "Talk",
-    "social"     => "Social",
-    "logistics"  => "Logistics",
-    "activity"   => "Activity",
-    "lightning"  => "Lightning"
-  }[type]
-  flexible_classes = item[:flexible] ? "schedule-item--flexible" : ""
+  kind_label = {
+    "talk"      => "Talk",
+    "lightning" => "Lightning",
+    "embassy"   => "Embassy",
+    "activity"  => "Activity"
+  }[item.kind]
+  flexible_classes = item.flexible? ? "schedule-item--flexible" : ""
+
+  existing_plan = current_user.plan_items.find_by(schedule_item: item) if planned
+
+  button_label =
+    if planned
+      item.talk? ? "✓ Added" : "✓ RSVP'd"
+    else
+      item.talk? ? "+ Add to plan" : "+ RSVP"
+    end
+
+  rsvp_note = (!item.talk? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
 %>
 
-<article class="schedule-item <%= flexible_classes %>">
-  <div class="schedule-item__time">
-    <%= item[:time] %>
-  </div>
+<%= turbo_frame_tag dom_id(item) do %>
+  <article class="schedule-item <%= flexible_classes %>">
+    <div class="schedule-item__time">
+      <%= item.time_label %>
+    </div>
 
-  <div class="schedule-item__content">
-    <h3 class="schedule-item__title"><%= item[:title] %></h3>
-
-    <% if item[:talk_title].present? %>
-      <p class="schedule-item__talk-title">&ldquo;<%= item[:talk_title] %>&rdquo;</p>
-    <% end %>
-
-    <% if item[:location].present? %>
-      <p class="schedule-item__location"><%= item[:location] %></p>
-    <% end %>
-
-    <div class="schedule-item__badges">
-      <% if type_label.present? %>
-        <span class="item-badge item-badge--<%= type %>"><%= type_label %></span>
+    <div class="schedule-item__content">
+      <% if item.talk? && item.host.present? %>
+        <h3 class="schedule-item__title"><%= item.host %></h3>
+        <p class="schedule-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
+      <% else %>
+        <h3 class="schedule-item__title"><%= item.title %></h3>
+        <% if item.host.present? %>
+          <p class="schedule-item__talk-title"><%= item.host %></p>
+        <% end %>
       <% end %>
-      <% if item[:flexible] %>
-        <span class="item-badge item-badge--tbd">TBD</span>
+
+      <% if item.location.present? %>
+        <p class="schedule-item__location"><%= item.location %></p>
+      <% end %>
+
+      <div class="schedule-item__badges">
+        <% if kind_label.present? %>
+          <span class="item-badge item-badge--<%= item.kind %>"><%= kind_label %></span>
+        <% end %>
+        <% if item.flexible? %>
+          <span class="item-badge item-badge--tbd">TBD</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="schedule-item__action">
+      <% if planned && existing_plan %>
+        <%= button_to button_label,
+                      plan_item_path(existing_plan),
+                      method: :delete,
+                      class: "add-btn add-btn--added",
+                      data: { turbo_frame: dom_id(item) },
+                      aria: { pressed: true } %>
+      <% else %>
+        <%= button_to button_label,
+                      plan_items_path,
+                      method: :post,
+                      params: { schedule_item_id: item.id },
+                      class: "add-btn",
+                      data: { turbo_frame: dom_id(item) },
+                      aria: { pressed: false } %>
+      <% end %>
+      <% if rsvp_note %>
+        <p class="schedule-item__rsvp-count"><%= rsvp_note %></p>
       <% end %>
     </div>
-  </div>
-
-  <% if item[:added] %>
-    <button type="button" class="add-btn add-btn--added" aria-pressed="true">
-      <span class="add-btn__check" aria-hidden="true">✓</span>
-      Added
-    </button>
-  <% else %>
-    <button type="button" class="add-btn" aria-pressed="false">
-      + Add
-    </button>
-  <% end %>
-</article>
+  </article>
+<% end %>

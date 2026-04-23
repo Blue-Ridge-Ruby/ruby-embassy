@@ -1,0 +1,68 @@
+require "test_helper"
+
+class PlanItemsControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    @item = ScheduleItem.create!(
+      slug: "test-talk",
+      day: "thu",
+      title: "Test Talk",
+      kind: :talk,
+      is_public: true
+    )
+  end
+
+  test "anonymous POST /plan_items redirects to sign-in" do
+    post plan_items_path, params: { schedule_item_id: @item.id }
+    assert_redirected_to new_session_path
+  end
+
+  test "signed-in attendee POST creates a plan_item" do
+    sign_in_as users(:attendee_one)
+    assert_difference -> { users(:attendee_one).plan_items.count }, 1 do
+      post plan_items_path, params: { schedule_item_id: @item.id }
+    end
+  end
+
+  test "POST with duplicate schedule_item does not double-create" do
+    sign_in_as users(:attendee_one)
+    post plan_items_path, params: { schedule_item_id: @item.id }
+    assert_no_difference -> { users(:attendee_one).plan_items.count } do
+      post plan_items_path, params: { schedule_item_id: @item.id }
+    end
+  end
+
+  test "DELETE removes caller's own plan_item" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+    assert_difference -> { PlanItem.count }, -1 do
+      delete plan_item_path(plan)
+    end
+  end
+
+  test "DELETE on another user's plan_item returns 404" do
+    sign_in_as users(:attendee_one)
+    other_plan = users(:volunteer_one).plan_items.create!(schedule_item: @item)
+
+    assert_no_difference -> { PlanItem.count } do
+      delete plan_item_path(other_plan)
+    end
+    assert_response :not_found
+  end
+
+  test "PATCH updates notes on own plan_item" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan), params: { plan_item: { notes: "Sit near the front" } }
+    assert_equal "Sit near the front", plan.reload.notes
+  end
+
+  test "PATCH on another user's plan_item returns 404" do
+    sign_in_as users(:attendee_one)
+    other_plan = users(:volunteer_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(other_plan), params: { plan_item: { notes: "injected" } }
+    assert_response :not_found
+    assert_not_equal "injected", other_plan.reload.notes
+  end
+end

@@ -1,0 +1,11 @@
+<% content_for(:title, "Edit activity · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Edit your activity
+    </h1>
+
+    <%= render "form", schedule_item: @schedule_item %>
+  </div>
+</section>

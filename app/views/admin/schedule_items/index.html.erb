@@ -1,0 +1,41 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-navy">Schedule Items</h1>
+  <%= link_to "Add item", new_admin_schedule_item_path, class: "btn btn-red" %>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>Time</th>
+      <th>Title</th>
+      <th>Kind</th>
+      <th>Public?</th>
+      <th>Created by</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @schedule_items.each do |item| %>
+      <tr>
+        <td><%= ScheduleItem::DAY_META.dig(item.day, :label) || item.day %></td>
+        <td><%= item.time_label %></td>
+        <td>
+          <%= item.title %>
+          <% if item.host.present? %>
+            <div class="text-gray text-sm"><%= item.host %></div>
+          <% end %>
+        </td>
+        <td><span class="badge badge-<%= item.kind %>"><%= item.kind.humanize %></span></td>
+        <td><%= item.is_public? ? "Public" : "Private" %></td>
+        <td><%= item.created_by&.full_name || "— seeded —" %></td>
+        <td class="text-right">
+          <%= link_to "Edit", edit_admin_schedule_item_path(item), class: "text-blue underline" %>
+          <%= button_to "Delete", admin_schedule_item_path(item), method: :delete,
+                data: { turbo_confirm: "Delete '#{item.title}'? RSVPs will also be removed." },
+                class: "btn-ghost ml-2", style: "display:inline;color:#C41C1C;padding:0;box-shadow:none" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

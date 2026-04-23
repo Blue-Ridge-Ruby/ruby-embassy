@@ -1,0 +1,72 @@
+<%= form_with model: [ :admin, schedule_item ], local: true do |f| %>
+  <% if schedule_item.errors.any? %>
+    <div class="alert alert-error">
+      <h3><%= pluralize(schedule_item.errors.count, "error") %> prevented saving:</h3>
+      <ul>
+        <% schedule_item.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-row">
+    <%= f.label :title %>
+    <%= f.text_field :title, required: true %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :kind %>
+    <%= f.select :kind, ScheduleItem.kinds.keys.map { |k| [ k.humanize, k ] } %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :day %>
+    <%= f.select :day, ScheduleItem::DAY_META.map { |k, m| [ m[:label], k ] } %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :time_label, "Time label (e.g., '9:30 AM', 'TBD')" %>
+    <%= f.text_field :time_label %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :sort_time, "Sort time (integer, e.g., 930)" %>
+    <%= f.number_field :sort_time %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :host, "Host / speaker (optional)" %>
+    <%= f.text_field :host %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :location %>
+    <%= f.text_field :location %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :description %>
+    <%= f.text_area :description, rows: 3 %>
+  </div>
+
+  <div class="form-row">
+    <%= f.label :slug, "Slug (optional, used for seeded items; leave blank for admin-created)" %>
+    <%= f.text_field :slug %>
+  </div>
+
+  <div class="form-row">
+    <%= f.check_box :flexible %>
+    <%= f.label :flexible, "Flexible / TBD (Saturday-style dashed treatment)" %>
+  </div>
+
+  <div class="form-row">
+    <%= f.check_box :is_public %>
+    <%= f.label :is_public, "Public (appears on /schedule for all attendees)" %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit class: "btn btn-red" %>
+    <%= link_to "Cancel", admin_schedule_items_path, class: "text-blue underline ml-4" %>
+  </div>
+<% end %>

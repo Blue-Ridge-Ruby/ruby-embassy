@@ -1,31 +1,44 @@
 <%
-  custom_class = item[:custom] ? "plan-item--custom" : ""
+  item   = plan_item.schedule_item
+  custom = item.created_by_id == current_user.id
+  custom_class = custom ? "plan-item--custom" : ""
 %>
 
-<article class="plan-item <%= custom_class %>">
-  <div class="plan-item__time"><%= item[:time] %></div>
+<%= turbo_frame_tag dom_id(plan_item) do %>
+  <article class="plan-item <%= custom_class %>">
+    <div class="plan-item__time"><%= item.time_label %></div>
 
-  <div class="plan-item__content">
-    <h3 class="plan-item__title"><%= item[:title] %></h3>
+    <div class="plan-item__content">
+      <% if item.talk? && item.host.present? %>
+        <h3 class="plan-item__title"><%= item.host %></h3>
+        <p class="plan-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
+      <% else %>
+        <h3 class="plan-item__title"><%= item.title %></h3>
+        <% if item.host.present? %>
+          <p class="plan-item__talk-title"><%= item.host %></p>
+        <% end %>
+      <% end %>
 
-    <% if item[:talk_title].present? %>
-      <p class="plan-item__talk-title">&ldquo;<%= item[:talk_title] %>&rdquo;</p>
-    <% end %>
+      <% if item.location.present? %>
+        <p class="plan-item__location"><%= item.location %></p>
+      <% end %>
 
-    <% if item[:location].present? %>
-      <p class="plan-item__location"><%= item[:location] %></p>
-    <% end %>
+      <% if custom %>
+        <div><span class="item-badge item-badge--custom">Custom</span></div>
+      <% end %>
 
-    <% if item[:custom] %>
-      <div><span class="item-badge item-badge--custom">Custom</span></div>
-    <% end %>
+      <% if plan_item.notes.present? %>
+        <p class="plan-item__notes"><%= plan_item.notes %></p>
+      <% else %>
+        <p class="plan-item__note-add">+ Add a note</p>
+      <% end %>
+    </div>
 
-    <% if item[:notes].present? %>
-      <p class="plan-item__notes"><%= item[:notes] %></p>
-    <% else %>
-      <p class="plan-item__note-add">+ Add a note</p>
-    <% end %>
-  </div>
-
-  <button type="button" class="plan-item__remove" aria-label="Remove from plan">&times;</button>
-</article>
+    <%= button_to "×",
+                  plan_item_path(plan_item),
+                  method: :delete,
+                  class: "plan-item__remove",
+                  form: { data: { turbo_frame: "_top" } },
+                  aria: { label: "Remove from plan" } %>
+  </article>
+<% end %>

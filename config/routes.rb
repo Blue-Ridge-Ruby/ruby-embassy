@@ -13,9 +13,11 @@ Rails.application.routes.draw do
 
   # Admin area
   namespace :admin do
+    root "dashboard#show"
     resources :users do
       post :sync, on: :collection
     end
+    resources :schedule_items
   end
 
   # Background jobs dashboard (admin-only mount inside /admin/)
@@ -26,4 +28,7 @@ Rails.application.routes.draw do
 
   get "schedule", to: "schedule#index"
   get "plan", to: "plan#index"
+
+  resources :plan_items, only: %i[create update destroy]
+  resources :schedule_items, only: %i[new create edit update]
 end
