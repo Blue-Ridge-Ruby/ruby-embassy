@@ -4,15 +4,7 @@
     <span class="plan-day__date"><%= meta[:date] %></span>
   </header>
 
-  <% if plan_items.any? %>
-    <div class="plan-items">
-      <% plan_items.each do |plan_item| %>
-        <%= render "plan_item", plan_item: plan_item %>
-      <% end %>
-    </div>
-  <% else %>
-    <p class="empty-day">Nothing planned yet.</p>
-  <% end %>
+  <%= render "items_for_day", day_key: day_key, plan_items: plan_items %>
 
-  <%= link_to "+ Add custom block", new_schedule_item_path(day: day_key), class: "custom-block-btn" %>
+  <%= render "schedule_items/new_link", day_key: day_key %>
 </section>

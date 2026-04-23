@@ -1,0 +1,5 @@
+<%= turbo_frame_tag "new_schedule_item_#{day_key}" do %>
+  <%= link_to "+ Add custom block",
+              new_schedule_item_path(day: day_key),
+              class: "custom-block-btn" %>
+<% end %>

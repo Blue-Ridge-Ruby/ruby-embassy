@@ -102,21 +102,22 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_equal users(:attendee_one), PlanItem.last.user
   end
 
-  test "after_create does not auto-plan public items" do
-    assert_no_difference -> { PlanItem.count } do
+  test "after_create auto-plans public items for creator too" do
+    assert_difference -> { PlanItem.count }, 1 do
       ScheduleItem.create!(valid_attrs(
         title: "Public Activity",
         is_public: true,
         created_by: users(:attendee_one)
       ))
     end
+    assert_equal users(:attendee_one), PlanItem.last.user
   end
 
   test "after_create does not auto-plan seeded items (no creator)" do
     assert_no_difference -> { PlanItem.count } do
       ScheduleItem.create!(valid_attrs(
-        title: "Seeded Private-Like",
-        is_public: false,
+        title: "Seeded-Like",
+        is_public: true,
         created_by: nil
       ))
     end

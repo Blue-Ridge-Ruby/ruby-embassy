@@ -10,6 +10,11 @@
       Add a dinner, hike, or meetup. Keep it private (just you) or share it with all attendees so they can RSVP.
     </p>
 
-    <%= render "form", schedule_item: @schedule_item %>
+    <%# Shared turbo_frame id with /plan's "+ Add custom block" link —
+        on /plan this fragment is extracted into that frame (form
+        expands inline). On direct visit, the surrounding page renders. %>
+    <%= turbo_frame_tag "new_schedule_item_#{@schedule_item.day}" do %>
+      <%= render "form", schedule_item: @schedule_item %>
+    <% end %>
   </div>
 </section>

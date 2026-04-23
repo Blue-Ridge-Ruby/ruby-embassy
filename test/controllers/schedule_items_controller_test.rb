@@ -39,11 +39,22 @@ class ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "creating a public item does not auto-plan" do
+  test "creating a public item also auto-plans for creator" do
     sign_in_as users(:attendee_one)
-    assert_no_difference -> { PlanItem.count } do
+    assert_difference -> { PlanItem.count }, 1 do
       post schedule_items_path, params: valid_form_params(is_public: true)
     end
+  end
+
+  test "Turbo Stream create appends item to day container and resets the form frame" do
+    sign_in_as users(:attendee_one)
+    post schedule_items_path,
+         params: valid_form_params(day: "sat", title: "Turbo Dinner", is_public: false),
+         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    assert_response :success
+    assert_match %r{<turbo-stream action="replace" target="plan_items_sat">}, response.body
+    assert_match %r{<turbo-stream action="replace" target="new_schedule_item_sat">}, response.body
+    assert_match "Turbo Dinner", response.body
   end
 
   test "attendee cannot set kind to talk via form tampering" do

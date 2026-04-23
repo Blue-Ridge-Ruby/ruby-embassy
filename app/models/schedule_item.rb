@@ -24,7 +24,10 @@ class ScheduleItem < ApplicationRecord
     )
   }
 
-  after_create :auto_plan_for_creator, if: -> { !is_public? && created_by_id.present? }
+  # Creators always get auto-added to their own plan — whether the item is
+  # private (only they see it) or public (others can RSVP). The rationale:
+  # if you propose a group hike, you're obviously going to it.
+  after_create :auto_plan_for_creator, if: -> { created_by_id.present? }
 
   def rsvp_count
     plan_items.count

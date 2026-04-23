@@ -1,0 +1,9 @@
+<div id="plan_items_<%= day_key %>" class="plan-items">
+  <% if plan_items.any? %>
+    <% plan_items.each do |plan_item| %>
+      <%= render "plan/plan_item", plan_item: plan_item %>
+    <% end %>
+  <% else %>
+    <p class="empty-day">Nothing planned yet.</p>
+  <% end %>
+</div>
