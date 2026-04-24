@@ -29,7 +29,7 @@
     </nav>
 
     <main class="px-8 py-10">
-      <div class="max-w-4xl mx-auto">
+      <div class="<%= content_for?(:container_width) ? yield(:container_width) : 'max-w-4xl' %> mx-auto">
         <% if flash[:notice] %>
           <div class="alert alert-notice"><%= flash[:notice] %></div>
         <% end %>
