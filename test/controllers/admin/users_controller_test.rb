@@ -75,7 +75,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     sign_in_as users(:jeremy)
     get admin_user_path(alice)
-    assert_match "Embassy appointment", response.body
+    assert_select "h2", text: "Embassy"
     assert_match "Alice embassy slot", response.body
   end
 

@@ -18,8 +18,8 @@
 </div>
 
 <%# 1. Info %>
-<h2 class="text-lg font-semibold text-navy mb-3">Info</h2>
-<div class="card card-compact mb-8">
+<h2 class="text-lg font-semibold text-navy mb-4">Info</h2>
+<div class="card card-compact mb-12">
   <div class="space-y-2">
     <div>
       <span class="label">Role</span>
@@ -40,31 +40,31 @@
 </div>
 
 <%# 2. Embassy %>
-<h2 class="text-lg font-semibold text-navy mb-3">Embassy appointment</h2>
+<h2 class="text-lg font-semibold text-navy mb-4">Embassy</h2>
 <% if @embassy_plan_items.any? %>
-  <ul class="space-y-2 mb-8">
+  <ul class="space-y-2 mb-12">
     <% @embassy_plan_items.each do |pi| %>
       <%= render "item_card", schedule_item: pi.schedule_item, notes: pi.notes %>
     <% end %>
   </ul>
 <% else %>
-  <p class="text-gray mb-8">No embassy appointment yet.</p>
+  <p class="text-gray mb-12">No embassy appointment yet.</p>
 <% end %>
 
 <%# 3. Hosting %>
-<h2 class="text-lg font-semibold text-navy mb-3">Hosting</h2>
+<h2 class="text-lg font-semibold text-navy mb-4">Hosting</h2>
 <% if @hosted_items.any? %>
-  <ul class="space-y-2 mb-8">
+  <ul class="space-y-2 mb-12">
     <% @hosted_items.each do |si| %>
       <%= render "item_card", schedule_item: si, notes: nil %>
     <% end %>
   </ul>
 <% else %>
-  <p class="text-gray mb-8">Not hosting any events.</p>
+  <p class="text-gray mb-12">Not hosting any events.</p>
 <% end %>
 
 <%# 4. On their plan %>
-<h2 class="text-lg font-semibold text-navy mb-3">On their plan</h2>
+<h2 class="text-lg font-semibold text-navy mb-4">On their plan</h2>
 <% if @other_plan_items.any? %>
   <div class="panel">
     <% @other_plan_items.group_by { |pi| pi.schedule_item.day }
