@@ -539,6 +539,18 @@ hr {
   padding: 0.0625rem 0.4375rem;
 }
 
+.item-badge--public {
+  background-color: #E6F4EC;
+  color: #1F6B45;
+}
+
+.item-badge--private {
+  background-color: transparent;
+  color: #525C66;
+  border: 1px solid #c8cdd1;
+  padding: 0.0625rem 0.4375rem;
+}
+
 .item-badge--tbd {
   background-color: transparent;
   color: #7a8189;

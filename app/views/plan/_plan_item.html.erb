@@ -92,6 +92,9 @@
 
         <div class="schedule-item__badges">
           <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <span class="item-badge item-badge--<%= item.is_public? ? "public" : "private" %>">
+            <%= item.is_public? ? "Public" : "Private" %>
+          </span>
           <% if custom %>
             <span class="item-badge item-badge--custom">Custom</span>
           <% end %>
