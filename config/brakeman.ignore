@@ -20,6 +20,26 @@
       "confidence": "Medium",
       "cwe_id": [915],
       "note": "Admin-only controller (require_admin! before_action guards every action). Admins are explicitly allowed to change user roles via the admin UI."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 84,
+      "fingerprint": "1be79af9d4786778c794c0e4a562801408c947ab7279759a0f7ca517d10eff32",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/admin/users/show.html.erb",
+      "line": 31,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(\"View in Tito \\u2192\", User.find(params[:id]).admin_ticket_url, :target => \"_blank\", :rel => \"noopener noreferrer\", :class => \"text-blue underline\")",
+      "render_path": [{"type":"controller","class":"Admin::UsersController","method":"show","line":27,"file":"app/controllers/admin/users_controller.rb","rendered":{"name":"admin/users/show","file":"app/views/admin/users/show.html.erb"}}],
+      "location": {
+        "type": "template",
+        "template": "admin/users/show"
+      },
+      "user_input": "User.find(params[:id]).admin_ticket_url",
+      "confidence": "Weak",
+      "cwe_id": [79],
+      "note": "admin_ticket_url is built by the User model as a hard-coded https://dashboard.tito.io/... string with a Tito-issued slug. The slug is alphanumeric/dashes from the Tito API; the scheme is fixed. /admin is behind require_admin! so only admins reach this view. Low risk."
     }
   ],
   "brakeman_version": "8.0.4"
