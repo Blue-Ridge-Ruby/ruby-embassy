@@ -518,6 +518,11 @@ hr {
   color: #8A6500;
 }
 
+.item-badge--embassy {
+  background-color: #DCEBF5;
+  color: #1E5A8A;
+}
+
 .item-badge--custom {
   background-color: transparent;
   color: #C41C1C;
