@@ -33,21 +33,23 @@
     </div>
   <% end %>
 
-  <%= button_to "Confirm Appointment",
-                embassy_bookings_path,
-                method: :post,
-                params: { schedule_item_id: @schedule_item.id, mode: mode },
-                class: "btn btn-red",
-                data: { turbo_frame: "_top" } %>
+  <div class="embassy-confirm__actions">
+    <%= button_to "Confirm Appointment",
+                  embassy_bookings_path,
+                  method: :post,
+                  params: { schedule_item_id: @schedule_item.id, mode: mode },
+                  class: "btn btn-red",
+                  data: { turbo_frame: "_top" } %>
 
-  <% if @block_mode == "both" %>
-    <%= link_to "← Change purpose",
-                new_embassy_booking_path(schedule_item_id: @schedule_item.id),
+    <% if @block_mode == "both" %>
+      <%= link_to "← Change purpose",
+                  new_embassy_booking_path(schedule_item_id: @schedule_item.id),
+                  class: "btn btn-muted",
+                  data: { turbo_frame: "booking_body" } %>
+    <% end %>
+
+    <%= link_to "Cancel", schedule_path,
                 class: "btn btn-muted",
-                data: { turbo_frame: "booking_body" } %>
-  <% end %>
-
-  <%= link_to "Cancel", schedule_path,
-              class: "btn btn-muted",
-              data: { turbo_frame: "_top" } %>
+                data: { turbo_frame: "_top" } %>
+  </div>
 </section>

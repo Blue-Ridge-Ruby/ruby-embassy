@@ -1325,6 +1325,22 @@ hr {
   margin: 0;
 }
 
+/* Booking confirm actions --------------------------------------------- */
+
+/* button_to wraps its button in a <form>, which is block-level by default.
+   Forcing the wrapper to display: flex puts the Confirm button, optional
+   "Change purpose" link, and Cancel link side-by-side with consistent
+   spacing. */
+.embassy-confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.embassy-confirm__actions form { margin: 0; }
+
 /* Booking mode picker -------------------------------------------------- */
 
 .embassy-mode-grid {
@@ -1867,11 +1883,10 @@ hr {
   margin-bottom: 0.875rem;
   background: #ffffff;
   border: 1px solid #d9dee1;
-  /* Top border is owned by the inner .embassy-appointment-card so its
-     double-line stripe reaches edge-to-edge instead of being inset by
-     the outer hairline. overflow:hidden still clips the stripe to the
-     card's rounded corners. */
-  border-top: 0;
+  /* The 4px double-line stripe lives on the outer wrapper so it spans
+     the full card width — including the × column. State variants below
+     override border-top-color / style. */
+  border-top: 4px double #C41C1C;
   border-radius: 0.375rem;
   overflow: hidden;
   transition: box-shadow 0.15s ease;
@@ -1889,8 +1904,10 @@ hr {
 }
 
 .plan-item__embassy-body .embassy-appointment-card {
+  /* Inner card loses all decoration — the outer .plan-item--embassy
+     owns the stripe + borders. This keeps the stripe full-width across
+     both the embassy-body and the × column. */
   border: none;
-  border-top: 4px double #C41C1C;
   border-radius: 0;
   box-shadow: none;
   padding: 1.25rem 1.25rem 1rem;
@@ -1915,18 +1932,14 @@ hr {
   line-height: 1.4;
 }
 
-.plan-item--embassy-expired .plan-item__embassy-body .embassy-appointment-card {
+.plan-item--embassy-expired {
   border-top-style: dashed;
   border-top-color: #7a8189;
 }
 
-.plan-item--embassy-submitted .plan-item__embassy-body .embassy-appointment-card {
-  border-top-color: #0C2866;
-}
-
-.plan-item--embassy-stamping .plan-item__embassy-body .embassy-appointment-card {
-  border-top-color: #2672B5;
-}
+.plan-item--embassy-submitted { border-top-color: #0C2866; }
+.plan-item--embassy-stamping  { border-top-color: #2672B5; }
+.plan-item--embassy-pending   { border-top-style: dashed; }
 
 /* Admin question bank sections ---------------------------------------- */
 
