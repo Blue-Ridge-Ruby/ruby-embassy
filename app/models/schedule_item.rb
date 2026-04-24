@@ -13,13 +13,22 @@ class ScheduleItem < ApplicationRecord
     "wed" => { label: "Wednesday", date: "April 29", subtitle: "Pre-Conference" },
     "thu" => { label: "Thursday",  date: "April 30", subtitle: "Conference Day 1" },
     "fri" => { label: "Friday",    date: "May 1",    subtitle: "Conference Day 2" },
-    "sat" => { label: "Saturday",  date: "May 2",    subtitle: "Activities & Ruby Embassy" }
+    "sat" => { label: "Saturday",  date: "May 2",    subtitle: "Activities & Ruby Embassy" },
+    "sun" => { label: "Sunday",    date: "May 3",    subtitle: "Departures" }
   }.freeze
 
   scope :public_items, -> { where(is_public: true) }
   scope :ordered, -> {
     order(
-      Arel.sql("CASE day WHEN 'wed' THEN 1 WHEN 'thu' THEN 2 WHEN 'fri' THEN 3 WHEN 'sat' THEN 4 ELSE 5 END"),
+      Arel.sql(
+        "CASE day " \
+          "WHEN 'wed' THEN 1 " \
+          "WHEN 'thu' THEN 2 " \
+          "WHEN 'fri' THEN 3 " \
+          "WHEN 'sat' THEN 4 " \
+          "WHEN 'sun' THEN 5 " \
+          "ELSE 6 END"
+      ),
       :sort_time
     )
   }

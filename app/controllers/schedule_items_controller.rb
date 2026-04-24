@@ -11,7 +11,7 @@ class ScheduleItemsController < ApplicationController
 
   def create
     @schedule_item = current_user.created_schedule_items.build(
-      schedule_item_params.merge(kind: :activity)
+      schedule_item_params.merge(auto_attrs)
     )
 
     if @schedule_item.save
@@ -47,7 +47,7 @@ class ScheduleItemsController < ApplicationController
   end
 
   def update
-    if @schedule_item.update(schedule_item_params)
+    if @schedule_item.update(schedule_item_params.merge(auto_attrs))
       redirect_to plan_path, notice: "Item updated."
     else
       render :edit, status: :unprocessable_content
@@ -60,13 +60,29 @@ class ScheduleItemsController < ApplicationController
     @schedule_item = current_user.created_schedule_items.find(params[:id])
   end
 
-  # :kind and :created_by_id are deliberately absent here — the controller
-  # hardcodes kind: :activity on create, never changes it on update, and
-  # always scopes to current_user.created_schedule_items.
+  # Permitted user-settable fields. Deliberately absent:
+  #   :kind          — forced to :activity in auto_attrs
+  #   :host          — forced to current_user.full_name in auto_attrs
+  #   :sort_time     — derived from :time_label in auto_attrs
+  #   :created_by_id — forced by association scope (current_user.created_schedule_items)
   def schedule_item_params
     params.require(:schedule_item).permit(
-      :day, :time_label, :sort_time, :title, :host,
-      :location, :description, :flexible, :is_public
+      :day, :time_label, :title, :location, :description, :flexible, :is_public
     )
+  end
+
+  def auto_attrs
+    {
+      kind:      :activity,
+      host:      current_user.full_name,
+      sort_time: derive_sort_time(params.dig(:schedule_item, :time_label))
+    }
+  end
+
+  # "6:30 PM" -> 1830, "8:00 AM" -> 800, "whenever" -> 0.
+  def derive_sort_time(time_label)
+    return 0 if time_label.blank?
+    parsed = Time.parse(time_label) rescue nil
+    parsed ? (parsed.hour * 100 + parsed.min) : 0
   end
 end

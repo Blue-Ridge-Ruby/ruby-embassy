@@ -616,6 +616,18 @@ hr {
   }
 }
 
+.field-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .field-grid-3 {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
 .travel-row {
   display: flex;
   flex-direction: column;

@@ -91,6 +91,18 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_equal [ wed_am, wed_pm, thu_am ], ordered.to_a
   end
 
+  test "ordered scope places Sunday after Saturday" do
+    sat = ScheduleItem.create!(valid_attrs(day: "sat", sort_time: 1800, title: "Sat PM"))
+    sun = ScheduleItem.create!(valid_attrs(day: "sun", sort_time: 900,  title: "Sun AM brunch"))
+    ordered = ScheduleItem.where(id: [ sat.id, sun.id ]).ordered
+    assert_equal [ sat, sun ], ordered.to_a
+  end
+
+  test "DAY_META includes Sunday" do
+    assert ScheduleItem::DAY_META.key?("sun"), "Sunday should be a listed day"
+    assert_equal "Sunday", ScheduleItem::DAY_META["sun"][:label]
+  end
+
   test "after_create auto-plans private items for creator" do
     assert_difference -> { PlanItem.count }, 1 do
       ScheduleItem.create!(valid_attrs(

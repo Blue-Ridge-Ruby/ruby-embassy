@@ -120,4 +120,32 @@ class ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     item = ScheduleItem.find_by(title: "Impersonation attempt")
     assert_equal users(:attendee_one), item.created_by
   end
+
+  test "host is auto-set to the creator's full_name, ignoring any submitted host param" do
+    sign_in_as users(:attendee_one)
+    post schedule_items_path, params: valid_form_params(host: "Some Other Speaker", title: "Host test")
+    assert_equal users(:attendee_one).full_name, ScheduleItem.find_by(title: "Host test").host
+  end
+
+  test "sort_time is derived from time_label, ignoring any submitted sort_time param" do
+    sign_in_as users(:attendee_one)
+    post schedule_items_path, params: valid_form_params(
+      time_label: "6:30 PM",
+      sort_time: 99999,
+      title: "Sort test"
+    )
+    assert_equal 1830, ScheduleItem.find_by(title: "Sort test").sort_time
+  end
+
+  test "sort_time derivation handles morning times" do
+    sign_in_as users(:attendee_one)
+    post schedule_items_path, params: valid_form_params(time_label: "8:00 AM", title: "Morning test")
+    assert_equal 800, ScheduleItem.find_by(title: "Morning test").sort_time
+  end
+
+  test "sort_time falls back to 0 for unparseable time_label" do
+    sign_in_as users(:attendee_one)
+    post schedule_items_path, params: valid_form_params(time_label: "whenever", title: "Garbage time")
+    assert_equal 0, ScheduleItem.find_by(title: "Garbage time").sort_time
+  end
 end
