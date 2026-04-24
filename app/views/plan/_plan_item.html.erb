@@ -27,9 +27,12 @@
         <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
       <% end %>
 
-      <% if custom %>
-        <div><span class="item-badge item-badge--custom">Custom</span></div>
-      <% end %>
+      <div class="schedule-item__badges">
+        <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+        <% if custom %>
+          <span class="item-badge item-badge--custom">Custom</span>
+        <% end %>
+      </div>
 
       <% if plan_item.notes.present? %>
         <p class="plan-item__notes"><%= plan_item.notes %></p>
