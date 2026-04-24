@@ -1,0 +1,35 @@
+<section class="card mb-6">
+  <h2 class="embassy-section-header">Declare Purpose of Visit</h2>
+  <p class="text-muted mb-4">
+    The Applicant is required to state the purpose of their appointment so
+    the Embassy Attaché may prepare accordingly. Appointments erroneously
+    elected under the wrong category may be denied at the gate without
+    recourse.
+  </p>
+
+  <div class="embassy-mode-grid">
+    <%= link_to new_embassy_booking_path(schedule_item_id: @schedule_item.id, mode: "new_passport"),
+                class: "embassy-mode-card",
+                data: { turbo_frame: "booking_body" } do %>
+      <h3 class="embassy-mode-card__title">New Passport</h3>
+      <p class="embassy-mode-card__desc">
+        I am a first-time visitor requesting issuance of a new Ruby Embassy
+        Passport. I understand this requires completing the official
+        application form prior to arrival.
+      </p>
+      <span class="embassy-mode-card__cta">Select →</span>
+    <% end %>
+
+    <%= link_to new_embassy_booking_path(schedule_item_id: @schedule_item.id, mode: "stamping"),
+                class: "embassy-mode-card",
+                data: { turbo_frame: "booking_body" } do %>
+      <h3 class="embassy-mode-card__title">Stamping</h3>
+      <p class="embassy-mode-card__desc">
+        I already hold a Ruby Embassy Passport in good standing and request
+        an additional commemorative stamp. I will bring the original to
+        the appointment.
+      </p>
+      <span class="embassy-mode-card__cta">Select →</span>
+    <% end %>
+  </div>
+</section>

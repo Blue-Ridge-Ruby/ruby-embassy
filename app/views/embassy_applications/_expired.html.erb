@@ -1,0 +1,18 @@
+<%# locals: (plan_item:, schedule_item:) -%>
+<section class="card embassy-expired">
+  <div class="embassy-expired__stamp">SESSION EXPIRED</div>
+
+  <h3 class="embassy-expired__title">The Applicant's session has lapsed.</h3>
+
+  <p class="embassy-expired__body">
+    The <%= ScheduleItem::DAY_META.dig(schedule_item.day, :label) %>
+    appointment at <%= schedule_item.time_label %> remains confirmed in
+    Embassy records. The Applicant may commence a fresh application at any
+    time; a new form shall be issued.
+  </p>
+
+  <%= link_to "Start a New Application",
+              new_embassy_application_path(plan_item_id: plan_item.id),
+              class: "btn btn-red",
+              data: { turbo_frame: "_top" } %>
+</section>

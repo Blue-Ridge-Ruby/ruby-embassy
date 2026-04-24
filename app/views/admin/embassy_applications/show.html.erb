@@ -1,0 +1,43 @@
+<% content_for :title, "Application #{@application[:serial]} — Embassy Admin" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-navy">
+      Application <span class="mono"><%= @application[:serial] %></span>
+    </h1>
+    <p class="text-muted">
+      <%= @application[:attendee_name] %> ·
+      <%= @application[:slot] %> ·
+      submitted <%= @application[:submitted_at] %>
+    </p>
+  </div>
+  <div class="flex gap-2">
+    <button class="btn btn-red" onclick="window.print(); return false;">
+      Print Application
+    </button>
+    <%= link_to "← Back", admin_embassy_applications_path, class: "btn btn-muted" %>
+  </div>
+</div>
+
+<% drawn_ids = @application[:drawn_ids] %>
+<% notary    = FakeEmbassy.notary_for(@application) %>
+<% if drawn_ids %>
+  <div class="alert alert-notice mb-4">
+    <strong>Random pool draw:</strong>
+    <span class="mono"><%= drawn_ids.join(", ") %></span>
+    (from the <%= FakeEmbassy.random_pool_total %>-question Section 3 pool).
+    <br>
+    <strong>Notary assignment:</strong>
+    <span class="mono"><%= notary[:id] %></span> · &ldquo;Someone who <%= notary[:description].downcase.sub(/^./, &:downcase) %>&rdquo;
+  </div>
+<% end %>
+
+<div class="application-canvas application-canvas--pdf">
+  <%= render "embassy_applications/pdf",
+             serial: @application[:serial],
+             schedule_item: ScheduleItem.embassy.first || ScheduleItem.first,
+             sections: FakeEmbassy.sections_for(@application),
+             notary: FakeEmbassy.notary_for(@application),
+             applicant_name: @application[:attendee_name],
+             submitted_at: @application[:submitted_at] %>
+</div>

@@ -1,0 +1,22 @@
+<%# locals: question: %>
+<%= turbo_frame_tag "question_#{question[:id]}", target: "_top" do %>
+  <tr>
+    <td class="mono"><%= question[:id] %></td>
+    <td><%= question[:label] %></td>
+    <td><span class="badge badge-<%= question[:type] %>"><%= question[:type].to_s.humanize %></span></td>
+    <td><%= question[:required] ? "Yes" : "—" %></td>
+    <td>
+      <span class="mono"><%= question[:usage_count] %></span>
+      <span class="text-muted text-sm">uses</span>
+    </td>
+    <td class="text-right">
+      <%= link_to "Edit", edit_admin_embassy_question_path(question[:id]),
+                  class: "text-blue underline" %>
+      <%= button_to "Archive", admin_embassy_question_path(question[:id]),
+                    method: :delete,
+                    data: { turbo_confirm: "Archive question #{question[:id]}? It will stop appearing in new randomizations." },
+                    class: "btn-ghost ml-2",
+                    style: "display:inline;color:#C41C1C;padding:0;box-shadow:none" %>
+    </td>
+  </tr>
+<% end %>
