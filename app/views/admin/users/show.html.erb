@@ -66,19 +66,22 @@
 <%# 4. On their plan %>
 <h2 class="text-lg font-semibold text-navy mb-3">On their plan</h2>
 <% if @other_plan_items.any? %>
-  <% @other_plan_items.group_by { |pi| pi.schedule_item.day }.each do |day_key, items| %>
-    <div class="mb-6">
-      <h3 class="text-navy font-medium mb-2">
-        <%= ScheduleItem::DAY_META.dig(day_key, :label) || day_key %>
-        <span class="text-gray text-sm">(<%= ScheduleItem::DAY_META.dig(day_key, :date) %>)</span>
-      </h3>
-      <ul class="space-y-2">
-        <% items.each do |pi| %>
-          <%= render "item_card", schedule_item: pi.schedule_item, notes: pi.notes %>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <div class="panel">
+    <% @other_plan_items.group_by { |pi| pi.schedule_item.day }
+                        .each_with_index do |(day_key, items), i| %>
+      <div class="<%= 'mt-6' unless i.zero? %>">
+        <div class="panel-day-label">
+          <%= ScheduleItem::DAY_META.dig(day_key, :label) || day_key %>
+          <span class="panel-day-date"><%= ScheduleItem::DAY_META.dig(day_key, :date) %></span>
+        </div>
+        <ul class="space-y-2">
+          <% items.each do |pi| %>
+            <%= render "item_card", schedule_item: pi.schedule_item, notes: pi.notes %>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
 <% else %>
   <p class="text-gray">Nothing else planned.</p>
 <% end %>
