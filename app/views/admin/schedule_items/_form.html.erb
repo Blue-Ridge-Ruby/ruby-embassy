@@ -41,7 +41,20 @@
 
     <div>
       <%= f.label :host, "Host / speaker", class: "label" %>
-      <%= f.text_field :host, class: "input" %>
+      <%
+        # Pull every existing user as a host option. Preserve the current
+        # host value as a sticky top option if it doesn't match a user —
+        # so seeded external speakers (e.g., "John Athayde") aren't lost
+        # when an admin edits the talk.
+        existing_names = User.order(:last_name, :first_name).map(&:full_name).uniq
+        current_host   = schedule_item.host.presence
+        sticky_options = current_host && !existing_names.include?(current_host) ? [ current_host ] : []
+        all_options    = (sticky_options + existing_names).map { |name| [ name, name ] }
+      %>
+      <%= f.select :host,
+            options_for_select(all_options, current_host),
+            { include_blank: "— None —" },
+            class: "select" %>
     </div>
 
     <div>

@@ -79,4 +79,27 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
       delete admin_schedule_item_path(item)
     end
   end
+
+  test "admin edit form renders host as a select with existing user names" do
+    item = ScheduleItem.create!(day: "thu", title: "Test talk", kind: :talk, is_public: true)
+    sign_in_as users(:jeremy)
+    get edit_admin_schedule_item_path(item)
+
+    assert_select "select[name='schedule_item[host]']" do
+      # Every existing user's full_name should be an option.
+      User.all.each do |u|
+        assert_select "option", text: u.full_name
+      end
+    end
+  end
+
+  test "admin edit form preserves an external speaker host value as a sticky option" do
+    item = ScheduleItem.create!(day: "thu", title: "Keynote", host: "John Athayde", kind: :talk, is_public: true)
+    sign_in_as users(:jeremy)
+    get edit_admin_schedule_item_path(item)
+
+    assert_select "select[name='schedule_item[host]']" do
+      assert_select "option[selected='selected']", text: "John Athayde"
+    end
+  end
 end
