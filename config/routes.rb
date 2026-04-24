@@ -38,4 +38,9 @@ Rails.application.routes.draw do
   # Embassy booking + application — attendee-facing mockup
   resources :embassy_bookings, only: %i[new create]
   resources :embassy_applications, only: %i[new create show edit update]
+
+  # Branded error pages. Reached via config.exceptions_app = self.routes.
+  match "/404", to: "errors#not_found",             via: :all
+  match "/422", to: "errors#unprocessable_content", via: :all
+  match "/500", to: "errors#internal_server_error", via: :all
 end

@@ -879,6 +879,17 @@ hr {
 
 .card-compact { padding: 1.5rem; }
 
+/* ---------- Error pages ---------------------------------- */
+
+.error-code {
+  font-size: 6rem;
+  font-weight: 500;
+  color: #0C2866;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
 /* Subtle panel that groups a long list of cards as one visual unit.
    Used on the admin user show page around "On their plan". */
 .panel {

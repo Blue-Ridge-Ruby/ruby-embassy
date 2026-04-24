@@ -1,0 +1,19 @@
+<% content_for(:title, "Something went wrong · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8 text-center">
+    <p class="error-code">422</p>
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-navy mb-4">
+      That request can't be processed
+    </h1>
+    <p class="text-lg leading-relaxed text-gray mb-8">
+      Your session may have expired, or the link you clicked is no longer valid. Try again from a fresh page.
+    </p>
+    <div class="flex gap-3 justify-center">
+      <a href="https://blueridgeruby.com" rel="noopener noreferrer" class="btn btn-red">
+        Back to main site
+      </a>
+      <%= link_to "Back to dashboard", dashboard_path, class: "btn btn-muted" %>
+    </div>
+  </div>
+</section>
