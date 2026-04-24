@@ -42,9 +42,11 @@ module Admin
     end
 
     # Admins can freely set :kind, unlike user-facing controller.
+    # :slug is intentionally omitted — it's a seed idempotency key for
+    # config/schedule.yml items and should never be set by hand.
     def schedule_item_params
       params.require(:schedule_item).permit(
-        :slug, :day, :time_label, :sort_time, :title, :host,
+        :day, :time_label, :sort_time, :title, :host,
         :location, :description, :kind, :flexible, :is_public
       )
     end
