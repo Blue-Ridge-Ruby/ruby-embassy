@@ -4,6 +4,18 @@ module Admin
       @users = User.order(:last_name, :first_name)
     end
 
+    def show
+      @user = User.find(params[:id])
+      @plan_items = @user.plan_items
+                         .includes(:schedule_item)
+                         .sort_by { |pi|
+                           [
+                             ScheduleItem::DAY_META.keys.index(pi.schedule_item.day) || 99,
+                             pi.schedule_item.sort_time.to_i
+                           ]
+                         }
+    end
+
     def new
       @user = User.new
     end

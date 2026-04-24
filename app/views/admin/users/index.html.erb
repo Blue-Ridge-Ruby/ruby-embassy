@@ -1,3 +1,5 @@
+<% content_for :container_width, "max-w-6xl" %>
+
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-bold text-navy">Users</h1>
   <div class="flex gap-3">
@@ -19,23 +21,29 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td><%= user.full_name %></td>
+        <td class="font-medium text-navy"><%= user.full_name %></td>
         <td><%= user.email %></td>
         <td>
           <span class="badge badge-<%= user.role %>"><%= user.role.humanize %></span>
         </td>
         <td>
           <% if user.admin_ticket_url %>
-            <%= link_to "Ticket", user.admin_ticket_url,
+            <%= link_to "View ticket \u2192", user.admin_ticket_url,
                   target: "_blank", rel: "noopener noreferrer",
                   class: "text-blue underline" %>
+          <% else %>
+            <span class="text-gray text-sm">—</span>
           <% end %>
         </td>
         <td class="text-right">
-          <%= link_to "Edit", edit_admin_user_path(user), class: "text-blue underline" %>
-          <%= button_to "Delete", admin_user_path(user), method: :delete,
-                data: { turbo_confirm: "Remove #{user.full_name}?" },
-                class: "btn-ghost ml-2", style: "display:inline;color:#C41C1C;padding:0;box-shadow:none" %>
+          <div class="flex gap-2 justify-end">
+            <%= link_to "View", admin_user_path(user), class: "btn btn-muted" %>
+            <%= link_to "Edit", edit_admin_user_path(user), class: "btn btn-muted" %>
+            <%= button_to "Delete", admin_user_path(user),
+                  method: :delete,
+                  data: { turbo_confirm: "Remove #{user.full_name}?" },
+                  class: "btn btn-red" %>
+          </div>
         </td>
       </tr>
     <% end %>

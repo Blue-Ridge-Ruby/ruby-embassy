@@ -1,0 +1,77 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<div class="mb-4">
+  <%= link_to "\u2190 All users", admin_users_path, class: "text-blue underline" %>
+</div>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-navy"><%= @user.full_name %></h1>
+    <p class="text-gray"><%= @user.email %></p>
+  </div>
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_admin_user_path(@user), class: "btn btn-muted" %>
+    <%= button_to "Delete", admin_user_path(@user), method: :delete,
+          data: { turbo_confirm: "Remove #{@user.full_name}?" },
+          class: "btn btn-red" %>
+  </div>
+</div>
+
+<div class="card card-compact mb-6">
+  <div class="space-y-2">
+    <div>
+      <span class="label">Role</span>
+      <span class="badge badge-<%= @user.role %>"><%= @user.role.humanize %></span>
+    </div>
+    <div>
+      <span class="label">Tito ticket</span>
+      <% if @user.admin_ticket_url %>
+        <%= link_to "View in Tito \u2192", @user.admin_ticket_url,
+              target: "_blank", rel: "noopener noreferrer",
+              class: "text-blue underline" %>
+        <span class="text-gray text-sm">(<%= @user.tito_ticket_slug %>)</span>
+      <% else %>
+        <span class="text-gray">Not linked</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<h2 class="text-lg font-semibold text-navy mb-3">On their plan</h2>
+
+<% if @plan_items.any? %>
+  <% @plan_items.group_by { |pi| pi.schedule_item.day }.each do |day_key, items| %>
+    <div class="mb-6">
+      <h3 class="text-navy font-medium mb-2">
+        <%= ScheduleItem::DAY_META.dig(day_key, :label) || day_key %>
+        <span class="text-gray text-sm">(<%= ScheduleItem::DAY_META.dig(day_key, :date) %>)</span>
+      </h3>
+      <ul class="space-y-2">
+        <% items.each do |pi| %>
+          <% si = pi.schedule_item %>
+          <li class="card card-compact">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="text-navy font-medium"><%= si.title %></div>
+                <% if si.host.present? %>
+                  <div class="text-gray text-sm"><%= si.host %></div>
+                <% end %>
+                <% if si.time_label.present? || si.location.present? %>
+                  <div class="text-gray text-sm">
+                    <%= si.time_label %><%= " · #{si.location}" if si.location.present? %>
+                  </div>
+                <% end %>
+              </div>
+              <span class="item-badge item-badge--<%= si.kind %>"><%= si.kind.humanize %></span>
+            </div>
+            <% if pi.notes.present? %>
+              <p class="text-gray mt-2">Notes: <%= pi.notes %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% else %>
+  <p class="text-gray">Nothing planned yet.</p>
+<% end %>
