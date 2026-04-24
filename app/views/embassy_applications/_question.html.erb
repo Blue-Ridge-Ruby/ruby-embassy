@@ -1,4 +1,4 @@
-<%# locals: question: %>
+<%# locals: (question:) -%>
 <div class="embassy-question embassy-question--<%= question[:type] %>">
   <label class="embassy-question__label" for="q_<%= question[:id] %>">
     <span class="embassy-question__number"><%= question[:id] %>.</span>
@@ -44,6 +44,19 @@
              value="1">
       <span>I affirm the above declaration.</span>
     </label>
+
+  <% when :checkbox_group %>
+    <div class="embassy-question__group" role="group" aria-labelledby="q_<%= question[:id] %>">
+      <% question[:options].each_with_index do |opt, i| %>
+        <label class="embassy-question__group-option">
+          <input type="checkbox"
+                 name="q[<%= question[:id] %>][]"
+                 value="<%= opt %>"
+                 id="q_<%= question[:id] %>_<%= i %>">
+          <span><%= opt %></span>
+        </label>
+      <% end %>
+    </div>
 
   <% when :date %>
     <input type="date"

@@ -2,7 +2,7 @@
   <h2 class="embassy-section-header">Confirm Appointment</h2>
 
   <p class="mb-4">
-    You are booking a
+    The Applicant hereby elects to book a
     <strong><%= FakeEmbassy.mode_label(mode) %></strong>
     appointment at the Ruby Embassy on
     <strong><%= ScheduleItem::DAY_META.dig(@schedule_item.day, :label) %></strong>
@@ -12,20 +12,23 @@
   <% if mode == "new_passport" %>
     <div class="alert alert-notice mb-4">
       <p>
-        Upon confirmation you will be directed to the <strong>New Passport Application</strong>.
-        Your session will remain active for <strong>60 minutes</strong>;
-        please complete and submit the form within that window.
+        Upon confirmation the Applicant will be directed to the
+        <strong>New Passport Application</strong>. Pursuant to Embassy
+        Ordinance §2.3, the session shall remain active for sixty (60)
+        minutes; submission must be completed within that window.
       </p>
       <p class="mt-2">
-        Your appointment slot remains confirmed regardless of submission.
-        If your session lapses, you may begin a fresh application at any time.
+        The appointment slot remains confirmed irrespective of submission.
+        If the session lapses, the Applicant may begin a fresh application
+        at any time.
       </p>
     </div>
   <% else %>
     <div class="alert alert-notice mb-4">
       <p>
-        Bring your existing Ruby Embassy Passport to the Embassy Office at the
-        time above. No application is required for stamping appointments.
+        The Applicant shall present their existing Ruby Embassy Passport at
+        the Embassy Office at the time above. No application is required
+        for stamping appointments.
       </p>
     </div>
   <% end %>

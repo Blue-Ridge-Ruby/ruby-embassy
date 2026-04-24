@@ -3,9 +3,10 @@
 <h1 class="text-2xl font-bold text-navy mb-2">Generate Blank Applications</h1>
 <p class="text-muted mb-6">
   Print blank, randomized applications for on-site walk-ins. Each generated form
-  contains a unique, randomly-drawn set of questions from the active bank.
-  Forms are serialized sequentially (RE-0427-A, RE-0427-B, …) so paper can be
-  reconciled with Embassy records later.
+  contains a unique, randomly-drawn set of questions from the active bank
+  <strong>and a unique notary assignment</strong>. Forms are serialized
+  sequentially (RE-0427-A, RE-0427-B, …) so paper can be reconciled with
+  Embassy records later.
 </p>
 
 <div class="card card-compact mb-8">
@@ -26,74 +27,17 @@
 
 <h2 class="text-lg font-semibold text-navy mb-2">Preview · one blank form</h2>
 <p class="text-muted mb-4">
-  A randomly-generated blank with serial <span class="mono"><%= @preview_serial %></span>.
-  The real batch will contain a unique set of questions per form.
+  A randomly-generated blank with serial <span class="mono"><%= @preview_serial %></span>
+  and notary assignment <span class="mono"><%= @preview_notary[:id] %></span>
+  (&ldquo;<%= @preview_notary[:description] %>&rdquo;).
+  The real batch will randomize both per form.
 </p>
 
 <div class="application-canvas application-canvas--pdf application-canvas--blank">
-  <div class="pdf-page">
-    <header class="pdf-page__header">
-      <div class="pdf-page__header-top">
-        <div class="pdf-page__form-code">
-          Form RUBY-1.0-MATZ<br>
-          Rev. 04/2026<br>
-          BLANK · Walk-in Copy
-        </div>
-        <svg class="embassy-stamp" viewBox="0 0 120 120"
-             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="60" cy="60" r="56" fill="none"
-                  stroke="currentColor" stroke-width="1.5"/>
-          <circle cx="60" cy="60" r="46" fill="none"
-                  stroke="currentColor" stroke-width="0.6"/>
-          <text x="60" y="52" text-anchor="middle"
-                font-family="Playfair Display, serif" font-size="11"
-                letter-spacing="1.5">RUBY</text>
-          <text x="60" y="66" text-anchor="middle"
-                font-family="Playfair Display, serif" font-size="11"
-                letter-spacing="1.5">EMBASSY</text>
-          <text x="60" y="80" text-anchor="middle"
-                font-family="Courier, monospace" font-size="5.5"
-                letter-spacing="1">EST. MMXXVI</text>
-          <text x="60" y="88" text-anchor="middle"
-                font-family="Courier, monospace" font-size="4.5"
-                letter-spacing="1">ASHEVILLE · NC</text>
-        </svg>
-      </div>
-      <h1 class="pdf-page__title">RUBY EMBASSY</h1>
-      <p class="pdf-page__subtitle">Application for Issuance of New Ruby Passport</p>
-    </header>
-
-    <% @preview_sections.each do |section| %>
-      <section class="pdf-section">
-        <h2 class="pdf-section__title">
-          Section <%= section[:number].to_s.rjust(2, "0") %>. <%= section[:title] %>
-        </h2>
-        <% section[:questions].each do |q| %>
-          <div class="pdf-q">
-            <span class="pdf-q__id"><%= q[:id] %>.</span>
-            <div class="pdf-q__body">
-              <p class="pdf-q__label"><%= q[:label] %></p>
-              <div class="pdf-q__answer pdf-q__answer--blank"></div>
-            </div>
-          </div>
-        <% end %>
-      </section>
-    <% end %>
-
-    <section class="pdf-signature">
-      <div class="pdf-signature__row">
-        <div class="pdf-signature__line"></div>
-        <div class="pdf-signature__date"></div>
-      </div>
-      <div class="pdf-signature__captions">
-        <span>Signature of Applicant</span>
-        <span>Date</span>
-      </div>
-    </section>
-
-    <footer class="pdf-page__footer">
-      <span class="pdf-page__serial mono"><%= @preview_serial %></span>
-      <span class="pdf-page__pagenum">Page 1 of 2 · Bring this form to the Embassy</span>
-    </footer>
-  </div>
+  <%= render "embassy_applications/pdf",
+             serial: @preview_serial,
+             schedule_item: ScheduleItem.embassy.first || ScheduleItem.first,
+             sections: @preview_sections,
+             notary: @preview_notary,
+             blank: true %>
 </div>

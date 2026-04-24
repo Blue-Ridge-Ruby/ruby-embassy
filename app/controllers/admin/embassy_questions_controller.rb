@@ -1,7 +1,7 @@
 class Admin::EmbassyQuestionsController < AdminController
   def index
-    @questions = FakeEmbassy.question_bank
-    @sections  = FakeEmbassy.sample_questions.map { |s| [ s[:number], s[:title] ] }
+    @questions   = FakeEmbassy.question_bank
+    @notary_pool = FakeEmbassy.notary_pool
   end
 
   def new

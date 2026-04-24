@@ -8,7 +8,7 @@
   </header>
 
   <section class="card mb-6">
-    <h2 class="embassy-section-header">Block Details</h2>
+    <h2 class="embassy-section-header">Particulars of the Block</h2>
     <dl class="embassy-dl">
       <dt>Date &amp; Time</dt>
       <dd><%= ScheduleItem::DAY_META.dig(@schedule_item.day, :label) %> · <%= @schedule_item.time_label %></dd>
@@ -16,15 +16,15 @@
       <dt>Location</dt>
       <dd><%= @schedule_item.location.presence || "Embassy Office · Main Hall" %></dd>
 
-      <dt>Block Type</dt>
+      <dt>Block classification</dt>
       <dd>
         <%= FakeEmbassy.mode_label(@block_mode) %>
         <% if @block_mode == "both" %>
-          <span class="text-muted">(choose below)</span>
+          <span class="text-muted">(Applicant to elect below)</span>
         <% end %>
       </dd>
 
-      <dt>Seats remaining</dt>
+      <dt>Seats available</dt>
       <dd><%= FakeEmbassy.seats_remaining(@schedule_item.id) %> of <%= @capacity %></dd>
     </dl>
   </section>

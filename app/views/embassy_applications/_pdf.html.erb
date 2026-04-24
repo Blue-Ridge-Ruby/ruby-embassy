@@ -1,4 +1,4 @@
-<%# locals: (serial:, schedule_item:, sections:, applicant_name: nil, submitted_at: nil) -%>
+<%# locals: (serial:, schedule_item:, sections:, notary: nil, applicant_name: nil, submitted_at: nil, blank: false) -%>
 <div class="pdf-page">
   <header class="pdf-page__header">
     <div class="pdf-page__header-top">
@@ -32,14 +32,22 @@
     <h1 class="pdf-page__title">RUBY EMBASSY</h1>
     <p class="pdf-page__subtitle">Application for Issuance of New Ruby Passport</p>
 
-    <dl class="pdf-page__meta">
-      <div><dt>Appointment</dt>
-        <dd><%= ScheduleItem::DAY_META.dig(schedule_item.day, :label) %> · <%= schedule_item.time_label %></dd></div>
-      <div><dt>Applicant</dt>
-        <dd><%= applicant_name || current_user.full_name %></dd></div>
-      <div><dt>Submitted</dt>
-        <dd><%= submitted_at || Time.current.strftime("%Y-%m-%d %H:%M") %></dd></div>
-    </dl>
+    <% if blank %>
+      <dl class="pdf-page__meta">
+        <div><dt>Appointment</dt><dd>&nbsp;</dd></div>
+        <div><dt>Applicant</dt><dd>&nbsp;</dd></div>
+        <div><dt>Submitted</dt><dd>&nbsp;</dd></div>
+      </dl>
+    <% else %>
+      <dl class="pdf-page__meta">
+        <div><dt>Appointment</dt>
+          <dd><%= ScheduleItem::DAY_META.dig(schedule_item.day, :label) %> · <%= schedule_item.time_label %></dd></div>
+        <div><dt>Applicant</dt>
+          <dd><%= applicant_name || current_user.full_name %></dd></div>
+        <div><dt>Submitted</dt>
+          <dd><%= submitted_at || Time.current.strftime("%Y-%m-%d %H:%M") %></dd></div>
+      </dl>
+    <% end %>
   </header>
 
   <% sections.each do |section| %>
@@ -53,12 +61,18 @@
           <div class="pdf-q__body">
             <p class="pdf-q__label"><%= q[:label] %></p>
             <div class="pdf-q__answer">
-              <%
-                ans = FakeEmbassy.filled_answer(q[:id])
-              %>
-              <% if q[:type] == :checkbox %>
-                <%= ans ? "☒ I affirm the above declaration." : "☐ (not checked)" %>
-              <% elsif q[:type] == :long %>
+              <% ans = blank ? nil : FakeEmbassy.filled_answer(q[:id]) %>
+              <% case q[:type] %>
+              <% when :checkbox %>
+                <%= ans ? "☒ I affirm" : "☐" %>
+              <% when :checkbox_group %>
+                <ul class="pdf-q__checklist">
+                  <% q[:options].each do |opt| %>
+                    <% checked = ans.is_a?(Array) && ans.include?(opt) %>
+                    <li><%= checked ? "☒" : "☐" %> <%= opt %></li>
+                  <% end %>
+                </ul>
+              <% when :long %>
                 <span class="pdf-q__answer--long"><%= ans %></span>
               <% else %>
                 <span class="pdf-q__answer--short"><%= ans %></span>
@@ -73,10 +87,18 @@
   <section class="pdf-signature">
     <div class="pdf-signature__row">
       <div class="pdf-signature__line">
-        <span class="pdf-signature__signature">X &nbsp; <%= FakeEmbassy.filled_answer("3e") %></span>
+        <% if blank %>
+          <span class="pdf-signature__signature">&nbsp;</span>
+        <% else %>
+          <span class="pdf-signature__signature">X &nbsp; <%= FakeEmbassy.filled_answer("5d") %></span>
+        <% end %>
       </div>
       <div class="pdf-signature__date">
-        <span class="pdf-signature__datevalue"><%= Date.current.strftime("%Y-%m-%d") %></span>
+        <% if blank %>
+          <span class="pdf-signature__datevalue">&nbsp;</span>
+        <% else %>
+          <span class="pdf-signature__datevalue"><%= Date.current.strftime("%Y-%m-%d") %></span>
+        <% end %>
       </div>
     </div>
     <div class="pdf-signature__captions">
@@ -90,3 +112,68 @@
     <span class="pdf-page__pagenum">Page 1 of 2 · Bring this form to your appointment</span>
   </footer>
 </div>
+
+<%# ==================== Notary Addendum ==================== %>
+<%# A second printed page. The notary description is randomized per
+<%# application — this is the ice-breaker mechanic. Users MUST NOT see
+<%# this on screen before printing. It's rendered inside the PDF canvas
+<%# which @media print exposes while hiding everything else.           %>
+<% if notary %>
+  <div class="pdf-page pdf-page--notary">
+    <header class="pdf-page__header">
+      <h1 class="pdf-page__title">NOTARY CERTIFICATION</h1>
+      <p class="pdf-page__subtitle">Required for Validation at the Embassy Gate · Ordinance §4.2(b)</p>
+    </header>
+
+    <section class="pdf-notary__preamble">
+      <p>
+        Pursuant to Embassy Ordinance §4.2(b), every application for issuance
+        of a new Ruby Embassy Passport must be certified by a qualified
+        individual physically present within the conference grounds. The
+        Applicant's assigned notary description has been determined at the
+        time of form issuance and is recorded below. Identification and
+        procurement of the notary is the sole responsibility of the Applicant.
+      </p>
+    </section>
+
+    <section class="pdf-notary__assignment">
+      <p class="pdf-notary__preface">Someone who&hellip;</p>
+      <p class="pdf-notary__description"><%= notary[:description] %></p>
+    </section>
+
+    <section class="pdf-notary__followups">
+      <h2 class="pdf-section__title">Supplementary Particulars</h2>
+      <% notary[:followups].each_with_index do |f, i| %>
+        <div class="pdf-q pdf-q--notary">
+          <span class="pdf-q__id">N<%= (i + 1).to_s.rjust(2, "0") %>.</span>
+          <div class="pdf-q__body">
+            <p class="pdf-q__label"><%= f %></p>
+            <div class="pdf-q__answer pdf-q__answer--blank"></div>
+          </div>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="pdf-notary__certification">
+      <h2 class="pdf-section__title">Certified By</h2>
+
+      <div class="pdf-notary__field">
+        <span class="pdf-notary__field-label">Name</span>
+        <span class="pdf-notary__field-line"></span>
+      </div>
+      <div class="pdf-notary__field">
+        <span class="pdf-notary__field-label">Signature</span>
+        <span class="pdf-notary__field-line"></span>
+      </div>
+      <div class="pdf-notary__field">
+        <span class="pdf-notary__field-label">Official Title</span>
+        <span class="pdf-notary__field-line"></span>
+      </div>
+    </section>
+
+    <footer class="pdf-page__footer">
+      <span class="pdf-page__serial mono"><%= serial %> · <%= notary[:id] %></span>
+      <span class="pdf-page__pagenum">Page 2 of 2 · Bring this form to the Embassy</span>
+    </footer>
+  </div>
+<% end %>

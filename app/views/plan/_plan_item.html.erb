@@ -25,7 +25,7 @@
           <% when "stamping" %>
             <p class="plan-item__embassy-note">
               <strong>Stamping appointment.</strong>
-              Bring your existing Ruby Passport to the Embassy at the time above.
+              Present existing Ruby Embassy Passport at the Embassy Office at the time above.
             </p>
 
           <% when "pending" %>
@@ -40,7 +40,7 @@
 
           <% when "submitted" %>
             <p class="plan-item__embassy-note">
-              Application submitted &middot; Serial <span class="mono"><%= serial %></span>
+              Application filed &middot; Serial <span class="mono"><%= serial %></span>
             </p>
             <%= link_to "Download PDF",
                         embassy_application_path(serial),
@@ -49,7 +49,7 @@
 
           <% when "expired" %>
             <p class="plan-item__embassy-note">
-              Session expired · Your appointment is still confirmed.
+              Session lapsed · Appointment remains confirmed.
             </p>
             <%= link_to "Start a New Application",
                         new_embassy_application_path(plan_item_id: plan_item.id),

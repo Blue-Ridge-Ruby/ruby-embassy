@@ -20,12 +20,15 @@
 </div>
 
 <% drawn_ids = @application[:drawn_ids] %>
+<% notary    = FakeEmbassy.notary_for(@application) %>
 <% if drawn_ids %>
   <div class="alert alert-notice mb-4">
-    <strong>Random pool draw for this application:</strong>
+    <strong>Random pool draw:</strong>
     <span class="mono"><%= drawn_ids.join(", ") %></span>
-    (from the <%= FakeEmbassy::SECTION_2_POOL.length %>-question Section 2 pool).
-    The rendered application below shows exactly what this attendee saw.
+    (from the <%= FakeEmbassy.random_pool_total %>-question Section 3 pool).
+    <br>
+    <strong>Notary assignment:</strong>
+    <span class="mono"><%= notary[:id] %></span> · &ldquo;Someone who <%= notary[:description].downcase.sub(/^./, &:downcase) %>&rdquo;
   </div>
 <% end %>
 
@@ -34,6 +37,7 @@
              serial: @application[:serial],
              schedule_item: ScheduleItem.embassy.first || ScheduleItem.first,
              sections: FakeEmbassy.sections_for(@application),
+             notary: FakeEmbassy.notary_for(@application),
              applicant_name: @application[:attendee_name],
              submitted_at: @application[:submitted_at] %>
 </div>

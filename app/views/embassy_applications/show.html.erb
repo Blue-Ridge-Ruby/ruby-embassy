@@ -3,8 +3,8 @@
 <div class="embassy-doc">
   <header class="embassy-doc__header">
     <p class="embassy-form-code">Form RUBY-1.0-MATZ · Rev. 04/2026</p>
-    <h1 class="embassy-doc__title">Application Submitted</h1>
-    <p class="embassy-doc__subtitle">Your appointment is confirmed. Please print and bring the application below.</p>
+    <h1 class="embassy-doc__title">Application Received</h1>
+    <p class="embassy-doc__subtitle">The Applicant's appointment is confirmed. Please print and bring the attached application to the Embassy.</p>
   </header>
 
   <div class="embassy-ceremony">
@@ -15,11 +15,11 @@
                state: "submitted" %>
 
     <section class="embassy-ceremony__callout">
-      <p class="embassy-ceremony__serial-label">YOUR SERIAL NUMBER</p>
+      <p class="embassy-ceremony__serial-label">OFFICIAL SERIAL</p>
       <p class="embassy-ceremony__serial-value mono"><%= @serial %></p>
       <p class="embassy-ceremony__serial-note">
-        Keep this on your printed application. It is how the Attaché locates
-        your record when you arrive.
+        Retain this serial on the printed application. The Embassy Attaché
+        shall reference it to locate the Applicant's record upon arrival.
       </p>
     </section>
 
@@ -30,23 +30,24 @@
         Download &amp; Print Application (PDF)
       <% end %>
       <p class="text-muted mt-2">
-        2 pages · black &amp; white · standard letter size
+        2 pages · black &amp; white · standard letter size · includes Notary Certification
       </p>
     </section>
 
     <section class="embassy-ceremony__preview">
       <h2 class="embassy-section-header">Preview</h2>
-      <p class="text-muted mb-3">This is what will print. Review before closing this page.</p>
+      <p class="text-muted mb-3">The document below is what will print. Review before closing this page.</p>
       <div class="application-canvas application-canvas--pdf">
         <%= render "pdf",
                    serial: @serial,
                    schedule_item: @schedule_item,
-                   sections: @sections %>
+                   sections: @sections,
+                   notary: FakeEmbassy.notary_for %>
       </div>
     </section>
 
     <section class="embassy-ceremony__etiquette">
-      <h2 class="embassy-section-header">Embassy Hours &amp; Etiquette</h2>
+      <h2 class="embassy-section-header">Embassy Hours &amp; Protocol</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="card card-compact">
           <h3 class="embassy-section-subhead">Hours of operation</h3>
@@ -57,7 +58,7 @@
           </ul>
         </div>
         <div class="card card-compact">
-          <h3 class="embassy-section-subhead">Please note</h3>
+          <h3 class="embassy-section-subhead">Standing protocol</h3>
           <ul class="list-disc">
             <% FakeEmbassy.embassy_etiquette.each do |note| %>
               <li><%= note %></li>
