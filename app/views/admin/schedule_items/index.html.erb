@@ -25,6 +25,9 @@
           <% if item.host.present? %>
             <div class="text-gray text-sm"><%= item.host %></div>
           <% end %>
+          <% if item.description.present? %>
+            <div class="text-gray text-sm"><%= item.description %></div>
+          <% end %>
         </td>
         <td><span class="badge badge-<%= item.kind %>"><%= item.kind.humanize %></span></td>
         <td><%= item.is_public? ? "Public" : "Private" %></td>

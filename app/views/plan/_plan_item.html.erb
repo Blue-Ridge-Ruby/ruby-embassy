@@ -23,6 +23,10 @@
         <p class="plan-item__location"><%= item.location %></p>
       <% end %>
 
+      <% if item.description.present? %>
+        <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
+      <% end %>
+
       <% if custom %>
         <div><span class="item-badge item-badge--custom">Custom</span></div>
       <% end %>

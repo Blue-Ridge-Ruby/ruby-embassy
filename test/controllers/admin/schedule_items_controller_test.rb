@@ -93,6 +93,19 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "admin index shows item descriptions when present" do
+    ScheduleItem.create!(
+      day: "thu",
+      title: "Admin desc",
+      description: "Short admin-visible description.",
+      kind: :activity,
+      is_public: true
+    )
+    sign_in_as users(:jeremy)
+    get admin_schedule_items_path
+    assert_match "Short admin-visible description.", response.body
+  end
+
   test "admin edit form preserves an external speaker host value as a sticky option" do
     item = ScheduleItem.create!(day: "thu", title: "Keynote", host: "John Athayde", kind: :talk, is_public: true)
     sign_in_as users(:jeremy)

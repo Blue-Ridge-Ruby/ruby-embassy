@@ -67,6 +67,24 @@ class PlanTest < ActionDispatch::IntegrationTest
     assert_match "Sit near the front", response.body
   end
 
+  test "/plan shows item descriptions when present" do
+    alice = users(:attendee_one)
+    item = ScheduleItem.create!(
+      day: "fri",
+      time_label: "2:00 PM",
+      sort_time: 1400,
+      title: "Planned Item With Description",
+      description: "Notes about this session go here.",
+      kind: :activity,
+      is_public: true
+    )
+    alice.plan_items.create!(schedule_item: item)
+
+    sign_in_as alice
+    get plan_path
+    assert_match "Notes about this session go here.", response.body
+  end
+
   test "/plan shows remove button for each plan_item" do
     alice = users(:attendee_one)
     plan = alice.plan_items.create!(schedule_item: @talk)

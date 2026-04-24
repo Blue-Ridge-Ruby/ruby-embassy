@@ -76,6 +76,22 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
     assert_match(/RSVP/i, response.body)
   end
 
+  test "descriptions render on schedule items when present" do
+    ScheduleItem.create!(
+      slug: "desc-test",
+      day: "thu",
+      time_label: "10:00 AM",
+      sort_time: 1000,
+      title: "Item with details",
+      description: "Bring a notebook and questions for the speaker.",
+      kind: :talk,
+      is_public: true
+    )
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_match "Bring a notebook and questions for the speaker.", response.body
+  end
+
   test "days are rendered in conference order (wed, thu, fri, sat)" do
     sign_in_as users(:attendee_one)
     get schedule_path

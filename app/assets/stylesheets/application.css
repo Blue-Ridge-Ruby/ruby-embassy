@@ -472,6 +472,13 @@ hr {
   color: #7a8189;
 }
 
+.schedule-item__description {
+  font-size: 0.9375rem;
+  color: #404040;
+  line-height: 1.5;
+  margin-top: 0.125rem;
+}
+
 .schedule-item__badges {
   display: flex;
   gap: 0.375rem;
@@ -748,6 +755,13 @@ hr {
 .plan-item__location {
   font-size: 0.8125rem;
   color: #7a8189;
+}
+
+.plan-item__description {
+  font-size: 0.875rem;
+  color: #404040;
+  line-height: 1.5;
+  margin-top: 0.125rem;
 }
 
 .plan-item__notes {

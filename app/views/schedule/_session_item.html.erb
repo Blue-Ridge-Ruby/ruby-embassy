@@ -40,6 +40,10 @@
         <p class="schedule-item__location"><%= item.location %></p>
       <% end %>
 
+      <% if item.description.present? %>
+        <p class="schedule-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
+      <% end %>
+
       <div class="schedule-item__badges">
         <% if kind_label.present? %>
           <span class="item-badge item-badge--<%= item.kind %>"><%= kind_label %></span>
