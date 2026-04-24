@@ -1,0 +1,42 @@
+<% content_for :title, "Submitted Applications — Embassy Admin" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-navy">Submitted Applications</h1>
+    <p class="text-muted">
+      <%= @applications.size %> applications &middot; Click a serial to view the full adjudicated form.
+    </p>
+  </div>
+  <%= link_to "Generate Blank Forms",
+              new_admin_embassy_blank_pdfs_path,
+              class: "btn btn-red" %>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width: 140px;">Serial</th>
+      <th>Attendee</th>
+      <th>Appointment</th>
+      <th>Submitted</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @applications.each do |app| %>
+      <tr>
+        <td class="mono"><%= app[:serial] %></td>
+        <td>
+          <div><%= app[:attendee_name] %></div>
+          <div class="text-muted text-sm"><%= app[:attendee_email] %></div>
+        </td>
+        <td><%= app[:slot] %></td>
+        <td><%= app[:submitted_at] %></td>
+        <td class="text-right">
+          <%= link_to "View", admin_embassy_application_path(app[:serial]),
+                      class: "text-blue underline" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

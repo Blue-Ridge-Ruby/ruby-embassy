@@ -1,0 +1,51 @@
+<% content_for :title, "New Passport Application — Ruby Embassy" %>
+
+<div class="application-canvas">
+  <header class="application-canvas__header">
+    <div class="embassy-form-code">Form RUBY-1.0-MATZ &middot; Rev. 04/2026 &middot; Case No. 4-2-0-9-GEM</div>
+
+    <h1 class="application-canvas__title">Ruby Embassy</h1>
+    <p class="application-canvas__subtitle">Application for Issuance of New Ruby Passport</p>
+
+    <div class="embassy-countdown" role="status">
+      <span aria-hidden="true">⏳</span>
+      Session expires in approximately <strong><%= @minutes_left %> min</strong>
+    </div>
+
+    <p class="application-canvas__instructions">
+      Print clearly. Do not write in the margins. All fields marked with an
+      asterisk (*) are required for adjudication. The Embassy reserves the
+      right to reject applications deemed insufficiently Ruby.
+    </p>
+  </header>
+
+  <%= form_with url: embassy_applications_path,
+                method: :post,
+                local: true,
+                class: "application-form" do |f| %>
+    <%= hidden_field_tag :plan_item_id, @plan_item&.id %>
+
+    <% @sections.each do |section| %>
+      <%= render "section", section: section %>
+    <% end %>
+
+    <footer class="application-canvas__footer">
+      <div class="application-canvas__serial">
+        <span class="embassy-serial mono"><%= @serial %></span>
+      </div>
+
+      <div class="application-canvas__actions">
+        <%= f.submit "Submit Application",
+                     class: "btn btn-red btn-lg",
+                     data: { turbo_confirm: "Submit application? You cannot edit after submission." } %>
+        <%= link_to "Save &amp; Return Later".html_safe, plan_path,
+                    class: "btn btn-muted" %>
+      </div>
+
+      <p class="application-canvas__footer-note text-muted">
+        By submitting, you affirm all declarations made above are truthful
+        to the best of your Ruby-ly knowledge.
+      </p>
+    </footer>
+  <% end %>
+</div>

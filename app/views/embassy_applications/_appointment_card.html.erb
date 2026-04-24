@@ -1,0 +1,24 @@
+<%# locals: (serial:, schedule_item:, mode: "new_passport", state: "default") -%>
+<article class="embassy-appointment-card embassy-appointment-card--<%= state %>">
+  <div class="embassy-appointment-card__serial mono"><%= serial %></div>
+
+  <p class="embassy-appointment-card__eyebrow">Ruby Embassy Appointment</p>
+
+  <h3 class="embassy-appointment-card__when">
+    <%= ScheduleItem::DAY_META.dig(schedule_item.day, :label) %>
+    <span class="embassy-appointment-card__dot">·</span>
+    <%= schedule_item.time_label %>
+  </h3>
+
+  <p class="embassy-appointment-card__where">
+    <%= schedule_item.location.presence || "Embassy Office · Main Hall" %>
+  </p>
+
+  <dl class="embassy-appointment-card__dl">
+    <dt>Type</dt>
+    <dd><%= FakeEmbassy.mode_label(mode) %></dd>
+
+    <dt>Attendee</dt>
+    <dd><%= current_user.full_name %></dd>
+  </dl>
+</article>

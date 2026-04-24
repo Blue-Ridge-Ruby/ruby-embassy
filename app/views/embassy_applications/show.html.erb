@@ -1,0 +1,75 @@
+<% content_for :title, "Application Submitted — Ruby Embassy" %>
+
+<div class="embassy-doc">
+  <header class="embassy-doc__header">
+    <p class="embassy-form-code">Form RUBY-1.0-MATZ · Rev. 04/2026</p>
+    <h1 class="embassy-doc__title">Application Submitted</h1>
+    <p class="embassy-doc__subtitle">Your appointment is confirmed. Please print and bring the application below.</p>
+  </header>
+
+  <div class="embassy-ceremony">
+    <%= render "appointment_card",
+               serial: @serial,
+               schedule_item: @schedule_item,
+               mode: "new_passport",
+               state: "submitted" %>
+
+    <section class="embassy-ceremony__callout">
+      <p class="embassy-ceremony__serial-label">YOUR SERIAL NUMBER</p>
+      <p class="embassy-ceremony__serial-value mono"><%= @serial %></p>
+      <p class="embassy-ceremony__serial-note">
+        Keep this on your printed application. It is how the Attaché locates
+        your record when you arrive.
+      </p>
+    </section>
+
+    <section class="embassy-ceremony__download">
+      <%= link_to embassy_application_path(@serial, format: :pdf),
+                  class: "btn btn-red btn-lg",
+                  onclick: "event.preventDefault(); window.print(); return false;" do %>
+        Download &amp; Print Application (PDF)
+      <% end %>
+      <p class="text-muted mt-2">
+        2 pages · black &amp; white · standard letter size
+      </p>
+    </section>
+
+    <section class="embassy-ceremony__preview">
+      <h2 class="embassy-section-header">Preview</h2>
+      <p class="text-muted mb-3">This is what will print. Review before closing this page.</p>
+      <div class="application-canvas application-canvas--pdf">
+        <%= render "pdf",
+                   serial: @serial,
+                   schedule_item: @schedule_item,
+                   sections: @sections %>
+      </div>
+    </section>
+
+    <section class="embassy-ceremony__etiquette">
+      <h2 class="embassy-section-header">Embassy Hours &amp; Etiquette</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="card card-compact">
+          <h3 class="embassy-section-subhead">Hours of operation</h3>
+          <ul class="list-disc">
+            <% FakeEmbassy.embassy_hours.each do |h| %>
+              <li><%= h %></li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="card card-compact">
+          <h3 class="embassy-section-subhead">Please note</h3>
+          <ul class="list-disc">
+            <% FakeEmbassy.embassy_etiquette.each do |note| %>
+              <li><%= note %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="embassy-ceremony__back">
+      <%= link_to "← View My Plan", plan_path, class: "btn btn-navy" %>
+      <%= link_to "Back to Schedule", schedule_path, class: "btn btn-muted" %>
+    </section>
+  </div>
+</div>

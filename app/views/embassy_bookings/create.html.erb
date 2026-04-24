@@ -1,0 +1,51 @@
+<% content_for :title, "Stamping Appointment Confirmed — Ruby Embassy" %>
+
+<div class="embassy-doc">
+  <header class="embassy-doc__header">
+    <p class="embassy-form-code">Form RUBY-1.0-MATZ · Rev. 04/2026</p>
+    <h1 class="embassy-doc__title">Ruby Embassy</h1>
+    <p class="embassy-doc__subtitle">Stamping Appointment · Confirmed</p>
+  </header>
+
+  <section class="card embassy-stamping-confirmation">
+    <div class="embassy-confirmation-seal">STAMPED</div>
+
+    <h2 class="text-2xl font-semibold text-navy">Your appointment is confirmed.</h2>
+
+    <p class="embassy-confirmation-detail">
+      <strong>Bring your existing Ruby Passport</strong> to the Embassy Office at
+    </p>
+
+    <p class="embassy-confirmation-time">
+      <%= ScheduleItem::DAY_META.dig(@schedule_item.day, :label) %>
+      <span class="embassy-confirmation-separator">·</span>
+      <%= @schedule_item.time_label %>
+    </p>
+
+    <p class="embassy-confirmation-location">
+      <%= @schedule_item.location.presence || "Embassy Office · Main Hall" %>
+    </p>
+
+    <dl class="embassy-dl mt-6">
+      <dt>Confirmation number</dt>
+      <dd class="mono"><%= FakeEmbassy.serial_for(@plan_item.id) %></dd>
+
+      <dt>Attendee</dt>
+      <dd><%= current_user.full_name %></dd>
+    </dl>
+
+    <div class="embassy-etiquette mt-6">
+      <h3 class="embassy-section-subhead">Please note</h3>
+      <ul>
+        <% FakeEmbassy.embassy_etiquette.first(3).each do |note| %>
+          <li><%= note %></li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="flex gap-3 mt-6">
+      <%= link_to "View My Plan", plan_path, class: "btn btn-navy" %>
+      <%= link_to "Back to Schedule", schedule_path, class: "btn btn-muted" %>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,20 @@
+<%# locals: (section:) -%>
+<%#
+  Intentionally agnostic to section[:scope] — user-facing section rendering
+  must not reveal random-pool status. Admin surfaces (question bank,
+  applications detail view) are where scope is surfaced.
+-%>
+<section class="embassy-section">
+  <header class="embassy-section__header">
+    <span class="embassy-section__number">Section <%= section[:number].to_s.rjust(2, "0") %></span>
+    <h2 class="embassy-section__title"><%= section[:title] %></h2>
+  </header>
+
+  <p class="embassy-section__instructions"><%= section[:instructions] %></p>
+
+  <div class="embassy-section__questions">
+    <% section[:questions].each do |q| %>
+      <%= render "question", question: q %>
+    <% end %>
+  </div>
+</section>

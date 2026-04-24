@@ -1,0 +1,92 @@
+<%# locals: (serial:, schedule_item:, sections:, applicant_name: nil, submitted_at: nil) -%>
+<div class="pdf-page">
+  <header class="pdf-page__header">
+    <div class="pdf-page__header-top">
+      <div class="pdf-page__form-code">
+        Form RUBY-1.0-MATZ<br>
+        Rev. 04/2026<br>
+        Case No. 4-2-0-9-GEM
+      </div>
+
+      <svg class="embassy-stamp" viewBox="0 0 120 120"
+           xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="60" cy="60" r="56" fill="none"
+                stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="60" cy="60" r="46" fill="none"
+                stroke="currentColor" stroke-width="0.6"/>
+        <text x="60" y="52" text-anchor="middle"
+              font-family="Playfair Display, serif" font-size="11"
+              letter-spacing="1.5">RUBY</text>
+        <text x="60" y="66" text-anchor="middle"
+              font-family="Playfair Display, serif" font-size="11"
+              letter-spacing="1.5">EMBASSY</text>
+        <text x="60" y="80" text-anchor="middle"
+              font-family="Courier, monospace" font-size="5.5"
+              letter-spacing="1">EST. MMXXVI</text>
+        <text x="60" y="88" text-anchor="middle"
+              font-family="Courier, monospace" font-size="4.5"
+              letter-spacing="1">ASHEVILLE · NC</text>
+      </svg>
+    </div>
+
+    <h1 class="pdf-page__title">RUBY EMBASSY</h1>
+    <p class="pdf-page__subtitle">Application for Issuance of New Ruby Passport</p>
+
+    <dl class="pdf-page__meta">
+      <div><dt>Appointment</dt>
+        <dd><%= ScheduleItem::DAY_META.dig(schedule_item.day, :label) %> · <%= schedule_item.time_label %></dd></div>
+      <div><dt>Applicant</dt>
+        <dd><%= applicant_name || current_user.full_name %></dd></div>
+      <div><dt>Submitted</dt>
+        <dd><%= submitted_at || Time.current.strftime("%Y-%m-%d %H:%M") %></dd></div>
+    </dl>
+  </header>
+
+  <% sections.each do |section| %>
+    <section class="pdf-section">
+      <h2 class="pdf-section__title">
+        Section <%= section[:number].to_s.rjust(2, "0") %>. <%= section[:title] %>
+      </h2>
+      <% section[:questions].each do |q| %>
+        <div class="pdf-q">
+          <span class="pdf-q__id"><%= q[:id] %>.</span>
+          <div class="pdf-q__body">
+            <p class="pdf-q__label"><%= q[:label] %></p>
+            <div class="pdf-q__answer">
+              <%
+                ans = FakeEmbassy.filled_answer(q[:id])
+              %>
+              <% if q[:type] == :checkbox %>
+                <%= ans ? "☒ I affirm the above declaration." : "☐ (not checked)" %>
+              <% elsif q[:type] == :long %>
+                <span class="pdf-q__answer--long"><%= ans %></span>
+              <% else %>
+                <span class="pdf-q__answer--short"><%= ans %></span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
+
+  <section class="pdf-signature">
+    <div class="pdf-signature__row">
+      <div class="pdf-signature__line">
+        <span class="pdf-signature__signature">X &nbsp; <%= FakeEmbassy.filled_answer("3e") %></span>
+      </div>
+      <div class="pdf-signature__date">
+        <span class="pdf-signature__datevalue"><%= Date.current.strftime("%Y-%m-%d") %></span>
+      </div>
+    </div>
+    <div class="pdf-signature__captions">
+      <span>Signature of Applicant</span>
+      <span>Date</span>
+    </div>
+  </section>
+
+  <footer class="pdf-page__footer">
+    <span class="pdf-page__serial mono"><%= serial %></span>
+    <span class="pdf-page__pagenum">Page 1 of 2 · Bring this form to your appointment</span>
+  </footer>
+</div>
