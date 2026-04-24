@@ -61,7 +61,7 @@ module FakeEmbassy
       {
         number: 1, title: "Declaration of Ruby-ness",
         scope: "common",
-        instructions: "Print clearly. This section establishes the Applicant's eligibility for Passport issuance pursuant to Embassy Ordinance §1.9.",
+        instructions: "This section establishes the Applicant's eligibility for Passport issuance pursuant to Embassy Ordinance §1.9. Complete all required fields.",
         questions: EmbassyQuestionsSeed::BASIC_INFO
       },
       {
@@ -111,17 +111,16 @@ module FakeEmbassy
   end
 
   FILLED_ANSWERS = {
-    # Section 1 · Basic Info ----------------------------------------------
+    # Section 1 · Declaration of Ruby-ness --------------------------------
     "1a" => "Katya",
     "1b" => "@kitkatnik",
     "1c" => "she/her",
     "1d" => "9 years of Ruby, 14 years of existential dread",
-    "1e" => "$0. Audit me, I dare you.",
-    "1f" => "I use Ruby",
-    "1g" => "Go",
-    "1h" => [ "Networking", "Vibes", "Free coffee" ],
-    "1i" => [ "Powerful", "Confused", "Like quitting forever" ],
-    "1j" => [ "The Debugger", "The \"it works don't touch it\"" ],
+    "1e" => "I use Ruby",
+    "1f" => "Go",
+    "1g" => [ "Networking", "Vibes", "Free coffee" ],
+    "1h" => [ "Powerful", "Confused", "Like quitting forever" ],
+    "1i" => [ "The Debugger", "The \"it works, don't touch it\"" ],
 
     # Section 2 · Personal Statement --------------------------------------
     "2a" => "Programming and I have been together long enough that we finish each other's error messages.",

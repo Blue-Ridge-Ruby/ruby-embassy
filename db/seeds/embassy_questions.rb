@@ -32,12 +32,7 @@ module EmbassyQuestionsSeed
       placeholder: "e.g., 9 years of Ruby, 14 years of existential dread",
       help: "For adjudication purposes only. The Embassy does not acknowledge biological years." },
 
-    { id: "1e", label: "Today's Lottery Winnings",
-      type: :short, required: false,
-      placeholder: "$0 is an acceptable declaration. So is $47.12 in Coinstar.",
-      help: "For audit purposes. Amounts in excess of $10M must be disclosed to the Embassy Attaché. Receipts may be requested." },
-
-    { id: "1f", label: "Declared Ruby Proficiency",
+    { id: "1e", label: "Declared Ruby Proficiency",
       type: :select, required: true,
       options: [
         "Just installed it",
@@ -46,19 +41,19 @@ module EmbassyQuestionsSeed
         "I am Ruby"
       ] },
 
-    { id: "1g", label: "Primary language, other than Ruby",
+    { id: "1f", label: "Primary language, other than Ruby",
       type: :short, required: false,
       placeholder: "e.g., Go, Elixir, Fortran, Emotional Support" },
 
-    { id: "1h", label: "Stated purpose of visit (select all that apply)",
+    { id: "1g", label: "Stated purpose of visit (select all that apply)",
       type: :checkbox_group, required: false,
       options: [ "Learning", "Networking", "Vibes", "Free coffee" ] },
 
-    { id: "1i", label: "Most recent sentiment experienced while programming (select all that apply)",
+    { id: "1h", label: "Most recent sentiment experienced while programming (select all that apply)",
       type: :checkbox_group, required: false,
       options: [ "Powerful", "Confused", "Betrayed", "Like a genius", "Like quitting forever" ] },
 
-    { id: "1j", label: "Declared developer persona (select all that apply)",
+    { id: "1i", label: "Declared developer persona (select all that apply)",
       type: :checkbox_group, required: false,
       options: [
         "The Debugger",
