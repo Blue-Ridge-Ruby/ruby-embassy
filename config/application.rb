@@ -25,5 +25,11 @@ module RubyEmbassy
     # config.eager_load_paths << Rails.root.join("extras")
     MissionControl::Jobs.http_basic_auth_user = ENV["MISSION_CONTROL_USER"]
     MissionControl::Jobs.http_basic_auth_password = ENV["MISSION_CONTROL_PASSWORD"]
+
+    # Render branded error pages via routes -> ErrorsController. Uses the
+    # regular application layout so the nav + footer + fonts match the
+    # rest of the app. public/*.html were removed so direct browser hits
+    # to /404 also route through Rails instead of hitting ActionDispatch::Static.
+    config.exceptions_app = self.routes
   end
 end

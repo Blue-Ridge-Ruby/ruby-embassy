@@ -1,0 +1,20 @@
+<% content_for(:title, "Page not found · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8 text-center">
+    <p class="error-code">404</p>
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-navy mb-4">
+      Page not found
+    </h1>
+    <p class="text-lg leading-relaxed text-gray mb-8">
+      The page you were looking for doesn't exist or may have moved.
+      It's not you — probably.
+    </p>
+    <div class="flex gap-3 justify-center">
+      <a href="https://blueridgeruby.com" rel="noopener noreferrer" class="btn btn-red">
+        Back to main site
+      </a>
+      <%= link_to "Back to dashboard", dashboard_path, class: "btn btn-muted" %>
+    </div>
+  </div>
+</section>
