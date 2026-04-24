@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_action :authenticate_user!, only: %i[new create callback]
+
   REGISTER_URL = "https://blueridgeruby.com/#register".freeze
 
   def new

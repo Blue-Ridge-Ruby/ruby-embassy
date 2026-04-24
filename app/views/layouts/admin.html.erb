@@ -18,17 +18,18 @@
 
   <body class="bg-gray-50">
     <nav class="admin-nav">
-      <span class="font-semibold">Ruby Embassy Admin</span>
+      <%= link_to "Ruby Embassy Admin", admin_root_path, class: "font-semibold" %>
       <%= link_to "Users", admin_users_path %>
+      <%= link_to "Schedule Items", admin_schedule_items_path %>
       <%= link_to "Jobs", "/admin/jobs" %>
       <span class="ml-auto flex items-center gap-4">
-        <%= link_to "Dashboard", dashboard_path %>
+        <%= link_to "My dashboard", dashboard_path %>
         <%= button_to "Sign out", session_path, method: :delete, class: "admin-nav-btn" %>
       </span>
     </nav>
 
     <main class="px-8 py-10">
-      <div class="max-w-4xl mx-auto">
+      <div class="<%= content_for?(:container_width) ? yield(:container_width) : 'max-w-4xl' %> mx-auto">
         <% if flash[:notice] %>
           <div class="alert alert-notice"><%= flash[:notice] %></div>
         <% end %>

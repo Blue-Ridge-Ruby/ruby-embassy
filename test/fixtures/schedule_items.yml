@@ -1,0 +1,1 @@
+# ScheduleItem fixtures. Keep minimal; most tests build items inline via valid_attrs.

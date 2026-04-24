@@ -1,0 +1,20 @@
+<% content_for(:title, "Propose an activity · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Propose an activity
+    </h1>
+
+    <p class="plan-intro">
+      Add a dinner, hike, or meetup. Keep it private (just you) or share it with all attendees so they can RSVP.
+    </p>
+
+    <%# Shared turbo_frame id with /plan's "+ Add custom block" link —
+        on /plan this fragment is extracted into that frame (form
+        expands inline). On direct visit, the surrounding page renders. %>
+    <%= turbo_frame_tag "new_schedule_item_#{@schedule_item.day}" do %>
+      <%= render "form", schedule_item: @schedule_item %>
+    <% end %>
+  </div>
+</section>

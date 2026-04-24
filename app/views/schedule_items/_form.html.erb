@@ -1,0 +1,51 @@
+<% if schedule_item.errors.any? %>
+  <div class="alert alert-error mb-4">
+    <ul class="list-disc">
+      <% schedule_item.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="card card-compact">
+  <%= form_with model: schedule_item, class: "space-y-4" do |f| %>
+    <%# Day is implied by the plan section this form was opened from —
+        ScheduleItemsController#new seeds @schedule_item.day from params[:day].
+        We render it as a hidden field so admins-browsing-as-attendees still
+        submit the intended day without an extra dropdown. %>
+    <%= f.hidden_field :day %>
+
+    <div class="field-grid-3">
+      <div>
+        <%= f.label :title, class: "label" %>
+        <%= f.text_field :title, required: true, class: "input", placeholder: "e.g., Dinner with crew" %>
+      </div>
+
+      <div>
+        <%= f.label :location, "Location", class: "label" %>
+        <%= f.text_field :location, class: "input", placeholder: "e.g., Tupelo Honey" %>
+      </div>
+
+      <div>
+        <%= f.label :time_label, "Time", class: "label" %>
+        <%= f.text_field :time_label, class: "input", placeholder: "e.g., 6:30 PM" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :description, "Description (optional)", class: "label" %>
+      <%= f.text_area :description, rows: 3, class: "input" %>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <%= f.check_box :is_public %>
+      <%= f.label :is_public, "Share with all attendees — they can RSVP" %>
+    </div>
+
+    <div class="flex gap-3 pt-4">
+      <%= f.submit (schedule_item.new_record? ? "Add to my plan" : "Save changes"), class: "btn btn-red" %>
+      <%= link_to "Cancel", plan_path, class: "btn btn-muted", data: { turbo_frame: "_top" } %>
+    </div>
+  <% end %>
+</div>

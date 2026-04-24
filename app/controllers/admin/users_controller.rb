@@ -4,6 +4,27 @@ module Admin
       @users = User.order(:last_name, :first_name)
     end
 
+    def show
+      @user = User.find(params[:id])
+
+      all_plan_items = @user.plan_items
+                            .includes(:schedule_item)
+                            .sort_by { |pi|
+                              [
+                                ScheduleItem::DAY_META.keys.index(pi.schedule_item.day) || 99,
+                                pi.schedule_item.sort_time.to_i
+                              ]
+                            }
+      @embassy_plan_items = all_plan_items.select { |pi| pi.schedule_item.embassy? }
+      @other_plan_items   = all_plan_items - @embassy_plan_items
+
+      # "Hosting" = any schedule_item whose host string matches this user's
+      # full_name. Catches both admin-dropdown assignments and user-created
+      # custom blocks (the user-facing controller auto-sets host to
+      # current_user.full_name on create).
+      @hosted_items = ScheduleItem.where(host: @user.full_name).ordered
+    end
+
     def new
       @user = User.new
     end

@@ -1,0 +1,46 @@
+<h1 class="text-2xl font-bold text-navy mb-6">Admin Dashboard</h1>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+  <div class="stat-card">
+    <div class="stat-card__label">Users</div>
+    <div class="stat-card__value"><%= @total_users %></div>
+    <div class="stat-card__sub">
+      <%= @user_counts["admin"] || 0 %> admin ·
+      <%= @user_counts["volunteer"] || 0 %> volunteer ·
+      <%= @user_counts["attendee"] || 0 %> attendee
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__label">Schedule Items</div>
+    <div class="stat-card__value"><%= @total_schedule_items %></div>
+    <div class="stat-card__sub"><%= @public_items %> public</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__label">RSVPs / Plans</div>
+    <div class="stat-card__value"><%= @total_rsvps %></div>
+    <div class="stat-card__sub">across all items</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__label">Days until kickoff</div>
+    <div class="stat-card__value"><%= [ (Date.new(2026, 4, 29) - Date.current).to_i, 0 ].max %></div>
+    <div class="stat-card__sub">Wed, Apr 29 2026</div>
+  </div>
+</div>
+
+<h2 class="text-lg font-semibold text-navy mb-3">Manage</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <%= link_to admin_users_path, class: "nav-card" do %>
+    <div class="nav-card__title">Users</div>
+    <div class="nav-card__desc">Manage attendees, volunteers, and admins. Sync from Tito.</div>
+  <% end %>
+
+  <%= link_to admin_schedule_items_path, class: "nav-card" do %>
+    <div class="nav-card__title">Schedule Items</div>
+    <div class="nav-card__desc">Full CRUD over the conference agenda — talks, lightning, embassy, activities.</div>
+  <% end %>
+
+  <%= link_to "/admin/jobs", class: "nav-card" do %>
+    <div class="nav-card__title">Jobs</div>
+    <div class="nav-card__desc">Inspect background jobs and the Solid Queue dashboard.</div>
+  <% end %>
+</div>

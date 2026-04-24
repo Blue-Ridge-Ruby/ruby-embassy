@@ -13,3 +13,13 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
   end
 end
+
+module SignInTestHelper
+  def sign_in_as(user)
+    post callback_session_url(token: user.generate_token_for(:login))
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  include SignInTestHelper
+end

@@ -1,8 +1,6 @@
 class ScheduleController < ApplicationController
-  SCHEDULE_PATH = Rails.root.join("config", "schedule.yml")
-
   def index
-    data = YAML.load_file(SCHEDULE_PATH, permitted_classes: [ Symbol ])
-    @days = data[:days]
+    @items_by_day = ScheduleItem.public_items.ordered.group_by(&:day)
+    @planned_ids  = current_user.plan_items.pluck(:schedule_item_id).to_set
   end
 end

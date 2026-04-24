@@ -1,0 +1,49 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-navy">Schedule Items</h1>
+  <%= link_to "Add item", new_admin_schedule_item_path, class: "btn btn-red" %>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>Time</th>
+      <th>Info</th>
+      <th>Kind</th>
+      <th>Public?</th>
+      <th>Host</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @schedule_items.each do |item| %>
+      <tr>
+        <td><%= ScheduleItem::DAY_META.dig(item.day, :label) || item.day %></td>
+        <td><%= item.time_label %></td>
+        <td>
+          <div class="font-medium text-navy"><%= item.title %></div>
+          <% if item.location.present? %>
+            <div class="text-gray text-sm"><%= item.location %></div>
+          <% end %>
+          <% if item.description.present? %>
+            <div class="text-gray text-sm"><%= item.description %></div>
+          <% end %>
+        </td>
+        <td><span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span></td>
+        <td><%= item.is_public? ? "Public" : "Private" %></td>
+        <td><%= item.host.presence || "—" %></td>
+        <td class="text-right">
+          <div class="flex gap-2 justify-end">
+            <%= link_to "Edit", edit_admin_schedule_item_path(item), class: "btn btn-muted" %>
+            <%= button_to "Delete", admin_schedule_item_path(item),
+                  method: :delete,
+                  data: { turbo_confirm: "Delete '#{item.title}'? RSVPs will also be removed." },
+                  class: "btn btn-red" %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,8 +1,6 @@
 ---
 # Blue Ridge Ruby 2025 conference schedule.
-# Item types: talk, social, logistics, activity, lightning
-# `added: true` is a design-only flag that marks items as "already in the user's plan"
-# so the static mockup can show both default and added button states without JS.
+# Item kinds: talk, lightning, embassy, activity
 # `flexible: true` renders the item with a dashed/TBD treatment (Saturday activities).
 
 :days:
@@ -15,9 +13,8 @@
         :time: "7:00 PM"
         :sort_time: 1900
         :title: "Pre-Conference Meetup"
-        :type: social
+        :type: activity
         :location: "Wicked Weed Brew Pub"
-        :added: true
 
   - :anchor: thu
     :date: "April 30"
@@ -28,37 +25,35 @@
         :time: "8:00 AM"
         :sort_time: 800
         :title: "Registration & Coffee"
-        :type: logistics
+        :type: embassy
       - :id: thu-welcome
         :time: "9:00 AM"
         :sort_time: 900
         :title: "Welcome"
-        :type: logistics
+        :type: embassy
       - :id: thu-talk-1
         :time: "9:30 AM"
         :sort_time: 930
-        :title: "John Athayde"
-        :talk_title: "Learning from Permaculture: Sustainable Software Development"
+        :host: "John Athayde"
+        :title: "Learning from Permaculture: Sustainable Software Development"
         :type: talk
-        :added: true
       - :id: thu-talk-2
         :time: "10:30 AM"
         :sort_time: 1030
-        :title: "Joël Quenneville"
-        :talk_title: "State is the First Decision You Never Made"
+        :host: "Joël Quenneville"
+        :title: "State is the First Decision You Never Made"
         :type: talk
-        :added: true
       - :id: thu-talk-3
         :time: "11:30 AM"
         :sort_time: 1130
-        :title: "Ifat Ribon"
-        :talk_title: "Yes, &…: Ruby's Secret Talent for Improvisation"
+        :host: "Ifat Ribon"
+        :title: "Yes, &…: Ruby's Secret Talent for Improvisation"
         :type: talk
       - :id: thu-lunch
         :time: "12:00 PM"
         :sort_time: 1200
         :title: "Open Lunch"
-        :type: social
+        :type: activity
       - :id: thu-mystery
         :time: "2:00 PM"
         :sort_time: 1400
@@ -67,20 +62,20 @@
       - :id: thu-talk-4
         :time: "3:00 PM"
         :sort_time: 1500
-        :title: "Annie Kiley"
-        :talk_title: "How To Finish What You Start: Lessons From Actually Shipping a Big Refactor"
+        :host: "Annie Kiley"
+        :title: "How To Finish What You Start: Lessons From Actually Shipping a Big Refactor"
         :type: talk
       - :id: thu-talk-5
         :time: "4:00 PM"
         :sort_time: 1600
-        :title: "Kevin Murphy"
-        :talk_title: "InstiLLment of Successful Practices in an Agentic World"
+        :host: "Kevin Murphy"
+        :title: "InstiLLment of Successful Practices in an Agentic World"
         :type: talk
       - :id: thu-dinner
         :time: "Evening"
         :sort_time: 1800
         :title: "Open Dinner & Roundtable"
-        :type: social
+        :type: activity
 
   - :anchor: fri
     :date: "May 1"
@@ -91,51 +86,48 @@
         :time: "8:00 AM"
         :sort_time: 800
         :title: "Coffee"
-        :type: logistics
+        :type: embassy
       - :id: fri-talk-1
         :time: "9:30 AM"
         :sort_time: 930
-        :title: "Brooke Kuhlmann"
-        :talk_title: "Terminus: A Hanami + htmx web application for e-ink devices"
+        :host: "Brooke Kuhlmann"
+        :title: "Terminus: A Hanami + htmx web application for e-ink devices"
         :type: talk
-        :added: true
       - :id: fri-talk-2
         :time: "10:30 AM"
         :sort_time: 1030
-        :title: "Rachael Wright-Munn"
-        :talk_title: "Your First Open-Source Contribution"
+        :host: "Rachael Wright-Munn"
+        :title: "Your First Open-Source Contribution"
         :type: talk
       - :id: fri-talk-3
         :time: "11:30 AM"
         :sort_time: 1130
-        :title: "David Paluy"
-        :talk_title: "LLM Telemetry as a First-Class Rails Concern"
+        :host: "David Paluy"
+        :title: "LLM Telemetry as a First-Class Rails Concern"
         :type: talk
       - :id: fri-lightning
         :time: "2:00 PM"
         :sort_time: 1400
         :title: "Lightning Talks"
         :type: lightning
-        :added: true
       - :id: fri-talk-4
         :time: "3:30 PM"
         :sort_time: 1530
-        :title: "Christine Seeman"
-        :talk_title: "Optimize Your Mindset (Without Overclocking)"
+        :host: "Christine Seeman"
+        :title: "Optimize Your Mindset (Without Overclocking)"
         :type: talk
       - :id: fri-talk-5
         :time: "4:30 PM"
         :sort_time: 1630
-        :title: "Thomas Cannon"
-        :talk_title: "5 ways to invest in yourself for the long haul"
+        :host: "Thomas Cannon"
+        :title: "5 ways to invest in yourself for the long haul"
         :type: talk
       - :id: fri-afterparty
         :time: "Evening"
         :sort_time: 1900
         :title: "Afterparty"
-        :type: social
+        :type: activity
         :location: "Burial Beer Co. South Slope"
-        :added: true
 
   - :anchor: sat
     :date: "May 2"
@@ -152,7 +144,7 @@
         :time: "Morning Block"
         :sort_time: 1000
         :title: "Ruby Embassy Appointments"
-        :type: activity
+        :type: embassy
         :flexible: true
       - :id: sat-afternoon
         :time: "Afternoon"
@@ -164,11 +156,11 @@
         :time: "Afternoon Block"
         :sort_time: 1400
         :title: "Ruby Embassy Appointments"
-        :type: activity
+        :type: embassy
         :flexible: true
       - :id: sat-evening
         :time: "Evening"
         :sort_time: 1800
         :title: "Evening Activities"
-        :type: social
+        :type: activity
         :flexible: true

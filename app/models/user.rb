@@ -1,6 +1,14 @@
 class User < ApplicationRecord
   enum :role, { attendee: 0, volunteer: 1, admin: 2 }
 
+  has_many :plan_items, dependent: :destroy
+  has_many :planned_schedule_items, through: :plan_items, source: :schedule_item
+  has_many :created_schedule_items,
+           class_name: "ScheduleItem",
+           foreign_key: :created_by_id,
+           dependent: :nullify,
+           inverse_of: :created_by
+
   before_save :memorialize_tito_config
 
   generates_token_for :login, expires_in: 30.days

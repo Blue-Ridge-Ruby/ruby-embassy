@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   stale_when_importmap_changes
 
+  before_action :authenticate_user!
+
   helper_method :current_user, :admin?
 
   private
@@ -23,11 +25,6 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin!
-    authenticate_user!
-    return if performed?
-
-    unless admin?
-      redirect_to dashboard_path, alert: "Admins only."
-    end
+    raise ActiveRecord::RecordNotFound unless current_user&.admin?
   end
 end
