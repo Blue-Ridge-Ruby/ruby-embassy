@@ -1233,3 +1233,1239 @@ hr {
   background-color: #eef1f4;
   border-radius: 999px;
 }
+
+/* ============================================================
+   EMBASSY (mockup)
+   ============================================================ */
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.flex-1 { flex: 1 1 auto; }
+
+/* Embassy page wrappers ------------------------------------------------ */
+
+.embassy-doc {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  font-family: "colfax-web", "Inter", system-ui, sans-serif;
+  color: #0C2866;
+  position: relative;
+}
+
+.embassy-doc__header {
+  text-align: center;
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 3px double #0C2866;
+}
+
+.embassy-doc__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  font-size: 2.75rem;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  color: #0C2866;
+  margin: 0.25rem 0;
+}
+
+.embassy-doc__subtitle {
+  font-size: 1.0625rem;
+  color: #404040;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+.embassy-form-code {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  color: #7a8189;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+  text-transform: none;
+}
+
+/* Section headers (form + ceremony) ------------------------------------ */
+
+.embassy-section-header {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.375rem;
+  color: #0C2866;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 3px double #0C2866;
+}
+
+.embassy-section-subhead {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #0C2866;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.5rem;
+}
+
+/* Definition list used on booking confirm + confirmation pages --------- */
+
+.embassy-dl {
+  display: grid;
+  grid-template-columns: minmax(8rem, 11rem) 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.embassy-dl dt {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a8189;
+  font-weight: 600;
+}
+
+.embassy-dl dd {
+  font-size: 0.9375rem;
+  color: #0C2866;
+  margin: 0;
+}
+
+/* Booking confirm actions --------------------------------------------- */
+
+/* button_to wraps its button in a <form>, which is block-level by default.
+   Forcing the wrapper to display: flex puts the Confirm button, optional
+   "Change purpose" link, and Cancel link side-by-side with consistent
+   spacing. */
+.embassy-confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.embassy-confirm__actions form { margin: 0; }
+
+/* Booking mode picker -------------------------------------------------- */
+
+.embassy-mode-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 720px) {
+  .embassy-mode-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.embassy-mode-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border: 2px solid #d9dee1;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+}
+
+.embassy-mode-card:hover {
+  border-color: #C41C1C;
+  background: #fef7f7;
+  box-shadow: 0 2px 6px rgba(196, 28, 28, 0.08);
+}
+
+.embassy-mode-card__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #0C2866;
+  margin: 0;
+}
+
+.embassy-mode-card__desc {
+  font-size: 0.875rem;
+  color: #404040;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.embassy-mode-card__cta {
+  margin-top: 0.5rem;
+  align-self: flex-end;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #C41C1C;
+}
+
+/* Schedule-item embassy label / capacity ------------------------------- */
+
+.embassy-mode-label {
+  font-size: 0.8125rem;
+  color: #7a8189;
+  font-style: italic;
+  margin: 0.125rem 0 0;
+  letter-spacing: 0.01em;
+}
+
+.embassy-capacity {
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #7a8189;
+  margin: 0.375rem 0 0;
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+.add-btn--disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+/* Stamping-only confirmation page -------------------------------------- */
+
+.embassy-stamping-confirmation {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  position: relative;
+}
+
+.embassy-confirmation-seal {
+  display: inline-block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  font-size: 1.125rem;
+  letter-spacing: 0.2em;
+  color: #C41C1C;
+  border: 3px double #C41C1C;
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 1.5rem;
+  transform: rotate(-4deg);
+  text-transform: uppercase;
+}
+
+.embassy-confirmation-seal--inline {
+  transform: none;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  letter-spacing: 0.15em;
+}
+
+.embassy-confirmation-detail {
+  font-size: 1rem;
+  color: #404040;
+  margin: 0.5rem 0;
+}
+
+.embassy-confirmation-time {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0C2866;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.embassy-confirmation-separator {
+  color: #7a8189;
+  font-weight: 400;
+  margin: 0 0.375rem;
+}
+
+.embassy-confirmation-location {
+  font-size: 0.9375rem;
+  color: #404040;
+  margin: 0;
+}
+
+.embassy-etiquette { text-align: left; }
+.embassy-etiquette ul { list-style: disc; padding-left: 1.5rem; font-size: 0.875rem; color: #404040; }
+.embassy-etiquette li { margin: 0.25rem 0; }
+
+/* Appointment card (shared) -------------------------------------------- */
+
+.embassy-appointment-card {
+  position: relative;
+  padding: 1.5rem 1.25rem 1.25rem;
+  background: #ffffff;
+  border-top: 4px double #C41C1C;
+  border-left: 1px solid #d9dee1;
+  border-right: 1px solid #d9dee1;
+  border-bottom: 1px solid #d9dee1;
+  border-radius: 0 0 0.375rem 0.375rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.embassy-appointment-card__serial {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.875rem;
+  font-size: 0.6875rem;
+  color: #7a8189;
+  letter-spacing: 0.08em;
+}
+
+.embassy-appointment-card__eyebrow {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #C41C1C;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.embassy-appointment-card__when {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0C2866;
+  margin: 0 0 0.125rem;
+  line-height: 1.15;
+}
+
+.embassy-appointment-card__dot {
+  color: #7a8189;
+  font-weight: 400;
+  margin: 0 0.375rem;
+}
+
+.embassy-appointment-card__where {
+  font-size: 0.9375rem;
+  color: #404040;
+  margin: 0 0 0.75rem;
+}
+
+.embassy-appointment-card__dl {
+  display: grid;
+  grid-template-columns: minmax(5rem, 7rem) 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eef1f4;
+}
+
+.embassy-appointment-card__dl dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a8189;
+}
+
+.embassy-appointment-card__dl dd {
+  font-size: 0.875rem;
+  color: #0C2866;
+  margin: 0;
+}
+
+.embassy-appointment-card--submitted { border-top-color: #0C2866; }
+.embassy-appointment-card--stamping  { border-top-color: #2672B5; }
+.embassy-appointment-card--pending   { border-top-color: #C41C1C; border-top-style: dashed; }
+.embassy-appointment-card--expired   { border-top-color: #7a8189; border-top-style: dashed; opacity: 0.9; }
+
+/* Countdown pill ------------------------------------------------------- */
+
+.embassy-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  background: #fef3c7;
+  color: #8A5A00;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+/* Application form canvas (and PDF canvas) ----------------------------- */
+
+.application-canvas {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  background: #ffffff;
+  color: #0C2866;
+  font-family: "colfax-web", "Inter", system-ui, sans-serif;
+  position: relative;
+}
+
+.application-canvas__header {
+  text-align: center;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 3px double #0C2866;
+  position: relative;
+}
+
+.application-canvas__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  font-size: 2.25rem;
+  letter-spacing: 0.03em;
+  margin: 0.25rem 0;
+  color: #0C2866;
+}
+
+.application-canvas__subtitle {
+  font-size: 1rem;
+  color: #404040;
+  font-style: italic;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.application-canvas__instructions {
+  font-size: 0.875rem;
+  color: #525C66;
+  max-width: 36rem;
+  margin: 1rem auto 0;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.application-canvas__footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 3px double #0C2866;
+  position: relative;
+  text-align: center;
+}
+
+.application-canvas__serial {
+  position: absolute;
+  right: 0;
+  top: 1.5rem;
+  font-size: 0.8125rem;
+  color: #7a8189;
+  letter-spacing: 0.08em;
+}
+
+.application-canvas__actions {
+  display: inline-flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.application-canvas__footer-note {
+  font-size: 0.75rem;
+  font-style: italic;
+  margin-top: 1rem;
+  max-width: 30rem;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.75rem;
+  font-size: 1rem;
+}
+
+/* Form section --------------------------------------------------------- */
+
+.embassy-section {
+  margin: 2rem 0;
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid #d9dee1;
+  border-top: 3px solid #0C2866;
+  border-radius: 0 0 0.375rem 0.375rem;
+  background: #ffffff;
+}
+
+.embassy-section__header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #eef1f4;
+}
+
+.embassy-section__number {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: #7a8189;
+  text-transform: uppercase;
+}
+
+.embassy-section__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.375rem;
+  color: #0C2866;
+  margin: 0;
+  letter-spacing: 0.015em;
+}
+
+.embassy-section__instructions {
+  font-size: 0.8125rem;
+  color: #525C66;
+  font-style: italic;
+  margin: 0 0 1rem;
+}
+
+.embassy-section__questions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Question ------------------------------------------------------------- */
+
+.embassy-question__label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0C2866;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.embassy-question__number {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #7a8189;
+  margin-right: 0.375rem;
+  font-size: 0.8125rem;
+}
+
+.embassy-question__required {
+  color: #C41C1C;
+  font-weight: 700;
+  margin-left: 0.125rem;
+}
+
+.embassy-question__help {
+  font-size: 0.75rem;
+  color: #7a8189;
+  margin: 0 0 0.375rem;
+  font-style: italic;
+}
+
+.embassy-question__input {
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.9375rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #0C2866;
+  font-family: inherit;
+}
+
+.embassy-question__input:focus {
+  outline: 2px solid #2672B5;
+  outline-offset: -1px;
+  border-color: #2672B5;
+  box-shadow: 0 0 0 3px rgba(38, 114, 181, 0.15);
+}
+
+.embassy-question__input--long { min-height: 4.5rem; resize: vertical; }
+.embassy-question__input--date { max-width: 14rem; }
+
+.embassy-question__checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  background: #f9fafb;
+  font-size: 0.875rem;
+  color: #404040;
+}
+
+.embassy-question__checkbox input { margin-top: 0.25rem; }
+
+.embassy-serial {
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+}
+
+/* Ceremony page -------------------------------------------------------- */
+
+.embassy-ceremony { display: flex; flex-direction: column; gap: 2rem; }
+
+.embassy-ceremony__callout {
+  text-align: center;
+  padding: 1.5rem;
+  background: #fef7f7;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+}
+
+.embassy-ceremony__serial-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: #7a8189;
+  margin: 0 0 0.375rem;
+}
+
+.embassy-ceremony__serial-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #C41C1C;
+  margin: 0;
+  letter-spacing: 0.08em;
+}
+
+.embassy-ceremony__serial-note {
+  font-size: 0.8125rem;
+  color: #525C66;
+  margin: 0.5rem 0 0;
+}
+
+.embassy-ceremony__download { text-align: center; }
+
+.embassy-ceremony__preview {
+  padding: 1rem;
+  background: #f9fafb;
+  border: 1px dashed #d9dee1;
+  border-radius: 0.375rem;
+}
+
+.embassy-ceremony__preview .application-canvas {
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #d9dee1;
+}
+
+.embassy-ceremony__back { display: flex; gap: 0.75rem; justify-content: center; }
+
+/* Expired state -------------------------------------------------------- */
+
+.embassy-expired {
+  text-align: center;
+  padding: 1.75rem 1.5rem;
+  background: #f9fafb;
+  border-left: 3px dashed #7a8189;
+}
+
+.embassy-expired__stamp {
+  display: inline-block;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  font-size: 0.875rem;
+  letter-spacing: 0.25em;
+  color: #7a8189;
+  border: 2px double #7a8189;
+  padding: 0.375rem 0.875rem;
+  margin-bottom: 1rem;
+  transform: rotate(-3deg);
+}
+
+.embassy-expired__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #0C2866;
+  margin: 0 0 0.5rem;
+}
+
+.embassy-expired__body {
+  font-size: 0.9375rem;
+  color: #525C66;
+  max-width: 32rem;
+  margin: 0 auto 1rem;
+  line-height: 1.5;
+}
+
+/* Plan-item embassy variant -------------------------------------------- */
+
+.plan-item--embassy {
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin-bottom: 0.875rem;
+  background: #ffffff;
+  border: 1px solid #d9dee1;
+  /* The 4px double-line stripe lives on the outer wrapper so it spans
+     the full card width — including the × column. State variants below
+     override border-top-color / style. */
+  border-top: 4px double #C41C1C;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+}
+
+.plan-item--embassy:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.plan-item__embassy-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.plan-item__embassy-body .embassy-appointment-card {
+  /* Inner card loses all decoration — the outer .plan-item--embassy
+     owns the stripe + borders. This keeps the stripe full-width across
+     both the embassy-body and the × column. */
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.plan-item__embassy-action {
+  padding: 0.875rem 1.25rem 1rem;
+  border-top: 1px solid #eef1f4;
+  background: #fbfcfd;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+
+.plan-item__embassy-action .btn { align-self: flex-start; }
+
+.plan-item__embassy-note {
+  font-size: 0.875rem;
+  color: #525C66;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.plan-item--embassy-expired {
+  border-top-style: dashed;
+  border-top-color: #7a8189;
+}
+
+.plan-item--embassy-submitted { border-top-color: #0C2866; }
+.plan-item--embassy-stamping  { border-top-color: #2672B5; }
+.plan-item--embassy-pending   { border-top-style: dashed; }
+
+/* Admin question bank sections ---------------------------------------- */
+
+.embassy-bank-section {
+  margin: 2rem 0 1rem;
+}
+
+.embassy-bank-section__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eef1f4;
+}
+
+.embassy-bank-section__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #0C2866;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.embassy-bank-section__hint {
+  font-size: 0.8125rem;
+  color: #7a8189;
+  margin: 0.125rem 0 0;
+  font-style: italic;
+}
+
+.badge-scope {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge-scope--common {
+  background: #EEF1F4;
+  color: #525C66;
+}
+
+.badge-scope--random {
+  background: #fef3c7;
+  color: #8A5A00;
+  border: 1px solid #f6d97a;
+}
+
+.badge-scope--notary {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #e3ccff;
+}
+
+.embassy-bank-category {
+  font-family: "colfax-web", "Inter", system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #525C66;
+  margin: 1rem 0 0.375rem;
+  padding: 0.25rem 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  border-bottom: 1px dotted #d9dee1;
+}
+
+.embassy-bank-category__count {
+  font-size: 0.75rem;
+  color: #7a8189;
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Admin question bank badges (extras for new types) -------------------- */
+
+.badge-short    { background: #EEF1F4; color: #525C66; }
+.badge-long     { background: #EEF1F4; color: #525C66; }
+.badge-select   { background: #E0ECFF; color: #2672B5; }
+.badge-checkbox { background: #fef3c7; color: #8A5A00; }
+.badge-date     { background: #F3E8FF; color: #7E22CE; }
+
+/* Admin schedule-items form disclosure --------------------------------- */
+
+.embassy-form-extras {
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  background: #fefcf7;
+  border-left: 3px solid #C41C1C;
+  border-radius: 0.25rem;
+}
+
+.embassy-form-extras summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #0C2866;
+}
+
+.embassy-form-extras__body {
+  margin-top: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Admin serial list ---------------------------------------------------- */
+
+.embassy-serial-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0.375rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.embassy-serial-list li {
+  padding: 0.375rem 0.5rem;
+  background: #f9fafb;
+  border: 1px solid #eef1f4;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  text-align: center;
+  letter-spacing: 0.06em;
+  color: #0C2866;
+}
+
+/* PDF page (screen preview + print) ------------------------------------ */
+
+.application-canvas--pdf {
+  background: #ffffff;
+  border: 1px solid #d9dee1;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 48rem;
+}
+
+.application-canvas--blank { margin-top: 1rem; }
+
+.pdf-page {
+  padding: 2.5rem 2.75rem 2rem;
+  color: #000000;
+  font-family: "colfax-web", "Inter", system-ui, sans-serif;
+  min-height: 55rem;
+  position: relative;
+}
+
+.pdf-page__header {
+  padding-bottom: 1rem;
+  border-bottom: 2px double #000000;
+  margin-bottom: 1.5rem;
+}
+
+.pdf-page__header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.pdf-page__form-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+  color: #000000;
+  letter-spacing: 0.04em;
+}
+
+.pdf-page__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 900;
+  font-size: 1.875rem;
+  letter-spacing: 0.15em;
+  margin: 0;
+  text-align: center;
+  color: #000000;
+}
+
+.pdf-page__subtitle {
+  font-size: 0.9375rem;
+  font-style: italic;
+  text-align: center;
+  margin: 0.25rem 0 0.75rem;
+  color: #000000;
+}
+
+.pdf-page__meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem 1rem;
+  margin: 0.5rem 0 0;
+}
+
+.pdf-page__meta dt {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #000000;
+  margin: 0;
+}
+
+.pdf-page__meta dd {
+  font-size: 0.8125rem;
+  color: #000000;
+  margin: 0;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 0.125rem;
+}
+
+.embassy-stamp {
+  width: 72px;
+  height: 72px;
+  color: #000000;
+  flex-shrink: 0;
+}
+
+.pdf-section {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid #000000;
+  page-break-inside: avoid;
+}
+
+.pdf-section__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #000000;
+  margin: 0 0 0.625rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #000000;
+}
+
+.pdf-q {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.375rem 0;
+  border-bottom: 1px dotted #000000;
+}
+
+.pdf-q:last-child { border-bottom: none; }
+
+.pdf-q__id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #000000;
+  min-width: 1.75rem;
+}
+
+.pdf-q__body { flex: 1; min-width: 0; }
+
+.pdf-q__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.125rem;
+  color: #000000;
+}
+
+.pdf-q__answer {
+  font-size: 0.875rem;
+  color: #000000;
+  min-height: 1.25rem;
+  border-bottom: 1px solid #000000;
+  padding: 0.125rem 0.25rem;
+}
+
+.pdf-q__answer--blank { min-height: 1.5rem; border-bottom: 1px solid #000000; }
+.pdf-q__answer--long  { display: block; min-height: 2.5rem; line-height: 1.4; }
+
+.pdf-signature {
+  margin: 1.5rem 0 1rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid #000000;
+}
+
+.pdf-signature__row {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.pdf-signature__line {
+  border-bottom: 1px solid #000000;
+  min-height: 1.75rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+.pdf-signature__signature {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: #000000;
+}
+
+.pdf-signature__date {
+  border-bottom: 1px solid #000000;
+  min-height: 1.75rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+.pdf-signature__datevalue {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+}
+
+.pdf-signature__captions {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1rem;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #000000;
+  padding: 0 0.5rem;
+}
+
+.pdf-page__footer {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 2.75rem;
+  right: 2.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 0.5rem;
+  border-top: 1px solid #000000;
+  font-size: 0.6875rem;
+  color: #000000;
+  letter-spacing: 0.05em;
+}
+
+.pdf-page__serial {
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+/* Checkbox group (multi-select on form) ------------------------------- */
+
+.embassy-question__group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+@media (min-width: 560px) {
+  .embassy-question__group { grid-template-columns: 1fr 1fr; }
+}
+
+.embassy-question__group-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #404040;
+  cursor: pointer;
+}
+
+.embassy-question__group-option input { margin-top: 0.25rem; flex-shrink: 0; }
+
+/* PDF-rendered checkbox group ----------------------------------------- */
+
+.pdf-q__checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.125rem 1rem;
+}
+
+.pdf-q__checklist li {
+  font-size: 0.8125rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #000000;
+  line-height: 1.5;
+}
+
+/* Notary page (PDF addendum) ------------------------------------------ */
+
+.pdf-page--notary { padding-top: 2rem; }
+
+.pdf-notary__preamble {
+  font-size: 0.875rem;
+  color: #000000;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+
+.pdf-notary__assignment {
+  margin: 1rem 0 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid #000000;
+  background: #ffffff;
+}
+
+.pdf-notary__preface {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #000000;
+  margin: 0 0 0.375rem;
+}
+
+.pdf-notary__description {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.pdf-notary__followups { margin-bottom: 1.75rem; }
+
+.pdf-q--notary .pdf-q__answer--blank {
+  min-height: 1.75rem;
+  border-bottom: 1px solid #000000;
+}
+
+.pdf-notary__certification {
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 2px double #000000;
+}
+
+.pdf-notary__field {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  align-items: end;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.pdf-notary__field-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #000000;
+}
+
+.pdf-notary__field-line {
+  border-bottom: 1px solid #000000;
+  min-height: 1.5rem;
+}
+
+/* Print media: strip nav/chrome so Print Preview shows only the PDF ---- */
+
+@media print {
+  body { background: #ffffff !important; }
+
+  /* Hide ALL page chrome. The ceremony page, admin detail page, and
+     blank-pdf preview all wrap the PDF inside .application-canvas--pdf;
+     @media print keeps only that and hides everything else. */
+  .admin-nav, nav, header, footer,
+  .embassy-doc__header,
+  .embassy-ceremony > .embassy-appointment-card,
+  .embassy-ceremony__callout,
+  .embassy-ceremony__download,
+  .embassy-ceremony__etiquette,
+  .embassy-ceremony__back,
+  .embassy-ceremony__preview > h2,
+  .embassy-ceremony__preview > p,
+  .flex.items-center.justify-between,  /* admin page h1 + actions row */
+  .btn, .alert { display: none !important; }
+
+  .application-canvas,
+  .application-canvas--pdf {
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .embassy-ceremony__preview {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .embassy-ceremony__preview .application-canvas {
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .pdf-page {
+    page-break-after: always;
+    padding: 1rem 1.25rem;
+    min-height: auto;
+  }
+  .pdf-page--notary { page-break-before: always; }
+}
+

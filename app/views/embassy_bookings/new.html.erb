@@ -1,0 +1,39 @@
+<% content_for :title, "Booking Confirmation — Ruby Embassy" %>
+
+<div class="embassy-doc">
+  <header class="embassy-doc__header">
+    <p class="embassy-form-code">Form RUBY-1.0-MATZ · Rev. 04/2026</p>
+    <h1 class="embassy-doc__title">Ruby Embassy</h1>
+    <p class="embassy-doc__subtitle">Application for Appointment · Booking Confirmation</p>
+  </header>
+
+  <section class="card mb-6">
+    <h2 class="embassy-section-header">Particulars of the Block</h2>
+    <dl class="embassy-dl">
+      <dt>Date &amp; Time</dt>
+      <dd><%= ScheduleItem::DAY_META.dig(@schedule_item.day, :label) %> · <%= @schedule_item.time_label %></dd>
+
+      <dt>Location</dt>
+      <dd><%= @schedule_item.location.presence || "Embassy Office · Main Hall" %></dd>
+
+      <dt>Block classification</dt>
+      <dd>
+        <%= FakeEmbassy.mode_label(@block_mode) %>
+        <% if @block_mode == "both" %>
+          <span class="text-muted">(Applicant to elect below)</span>
+        <% end %>
+      </dd>
+
+      <dt>Seats available</dt>
+      <dd><%= FakeEmbassy.seats_remaining(@schedule_item.id) %> of <%= @capacity %></dd>
+    </dl>
+  </section>
+
+  <%= turbo_frame_tag :booking_body do %>
+    <% if @chosen_mode.nil? && @block_mode == "both" %>
+      <%= render "mode_picker" %>
+    <% else %>
+      <%= render "confirm", mode: @chosen_mode %>
+    <% end %>
+  <% end %>
+</div>

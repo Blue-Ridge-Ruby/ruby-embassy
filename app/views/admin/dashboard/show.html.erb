@@ -28,7 +28,7 @@
 </div>
 
 <h2 class="text-lg font-semibold text-navy mb-3">Manage</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
   <%= link_to admin_users_path, class: "nav-card" do %>
     <div class="nav-card__title">Users</div>
     <div class="nav-card__desc">Manage attendees, volunteers, and admins. Sync from Tito.</div>
@@ -42,5 +42,22 @@
   <%= link_to "/admin/jobs", class: "nav-card" do %>
     <div class="nav-card__title">Jobs</div>
     <div class="nav-card__desc">Inspect background jobs and the Solid Queue dashboard.</div>
+  <% end %>
+</div>
+<h2 class="text-lg font-semibold text-navy mb-3">Ruby Embassy</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <%= link_to admin_embassy_questions_path, class: "nav-card" do %>
+    <div class="nav-card__title">Question Bank</div>
+    <div class="nav-card__desc">Add, edit, and archive application questions. Randomization draws from the active pool.</div>
+  <% end %>
+
+  <%= link_to admin_embassy_applications_path, class: "nav-card" do %>
+    <div class="nav-card__title">Submitted Applications</div>
+    <div class="nav-card__desc">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>
+  <% end %>
+
+  <%= link_to new_admin_embassy_blank_pdfs_path, class: "nav-card" do %>
+    <div class="nav-card__title">Generate Blank Forms</div>
+    <div class="nav-card__desc">Print N blank randomized applications for walk-ins and stragglers.</div>
   <% end %>
 </div>

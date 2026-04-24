@@ -18,6 +18,9 @@ Rails.application.routes.draw do
       post :sync, on: :collection
     end
     resources :schedule_items
+    resources :embassy_questions
+    resources :embassy_applications, only: %i[index show]
+    resource  :embassy_blank_pdfs, only: %i[new create]
   end
 
   # Background jobs dashboard (admin-only mount inside /admin/)
@@ -31,6 +34,10 @@ Rails.application.routes.draw do
 
   resources :plan_items, only: %i[create update destroy]
   resources :schedule_items, only: %i[new create edit update]
+
+  # Embassy booking + application — attendee-facing mockup
+  resources :embassy_bookings, only: %i[new create]
+  resources :embassy_applications, only: %i[new create show edit update]
 
   # Branded error pages. Reached via config.exceptions_app = self.routes.
   match "/404", to: "errors#not_found",             via: :all

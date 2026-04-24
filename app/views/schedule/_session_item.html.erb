@@ -8,15 +8,28 @@
   flexible_classes = item.flexible? ? "schedule-item--flexible" : ""
 
   existing_plan = current_user.plan_items.find_by(schedule_item: item) if planned
+  embassy_mode  = FakeEmbassy.mode_for(item.id) if item.embassy?
 
   button_label =
     if planned
-      item.talk? ? "✓ Added" : "✓ RSVP'd"
+      if item.talk?
+        "✓ Added"
+      elsif item.embassy?
+        "✓ Booked"
+      else
+        "✓ RSVP'd"
+      end
     else
-      item.talk? ? "+ Add to plan" : "+ RSVP"
+      if item.talk?
+        "+ Add to plan"
+      elsif item.embassy?
+        "Schedule Appointment"
+      else
+        "+ RSVP"
+      end
     end
 
-  rsvp_note = (!item.talk? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
+  rsvp_note = (!item.talk? && !item.embassy? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
 %>
 
 <%= turbo_frame_tag dom_id(item) do %>
@@ -34,6 +47,10 @@
         <% if item.host.present? %>
           <p class="schedule-item__talk-title"><%= item.host %></p>
         <% end %>
+      <% end %>
+
+      <% if item.embassy? %>
+        <p class="embassy-mode-label"><%= FakeEmbassy.mode_label(embassy_mode) %></p>
       <% end %>
 
       <% if item.location.present? %>
@@ -55,7 +72,28 @@
     </div>
 
     <div class="schedule-item__action">
-      <% if planned && existing_plan %>
+      <% if item.embassy? %>
+        <% if planned && existing_plan %>
+          <%= link_to button_label, plan_path,
+                      class: "add-btn add-btn--added",
+                      data: { turbo_frame: "_top" },
+                      aria: { pressed: true } %>
+        <% elsif FakeEmbassy.full?(item.id) %>
+          <button class="add-btn add-btn--disabled" disabled>Full</button>
+        <% else %>
+          <%= link_to button_label,
+                      new_embassy_booking_path(schedule_item_id: item.id),
+                      class: "add-btn",
+                      data: { turbo_frame: "_top" } %>
+        <% end %>
+        <p class="embassy-capacity">
+          <% if FakeEmbassy.full?(item.id) %>
+            <%= FakeEmbassy.capacity_for(item.id) %> of <%= FakeEmbassy.capacity_for(item.id) %> · full
+          <% else %>
+            <%= FakeEmbassy.seats_taken_for(item.id) %> of <%= FakeEmbassy.capacity_for(item.id) %> seats
+          <% end %>
+        </p>
+      <% elsif planned && existing_plan %>
         <%= button_to button_label,
                       plan_item_path(existing_plan),
                       method: :delete,
@@ -71,6 +109,7 @@
                       data: { turbo_frame: dom_id(item) },
                       aria: { pressed: false } %>
       <% end %>
+
       <% if rsvp_note %>
         <p class="schedule-item__rsvp-count"><%= rsvp_note %></p>
       <% end %>

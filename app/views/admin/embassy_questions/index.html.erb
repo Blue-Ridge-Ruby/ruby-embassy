@@ -1,0 +1,171 @@
+<% content_for :title, "Question Bank — Embassy Admin" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-navy">Question Bank</h1>
+    <p class="text-muted">
+      <%= @questions.count { |q| q[:status] == "active" } %> active questions ·
+      <%= FakeEmbassy.random_pool_total %> in the random pool (draws <%= FakeEmbassy.random_pool_draws %> per application) ·
+      <%= @notary_pool.length %> notary descriptions
+    </p>
+  </div>
+  <%= link_to "+ Add Question", new_admin_embassy_question_path, class: "btn btn-red" %>
+</div>
+
+<% FakeEmbassy.section_meta.each do |number, meta| %>
+  <% rows = @questions.select { |q| q[:section] == number && q[:status] == "active" } %>
+  <% next if rows.empty? %>
+
+  <section class="embassy-bank-section">
+    <header class="embassy-bank-section__header">
+      <div>
+        <h2 class="embassy-bank-section__title">
+          Section <%= number.to_s.rjust(2, "0") %>. <%= meta[:title] %>
+        </h2>
+        <p class="embassy-bank-section__hint">
+          <%= meta[:hint] % { draws: FakeEmbassy.random_pool_draws, total: rows.size } %>
+        </p>
+      </div>
+      <div>
+        <% if meta[:scope] == "random_pool" %>
+          <span class="badge-scope badge-scope--random">
+            Random pool · draws <%= FakeEmbassy.random_pool_draws %> of <%= rows.size %>
+          </span>
+        <% else %>
+          <span class="badge-scope badge-scope--common">
+            Common · shown on every application
+          </span>
+        <% end %>
+      </div>
+    </header>
+
+    <% if meta[:scope] == "random_pool" %>
+      <%# Section 3 is nested by category for easier admin management %>
+      <% FakeEmbassy.random_pool_categories.each do |cat_key, cat| %>
+        <% cat_rows = rows.select { |q| q[:category] == cat_key } %>
+        <% next if cat_rows.empty? %>
+
+        <h3 class="embassy-bank-category">
+          <%= cat[:title] %>
+          <span class="embassy-bank-category__count"><%= cat_rows.size %> questions</span>
+        </h3>
+        <table class="table mb-4">
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Question</th>
+              <th style="width: 110px;">Type</th>
+              <th style="width: 100px;">Usage</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% cat_rows.each do |q| %>
+              <%= render "question_row", question: q %>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    <% else %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 60px;">ID</th>
+            <th>Question</th>
+            <th style="width: 110px;">Type</th>
+            <th style="width: 90px;">Required</th>
+            <th style="width: 100px;">Usage</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rows.each do |q| %>
+            <%= render "question_row", question: q %>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </section>
+<% end %>
+
+<%# ========== Notary Pool — PDF addendum ========== %>
+<section class="embassy-bank-section">
+  <header class="embassy-bank-section__header">
+    <div>
+      <h2 class="embassy-bank-section__title">Notary Pool · PDF addendum</h2>
+      <p class="embassy-bank-section__hint">
+        The ice-breaker. One is drawn per printed application. Users locate someone
+        matching the description at the Embassy and have them sign. Notary
+        descriptions do not appear on-screen — they print only.
+      </p>
+    </div>
+    <div>
+      <span class="badge-scope badge-scope--notary">
+        Notary pool · <%= @notary_pool.length %> descriptions · draws 1 per form
+      </span>
+    </div>
+  </header>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width: 60px;">ID</th>
+        <th>Description (&ldquo;Someone who&hellip;&rdquo;)</th>
+        <th style="width: 110px;">Follow-ups</th>
+        <th style="width: 100px;">Usage</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @notary_pool.each do |n| %>
+        <tr>
+          <td class="mono"><%= n[:id] %></td>
+          <td><%= n[:description] %></td>
+          <td>
+            <span class="mono"><%= n[:followup_count] %></span>
+            <span class="text-muted text-sm">q<%= n[:followup_count] == 1 ? "" : "s" %></span>
+          </td>
+          <td>
+            <span class="mono"><%= n[:usage_count] %></span>
+            <span class="text-muted text-sm">uses</span>
+          </td>
+          <td class="text-right">
+            <span class="text-muted text-sm">edit coming</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
+
+<% archived = @questions.select { |q| q[:status] == "archived" } %>
+<% if archived.any? %>
+  <section class="embassy-bank-section">
+    <header class="embassy-bank-section__header">
+      <div>
+        <h2 class="embassy-bank-section__title">Archived</h2>
+        <p class="embassy-bank-section__hint">
+          Excluded from randomization. Useful for retired seasonal questions
+          or ones pulled for adjudication reasons.
+        </p>
+      </div>
+    </header>
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 60px;">ID</th>
+          <th>Question</th>
+          <th style="width: 110px;">Type</th>
+          <th style="width: 90px;">Required</th>
+          <th style="width: 100px;">Usage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% archived.each do |q| %>
+          <%= render "question_row", question: q %>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+<% end %>

@@ -5,47 +5,111 @@
 %>
 
 <%= turbo_frame_tag dom_id(plan_item) do %>
-  <article class="plan-item <%= custom_class %>">
-    <div class="plan-item__time"><%= item.time_label %></div>
+  <% if item.embassy? %>
+    <%
+      state        = FakeEmbassy.appointment_state_for(plan_item.id)
+      mode         = state == "stamping" ? "stamping" : "new_passport"
+      serial       = FakeEmbassy.serial_for(plan_item.id)
+      minutes_left = FakeEmbassy.reservation_minutes_left(plan_item.id)
+    %>
+    <article class="plan-item plan-item--embassy plan-item--embassy-<%= state %>">
+      <div class="plan-item__embassy-body">
+        <%= render "embassy_applications/appointment_card",
+                   serial: serial,
+                   schedule_item: item,
+                   mode: mode,
+                   state: state %>
 
-    <div class="plan-item__content">
-      <% if item.talk? && item.host.present? %>
-        <h3 class="plan-item__title"><%= item.host %></h3>
-        <p class="plan-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
-      <% else %>
-        <h3 class="plan-item__title"><%= item.title %></h3>
-        <% if item.host.present? %>
-          <p class="plan-item__talk-title"><%= item.host %></p>
+        <div class="plan-item__embassy-action">
+          <% case state %>
+          <% when "stamping" %>
+            <p class="plan-item__embassy-note">
+              <strong>Stamping appointment.</strong>
+              Present existing Ruby Embassy Passport at the Embassy Office at the time above.
+            </p>
+
+          <% when "pending" %>
+            <p class="plan-item__embassy-note">
+              Application in progress · Session expires in
+              <strong><%= minutes_left %> min</strong>
+            </p>
+            <%= link_to "Complete Application",
+                        new_embassy_application_path(plan_item_id: plan_item.id),
+                        class: "btn btn-red",
+                        data: { turbo_frame: "_top" } %>
+
+          <% when "submitted" %>
+            <p class="plan-item__embassy-note">
+              Application filed &middot; Serial <span class="mono"><%= serial %></span>
+            </p>
+            <%= link_to "Download PDF",
+                        embassy_application_path(serial),
+                        class: "btn btn-navy",
+                        data: { turbo_frame: "_top" } %>
+
+          <% when "expired" %>
+            <p class="plan-item__embassy-note">
+              Session lapsed · Appointment remains confirmed.
+            </p>
+            <%= link_to "Start a New Application",
+                        new_embassy_application_path(plan_item_id: plan_item.id),
+                        class: "btn btn-red",
+                        data: { turbo_frame: "_top" } %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= button_to "×",
+                    plan_item_path(plan_item),
+                    method: :delete,
+                    class: "plan-item__remove",
+                    aria: { label: "Cancel appointment" },
+                    data: { turbo_confirm: "Cancel your Embassy appointment?" } %>
+    </article>
+
+  <% else %>
+    <article class="plan-item <%= custom_class %>">
+      <div class="plan-item__time"><%= item.time_label %></div>
+
+      <div class="plan-item__content">
+        <% if item.talk? && item.host.present? %>
+          <h3 class="plan-item__title"><%= item.host %></h3>
+          <p class="plan-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
+        <% else %>
+          <h3 class="plan-item__title"><%= item.title %></h3>
+          <% if item.host.present? %>
+            <p class="plan-item__talk-title"><%= item.host %></p>
+          <% end %>
         <% end %>
-      <% end %>
 
-      <% if item.location.present? %>
-        <p class="plan-item__location"><%= item.location %></p>
-      <% end %>
+        <% if item.location.present? %>
+          <p class="plan-item__location"><%= item.location %></p>
+        <% end %>
 
-      <% if item.description.present? %>
-        <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
-      <% end %>
+        <% if item.description.present? %>
+          <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
+        <% end %>
 
-      <div class="schedule-item__badges">
-        <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
-        <span class="item-badge item-badge--<%= item.is_public? ? "public" : "private" %>">
-          <%= item.is_public? ? "Public" : "Private" %>
-        </span>
-        <% if custom %>
-          <span class="item-badge item-badge--custom">Custom</span>
+        <div class="schedule-item__badges">
+          <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <span class="item-badge item-badge--<%= item.is_public? ? "public" : "private" %>">
+            <%= item.is_public? ? "Public" : "Private" %>
+          </span>
+          <% if custom %>
+            <span class="item-badge item-badge--custom">Custom</span>
+          <% end %>
+        </div>
+
+        <% if plan_item.notes.present? %>
+          <p class="plan-item__notes"><%= plan_item.notes %></p>
         <% end %>
       </div>
 
-      <% if plan_item.notes.present? %>
-        <p class="plan-item__notes"><%= plan_item.notes %></p>
-      <% end %>
-    </div>
-
-    <%= button_to "×",
-                  plan_item_path(plan_item),
-                  method: :delete,
-                  class: "plan-item__remove",
-                  aria: { label: "Remove from plan" } %>
-  </article>
+      <%= button_to "×",
+                    plan_item_path(plan_item),
+                    method: :delete,
+                    class: "plan-item__remove",
+                    aria: { label: "Remove from plan" } %>
+    </article>
+  <% end %>
 <% end %>

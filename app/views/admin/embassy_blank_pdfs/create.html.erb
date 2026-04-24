@@ -1,0 +1,45 @@
+<% content_for :title, "Blank Applications Generated — Embassy Admin" %>
+
+<h1 class="text-2xl font-bold text-navy mb-2">Blank Applications Ready</h1>
+<p class="text-muted mb-6">
+  <%= @count %> blank applications were generated. Each has a unique serial
+  and a unique random draw of questions. Download the combined PDF below,
+  print it, and bring to the Embassy for walk-ins.
+</p>
+
+<div class="card card-compact mb-8">
+  <div class="flex items-center gap-4">
+    <div class="embassy-confirmation-seal embassy-confirmation-seal--inline">READY</div>
+    <div class="flex-1">
+      <p class="text-lg font-semibold">
+        ruby-embassy-blanks-<%= Date.current.strftime("%Y%m%d") %>.pdf
+      </p>
+      <p class="text-muted text-sm">
+        <%= @count %> forms · <%= @count * 2 %> pages · ~<%= (@count * 0.05).round(1) %> MB
+      </p>
+    </div>
+    <a href="#" class="btn btn-red" onclick="alert('PDF generation is a backend pass — this is a mockup.'); return false;">
+      Download PDF
+    </a>
+  </div>
+</div>
+
+<h2 class="text-lg font-semibold text-navy mb-2">Generated serials</h2>
+<p class="text-muted mb-4">Use these to reconcile paper forms with Embassy records.</p>
+
+<div class="card card-compact">
+  <ul class="embassy-serial-list">
+    <% @serials.each do |s| %>
+      <li class="mono"><%= s %></li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="flex gap-3 mt-8">
+  <%= link_to "Generate Another Batch",
+              new_admin_embassy_blank_pdfs_path,
+              class: "btn btn-navy" %>
+  <%= link_to "Back to Applications",
+              admin_embassy_applications_path,
+              class: "btn btn-muted" %>
+</div>

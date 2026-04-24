@@ -77,6 +77,38 @@
       <%= f.label :is_public, "Public (appears on /schedule for all attendees)" %>
     </div>
 
+    <details class="embassy-form-extras" <%= schedule_item.kind == "embassy" ? "open" : "" %>>
+      <summary>
+        <strong>Embassy-only settings</strong>
+        <span class="text-muted">· expand when Kind = Embassy</span>
+      </summary>
+
+      <div class="embassy-form-extras__body">
+        <p class="text-muted text-sm mb-3">
+          These fields only take effect for items where <strong>Kind = Embassy</strong>.
+          Rendered as raw inputs for the mockup &mdash; a backend pass adds
+          <code>capacity</code> and <code>embassy_mode</code> columns to
+          <code>schedule_items</code>.
+        </p>
+
+        <div>
+          <label class="label">Capacity (seats per block)</label>
+          <input type="number" name="schedule_item[capacity]" value="8"
+                 min="1" max="50" class="input" style="max-width: 160px;"
+                 placeholder="e.g., 8">
+        </div>
+
+        <div class="mt-3">
+          <label class="label">Embassy mode</label>
+          <select name="schedule_item[embassy_mode]" class="select">
+            <option value="new_passport">New passport only (application required)</option>
+            <option value="stamping">Stamping only (existing passport)</option>
+            <option value="both" selected>New passport or Stamping (user chooses at booking)</option>
+          </select>
+        </div>
+      </div>
+    </details>
+
     <div class="flex gap-3 pt-4">
       <%= f.submit class: "btn btn-navy" %>
       <%= link_to "Cancel", admin_schedule_items_path, class: "btn btn-muted" %>
