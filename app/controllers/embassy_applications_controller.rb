@@ -25,10 +25,7 @@ class EmbassyApplicationsController < ApplicationController
     EmbassyApplicationDraw.call(@application)
 
     save_answers!(@application, params[:q] || {})
-    @application.update!(state: "submitted", submitted_at: Time.current)
-
-    redirect_to embassy_application_path(@application),
-                notice: "Application submitted. Your serial is #{@application.serial}."
+    finalize_or_redirect(@application)
   end
 
   def show
@@ -65,15 +62,7 @@ class EmbassyApplicationsController < ApplicationController
     end
 
     save_answers!(@application, params[:q] || {})
-
-    if params[:intent] == "submit"
-      @application.update!(state: "submitted", submitted_at: Time.current)
-      redirect_to embassy_application_path(@application),
-                  notice: "Application submitted. Your serial is #{@application.serial}."
-    else
-      redirect_to edit_embassy_application_path(@application),
-                  notice: "Draft saved."
-    end
+    finalize_or_redirect(@application)
   end
 
   private
@@ -93,6 +82,16 @@ class EmbassyApplicationsController < ApplicationController
       4 => Question.active.for_section(4).to_a,
       5 => Question.active.for_section(5).to_a
     }
+  end
+
+  def finalize_or_redirect(application)
+    if params[:intent] == "submit"
+      application.update!(state: "submitted", submitted_at: Time.current)
+      redirect_to embassy_application_path(application),
+                  notice: "Application submitted. Your serial is #{application.serial}."
+    else
+      redirect_to plan_path, notice: "Draft saved. Pick up where you left off any time."
+    end
   end
 
   def save_answers!(application, q_params)

@@ -50,12 +50,9 @@
                 data-turbo-confirm="Submit application? You cannot edit after submission.">
           Submit Application
         </button>
-        <% if editing %>
-          <button type="submit" name="intent" value="draft" class="btn btn-muted">
-            Save draft
-          </button>
-        <% end %>
-        <%= link_to "Save & Return Later", plan_path, class: "btn btn-muted" %>
+        <button type="submit" name="intent" value="draft" class="btn btn-muted">
+          Save &amp; Return Later
+        </button>
       </div>
 
       <p class="application-canvas__footer-note text-muted">
