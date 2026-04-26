@@ -459,13 +459,13 @@ class PassportApplicationPdf
     pdf.column_box([0, box_top], columns: 3, width: pdf.bounds.width,
                    height: box_height, spacer: 10) do
       INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
-        pdf.move_down 4 if i > 0
+        pdf.move_down 5 if i > 0
         pdf.text title, size: 6.5, style: :bold
         pdf.stroke_horizontal_rule
-        pdf.move_down 1
+        pdf.move_down 3
         paragraphs.each do |para|
-          pdf.text para, size: 5.5, leading: 0.5, color: "333333"
-          pdf.move_down 1
+          pdf.text para, size: 5.5, leading: 0.5, color: "333333", align: :justify
+          pdf.move_down 2
         end
       end
     end
