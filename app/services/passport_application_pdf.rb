@@ -252,21 +252,54 @@ class PassportApplicationPdf
     consumed + 2
   end
 
-  # Inline checkbox group: emit each option as a [X] label fragment and let
-  # Prawn auto-wrap based on measured text width. Short option lists pack
-  # onto one line; longer ones flow to 2-3 lines as space requires.
+  # Checkbox group rendering — picks layout based on option length:
+  #   - inline (formatted_text auto-wrap) for short options like "Vibes",
+  #     "Networking" — packs 4-5 onto one line.
+  #   - two-column grid for longer affirmations like Section 4's, where
+  #     packing them inline reads as a messy run-on.
   def render_checkbox_group(pdf, question, answer, width:)
     selected = Array(answer&.display_value)
     options  = question.options
     return if options.empty?
 
+    if two_column_options?(options)
+      render_checkbox_group_grid(pdf, options, selected, width: width)
+    else
+      render_checkbox_group_inline(pdf, options, selected)
+    end
+  end
+
+  def two_column_options?(options)
+    options.size >= 6 || options.any? { |o| o.length > 30 }
+  end
+
+  def render_checkbox_group_inline(pdf, options, selected)
     fragments = options.flat_map do |opt|
       [
         { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
-        { text: "#{opt}      " } # trailing spaces give breathing room between options
+        { text: "#{opt}      " }
       ]
     end
     pdf.formatted_text fragments, size: 7.5, leading: 1
+  end
+
+  def render_checkbox_group_grid(pdf, options, selected, width:)
+    col_width = (width - 8) / 2.0
+    rows = (options.length / 2.0).ceil
+    y = pdf.cursor
+    rows.times do |row|
+      [0, 1].each do |col|
+        opt = options[row * 2 + col]
+        next unless opt
+        pdf.bounding_box([col * (col_width + 8), y - row * 10], width: col_width, height: 10) do
+          pdf.formatted_text [
+            { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
+            { text: opt, size: 7.5 }
+          ]
+        end
+      end
+    end
+    pdf.move_cursor_to(y - rows * 10 - 2)
   end
 
   def long_box_height(question, width)
