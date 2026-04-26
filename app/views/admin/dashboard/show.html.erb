@@ -31,26 +31,40 @@
 </div>
 
 <h2 class="text-lg font-semibold text-navy mb-4">Manage</h2>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-  <%= link_to admin_users_path, class: "action-card action-card--compact" do %>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <%= link_to admin_users_path, class: "action-card" do %>
     <div class="action-card__title">Attendees</div>
+    <div class="action-card__description">Manage attendees, volunteers, and admins. Sync from Tito.</div>
   <% end %>
-  <div class="action-card action-card--compact action-card--soon">
-    <div class="action-card__title">Volunteers <span class="text-muted text-sm">— soon</span></div>
+
+  <div class="action-card action-card--soon">
+    <div class="action-card__title">Volunteers</div>
+    <div class="action-card__description">Coordinate volunteer signups, shifts, and assignments.</div>
+    <span class="action-card__badge">Soon</span>
   </div>
-  <%= link_to admin_embassy_applications_path, class: "action-card action-card--compact" do %>
+
+  <%= link_to admin_embassy_applications_path, class: "action-card" do %>
     <div class="action-card__title">Embassy Applications</div>
+    <div class="action-card__description">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>
   <% end %>
-  <%= link_to admin_embassy_questions_path, class: "action-card action-card--compact" do %>
+
+  <%= link_to admin_embassy_questions_path, class: "action-card" do %>
     <div class="action-card__title">Embassy Question Bank</div>
+    <div class="action-card__description">Add, edit, and archive application questions. Randomization draws from the active pool.</div>
   <% end %>
-  <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card action-card--compact" do %>
+
+  <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card" do %>
     <div class="action-card__title">Generate Blank Forms</div>
+    <div class="action-card__description">Print N blank randomized applications for walk-ins and stragglers.</div>
   <% end %>
-  <%= link_to admin_schedule_items_path, class: "action-card action-card--compact" do %>
+
+  <%= link_to admin_schedule_items_path, class: "action-card" do %>
     <div class="action-card__title">Schedule Items</div>
+    <div class="action-card__description">Full CRUD over the conference agenda — talks, lightning, embassy, activities.</div>
   <% end %>
-  <%= link_to "/admin/jobs", class: "action-card action-card--compact" do %>
+
+  <%= link_to "/admin/jobs", class: "action-card" do %>
     <div class="action-card__title">Background Jobs</div>
+    <div class="action-card__description">Inspect background jobs and the Solid Queue dashboard.</div>
   <% end %>
 </div>
