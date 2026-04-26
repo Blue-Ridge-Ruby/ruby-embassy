@@ -52,7 +52,7 @@ class Admin::EmbassyQuestionsController < AdminController
 
   def question_params
     permitted = params.require(:question).permit(
-      :external_id, :section, :position, :label, :help, :placeholder,
+      :external_id, :section, :position, :label, :help, :placeholder, :max_length,
       :field_type, :required, :scope, :status, :options_text
     )
     parse_options(permitted)

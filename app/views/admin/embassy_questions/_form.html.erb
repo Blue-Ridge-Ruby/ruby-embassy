@@ -63,6 +63,17 @@
     </div>
 
     <div>
+      <%= f.label :max_length, "Maximum characters (caps the answer so it fits on the printed PDF)", class: "label" %>
+      <%= f.number_field :max_length, min: 1, max: 1000,
+            class: "input", style: "max-width: 160px;",
+            placeholder: "e.g., 60 for short, 240 for long" %>
+      <p class="text-muted text-sm mt-1">
+        Defaults: 60 for short answers, 240 for long answers (~3 lines on the PDF).
+        Leave blank for select / checkbox / date fields.
+      </p>
+    </div>
+
+    <div>
       <label class="label">Options (for Select / Checkbox group, one per line)</label>
       <textarea name="question[options_text]" rows="4" class="input mono"
                 placeholder="Yes&#10;No&#10;I plead the fifth"><%= question.options.is_a?(Array) ? question.options.join("\n") : "" %></textarea>

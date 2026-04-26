@@ -24,6 +24,7 @@
            id="<%= field_id %>"
            name="<%= field_name %>"
            value="<%= text_value %>"
+           <% if question.max_length %>maxlength="<%= question.max_length %>"<% end %>
            class="embassy-question__input"
            placeholder="<%= question.placeholder %>">
 
@@ -31,7 +32,13 @@
     <textarea id="<%= field_id %>"
               name="<%= field_name %>"
               rows="3"
+              <% if question.max_length %>maxlength="<%= question.max_length %>"<% end %>
               class="embassy-question__input embassy-question__input--long"><%= text_value %></textarea>
+    <% if question.max_length %>
+      <p class="embassy-question__help" style="margin-top: 4px; font-size: 0.85em;">
+        Maximum <%= question.max_length %> characters (will be printed on official PDF).
+      </p>
+    <% end %>
 
   <% when "select" %>
     <select id="<%= field_id %>"

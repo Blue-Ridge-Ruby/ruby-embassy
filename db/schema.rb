@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_25_220442) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_031943) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -81,6 +81,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_220442) do
     t.string "field_type", null: false
     t.text "help"
     t.text "label", null: false
+    t.integer "max_length"
     t.jsonb "options", default: [], null: false
     t.string "placeholder"
     t.integer "position", default: 0, null: false

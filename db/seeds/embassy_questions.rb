@@ -28,6 +28,10 @@ module EmbassyQuestionsSeed
     end
   end
 
+  DEFAULT_MAX_LENGTHS = {
+    "short" => 60, "long" => 240, "date" => 10
+  }.freeze
+
   def upsert_question(attrs)
     record = Question.find_or_initialize_by(external_id: attrs[:external_id])
     record.section     = attrs[:section]
@@ -40,6 +44,7 @@ module EmbassyQuestionsSeed
     record.scope       = attrs[:scope]
     record.status      = "active" if record.new_record?
     record.options     = attrs.fetch(:options, [])
+    record.max_length  = attrs[:max_length] || DEFAULT_MAX_LENGTHS[attrs[:field_type]]
     record.save!
   end
 
@@ -60,7 +65,8 @@ module EmbassyQuestionsSeed
         placeholder: q[:placeholder],
         field_type:  q[:type].to_s,
         required:    q.fetch(:required, false),
-        options:     q.fetch(:options, [])
+        options:     q.fetch(:options, []),
+        max_length:  q[:max_length]
       }
     end
   end
