@@ -1,67 +1,79 @@
-<%# locals: (question:) -%>
-<div class="embassy-question embassy-question--<%= question[:type] %>">
-  <label class="embassy-question__label" for="q_<%= question[:id] %>">
-    <span class="embassy-question__number"><%= question[:id] %>.</span>
-    <span class="embassy-question__text"><%= question[:label] %></span>
-    <% if question[:required] %>
+<%# locals: (question:, answer: nil) -%>
+<%
+  text_value  = answer&.value_text.to_s
+  array_value = Array(answer&.value_array)
+  field_id    = "q_#{question.external_id}"
+  field_name  = "q[#{question.external_id}]"
+%>
+<div class="embassy-question embassy-question--<%= question.field_type %>">
+  <label class="embassy-question__label" for="<%= field_id %>">
+    <span class="embassy-question__number"><%= question.external_id %>.</span>
+    <span class="embassy-question__text"><%= question.label %></span>
+    <% if question.required? %>
       <span class="embassy-question__required" aria-label="required">*</span>
     <% end %>
   </label>
 
-  <% if question[:help].present? %>
-    <p class="embassy-question__help"><%= question[:help] %></p>
+  <% if question.help.present? %>
+    <p class="embassy-question__help"><%= question.help %></p>
   <% end %>
 
-  <% case question[:type] %>
-  <% when :short %>
+  <% case question.field_type %>
+  <% when "short" %>
     <input type="text"
-           id="q_<%= question[:id] %>"
-           name="q[<%= question[:id] %>]"
+           id="<%= field_id %>"
+           name="<%= field_name %>"
+           value="<%= text_value %>"
            class="embassy-question__input"
-           placeholder="<%= question[:placeholder] %>">
+           placeholder="<%= question.placeholder %>">
 
-  <% when :long %>
-    <textarea id="q_<%= question[:id] %>"
-              name="q[<%= question[:id] %>]"
+  <% when "long" %>
+    <textarea id="<%= field_id %>"
+              name="<%= field_name %>"
               rows="3"
-              class="embassy-question__input embassy-question__input--long"></textarea>
+              class="embassy-question__input embassy-question__input--long"><%= text_value %></textarea>
 
-  <% when :select %>
-    <select id="q_<%= question[:id] %>"
-            name="q[<%= question[:id] %>]"
+  <% when "select" %>
+    <select id="<%= field_id %>"
+            name="<%= field_name %>"
             class="embassy-question__input">
       <option value="">— Select —</option>
-      <% question[:options].each do |opt| %>
-        <option value="<%= opt %>"><%= opt %></option>
+      <% question.options.each do |opt| %>
+        <option value="<%= opt %>" <%= "selected" if text_value == opt %>><%= opt %></option>
       <% end %>
     </select>
 
-  <% when :checkbox %>
+  <% when "checkbox" %>
     <label class="embassy-question__checkbox">
+      <input type="hidden" name="<%= field_name %>" value="false">
       <input type="checkbox"
-             id="q_<%= question[:id] %>"
-             name="q[<%= question[:id] %>]"
-             value="1">
+             id="<%= field_id %>"
+             name="<%= field_name %>"
+             value="true"
+             <%= "checked" if text_value == "true" %>>
       <span>I affirm the above declaration.</span>
     </label>
 
-  <% when :checkbox_group %>
-    <div class="embassy-question__group" role="group" aria-labelledby="q_<%= question[:id] %>">
-      <% question[:options].each_with_index do |opt, i| %>
+  <% when "checkbox_group" %>
+    <div class="embassy-question__group" role="group" aria-labelledby="<%= field_id %>">
+      <input type="hidden" name="q[<%= question.external_id %>][]" value="">
+      <% question.options.each_with_index do |opt, i| %>
         <label class="embassy-question__group-option">
           <input type="checkbox"
-                 name="q[<%= question[:id] %>][]"
+                 name="q[<%= question.external_id %>][]"
                  value="<%= opt %>"
-                 id="q_<%= question[:id] %>_<%= i %>">
+                 id="<%= field_id %>_<%= i %>"
+                 <%= "checked" if array_value.include?(opt) %>>
           <span><%= opt %></span>
         </label>
       <% end %>
     </div>
 
-  <% when :date %>
+  <% when "date" %>
     <input type="date"
-           id="q_<%= question[:id] %>"
-           name="q[<%= question[:id] %>]"
+           id="<%= field_id %>"
+           name="<%= field_name %>"
+           value="<%= text_value %>"
            class="embassy-question__input embassy-question__input--date">
   <% end %>
 </div>

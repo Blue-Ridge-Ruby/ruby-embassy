@@ -41,3 +41,10 @@ schedule_data[:days].each do |day|
     record.save!
   end
 end
+
+# 3. Embassy Question Bank + Notary Pool. Loaded from the curated source
+#    file; idempotent upsert by external_id. Admins can edit/archive/add
+#    questions afterward at /admin/embassy_questions without affecting
+#    submitted application data.
+require Rails.root.join("db/seeds/embassy_questions").to_s
+EmbassyQuestionsSeed.import!

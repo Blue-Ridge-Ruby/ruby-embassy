@@ -1,10 +1,7 @@
-<% content_for :title, "Edit Question #{@question[:id]} — Embassy Admin" %>
+<% content_for :title, "Edit Question #{@question.external_id} — Embassy Admin" %>
 
 <h1 class="text-2xl font-bold text-navy mb-6">
-  Edit Question <span class="mono"><%= @question[:id] %></span>
+  Edit Question <span class="mono"><%= @question.external_id %></span>
 </h1>
 
-<%= render "form",
-           question: @question,
-           url: admin_embassy_question_path(@question[:id]),
-           method: :patch %>
+<%= render "form", question: @question %>

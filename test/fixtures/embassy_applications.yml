@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  embassy_booking: one
+  notary_profile: one
+  serial: MyString
+  state: MyString
+  submitted_at: 2026-04-25 18:02:25
+  drawn_question_ids: 
+
+two:
+  embassy_booking: two
+  notary_profile: two
+  serial: MyString
+  state: MyString
+  submitted_at: 2026-04-25 18:02:25
+  drawn_question_ids: 

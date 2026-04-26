@@ -9,7 +9,9 @@
 <% end %>
 
 <div class="card card-compact">
-  <%= form_with model: [ :admin, schedule_item ], class: "space-y-4" do |f| %>
+  <%= form_with model: [ :admin, schedule_item ],
+                class: "space-y-4",
+                data: { controller: "embassy-settings" } do |f| %>
     <div>
       <%= f.label :title, class: "label" %>
       <%= f.text_field :title, required: true, class: "input" %>
@@ -19,7 +21,9 @@
       <%= f.label :kind, class: "label" %>
       <%= f.select :kind,
             ScheduleItem.kinds.keys.map { |k| [ k.humanize, k ] },
-            {}, class: "select" %>
+            {},
+            class: "select",
+            data: { embassy_settings_target: "kindSelect", action: "change->embassy-settings#toggle" } %>
     </div>
 
     <div>
@@ -77,37 +81,33 @@
       <%= f.label :is_public, "Public (appears on /schedule for all attendees)" %>
     </div>
 
-    <details class="embassy-form-extras" <%= schedule_item.kind == "embassy" ? "open" : "" %>>
-      <summary>
-        <strong>Embassy-only settings</strong>
-        <span class="text-muted">· expand when Kind = Embassy</span>
-      </summary>
+    <div class="embassy-form-extras"
+         data-embassy-settings-target="extras"
+         <%= "hidden".html_safe unless schedule_item.kind == "embassy" %>>
+      <h3 class="font-bold mb-2">Embassy-only settings</h3>
+      <p class="text-muted text-sm mb-3">
+        These fields only apply when <strong>Kind = Embassy</strong>. They control
+        capacity (number of bookable seats) and mode (whether attendees come for a
+        new passport, an existing-passport stamping, or either).
+      </p>
 
-      <div class="embassy-form-extras__body">
-        <p class="text-muted text-sm mb-3">
-          These fields only take effect for items where <strong>Kind = Embassy</strong>.
-          Rendered as raw inputs for the mockup &mdash; a backend pass adds
-          <code>capacity</code> and <code>embassy_mode</code> columns to
-          <code>schedule_items</code>.
-        </p>
-
-        <div>
-          <label class="label">Capacity (seats per block)</label>
-          <input type="number" name="schedule_item[capacity]" value="8"
-                 min="1" max="50" class="input" style="max-width: 160px;"
-                 placeholder="e.g., 8">
-        </div>
-
-        <div class="mt-3">
-          <label class="label">Embassy mode</label>
-          <select name="schedule_item[embassy_mode]" class="select">
-            <option value="new_passport">New passport only (application required)</option>
-            <option value="stamping">Stamping only (existing passport)</option>
-            <option value="both" selected>New passport or Stamping (user chooses at booking)</option>
-          </select>
-        </div>
+      <div>
+        <%= f.label :embassy_capacity, "Capacity (seats per block)", class: "label" %>
+        <%= f.number_field :embassy_capacity, min: 1, max: 50,
+              class: "input", style: "max-width: 160px;",
+              placeholder: "e.g., 8" %>
       </div>
-    </details>
+
+      <div class="mt-3">
+        <%= f.label :embassy_mode, "Embassy mode", class: "label" %>
+        <%= f.select :embassy_mode,
+              [ [ "New passport only (application required)", "new_passport" ],
+                [ "Stamping only (existing passport)",         "stamping"     ],
+                [ "New passport or Stamping (user chooses)",   "both"         ] ],
+              { include_blank: "— Select —" },
+              class: "select" %>
+      </div>
+    </div>
 
     <div class="flex gap-3 pt-4">
       <%= f.submit class: "btn btn-navy" %>

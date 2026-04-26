@@ -1,69 +1,87 @@
-<%# locals: question:, url:, method: :post %>
+<%# locals: (question:) -%>
+<% if question.errors.any? %>
+  <div class="alert alert-error mb-4">
+    <ul class="list-disc">
+      <% question.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <div class="card card-compact">
-  <%= form_with url: url, method: method, local: true, scope: :question, class: "space-y-4" do |f| %>
+  <%= form_with model: [:admin, question], local: true, class: "space-y-4" do |f| %>
     <div>
-      <label class="label">Question ID</label>
-      <input type="text" name="question[id]" value="<%= question[:id] %>"
-             class="input mono" placeholder="e.g., 1a"
-             <%= question[:id].present? ? "readonly" : "" %>>
+      <%= f.label :external_id, "Question ID", class: "label" %>
+      <%= f.text_field :external_id, class: "input mono",
+                       placeholder: "e.g., 1a",
+                       readonly: question.persisted? %>
       <p class="text-muted text-sm mt-1">
         Used on printed forms (1a, 1b, 2c, etc.). Once assigned, do not change.
       </p>
     </div>
 
     <div>
-      <label class="label">Section</label>
-      <select name="question[section]" class="select">
-        <% FakeEmbassy.section_meta.each do |n, meta| %>
-          <option value="<%= n %>" <%= "selected" if question[:section] == n %>>
-            Section <%= n.to_s.rjust(2, "0") %> · <%= meta[:title] %>
-            (<%= meta[:scope] == "random_pool" ? "random pool" : "common" %>)
-          </option>
-        <% end %>
-      </select>
+      <%= f.label :section, class: "label" %>
+      <%= f.select :section,
+            (1..5).map { |n| ["Section #{n.to_s.rjust(2, '0')} · #{EmbassyQuestionsHelper::SECTION_META[n][:title]}", n] },
+            {}, class: "select" %>
+    </div>
+
+    <div>
+      <%= f.label :scope, class: "label" %>
+      <%= f.select :scope,
+            [["Common (shown on every application)", "common"],
+             ["Random pool (drawn for some applications)", "random_pool"]],
+            {}, class: "select" %>
       <p class="text-muted text-sm mt-1">
-        Section scope (common vs random pool) is set per section. Questions
-        added to a random-pool section become part of that section's draw.
+        Use "Random pool" only for Section 3 questions.
       </p>
     </div>
 
     <div>
-      <label class="label">Question text</label>
-      <textarea name="question[label]" rows="2" class="input"><%= question[:label] %></textarea>
+      <%= f.label :label, "Question text", class: "label" %>
+      <%= f.text_area :label, rows: 2, class: "input" %>
     </div>
 
     <div>
-      <label class="label">Type</label>
-      <select name="question[type]" class="select">
-        <% %i[short long select checkbox date].each do |t| %>
-          <option value="<%= t %>" <%= "selected" if question[:type].to_s == t.to_s %>>
-            <%= t.to_s.humanize %>
-          </option>
-        <% end %>
-      </select>
+      <%= f.label :field_type, "Type", class: "label" %>
+      <%= f.select :field_type,
+            Question.field_types.keys.map { |t| [t.humanize, t] },
+            {}, class: "select" %>
     </div>
 
     <div>
-      <label class="label">Help text (optional)</label>
-      <input type="text" name="question[help]" value="<%= question[:help] %>"
-             class="input"
-             placeholder="e.g., Literal or metaphorical answers both accepted.">
+      <%= f.label :help, "Help text (optional)", class: "label" %>
+      <%= f.text_field :help, class: "input",
+                       placeholder: "e.g., Literal or metaphorical answers both accepted." %>
     </div>
 
     <div>
-      <label class="label">Options (for select type, one per line)</label>
-      <textarea name="question[options]" rows="4" class="input mono"
-                placeholder="Yes&#10;No&#10;I plead the fifth"></textarea>
+      <%= f.label :placeholder, "Placeholder (optional, shown inside empty inputs)", class: "label" %>
+      <%= f.text_field :placeholder, class: "input" %>
+    </div>
+
+    <div>
+      <label class="label">Options (for Select / Checkbox group, one per line)</label>
+      <textarea name="question[options_text]" rows="4" class="input mono"
+                placeholder="Yes&#10;No&#10;I plead the fifth"><%= question.options.is_a?(Array) ? question.options.join("\n") : "" %></textarea>
     </div>
 
     <div class="flex items-center gap-2">
-      <input type="checkbox" name="question[required]" value="1"
-             <%= "checked" if question[:required] %>>
-      <label>Required for adjudication</label>
+      <%= f.check_box :required %>
+      <%= f.label :required, "Required for adjudication" %>
+    </div>
+
+    <div>
+      <%= f.label :status, class: "label" %>
+      <%= f.select :status,
+            [["Active", "active"], ["Archived", "archived"]],
+            {}, class: "select" %>
     </div>
 
     <div class="flex gap-3 pt-4">
-      <button type="submit" class="btn btn-navy">Save Question</button>
+      <%= f.submit "Save Question", class: "btn btn-navy" %>
       <%= link_to "Cancel", admin_embassy_questions_path, class: "btn btn-muted" %>
     </div>
   <% end %>

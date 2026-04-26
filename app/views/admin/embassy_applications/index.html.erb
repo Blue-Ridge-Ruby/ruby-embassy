@@ -12,31 +12,43 @@
               class: "btn btn-red" %>
 </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th style="width: 140px;">Serial</th>
-      <th>Attendee</th>
-      <th>Appointment</th>
-      <th>Submitted</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @applications.each do |app| %>
+<% if @applications.empty? %>
+  <div class="card text-muted">
+    No submitted applications yet. Once attendees submit, they'll appear here.
+  </div>
+<% else %>
+  <table class="table">
+    <thead>
       <tr>
-        <td class="mono"><%= app[:serial] %></td>
-        <td>
-          <div><%= app[:attendee_name] %></div>
-          <div class="text-muted text-sm"><%= app[:attendee_email] %></div>
-        </td>
-        <td><%= app[:slot] %></td>
-        <td><%= app[:submitted_at] %></td>
-        <td class="text-right">
-          <%= link_to "View", admin_embassy_application_path(app[:serial]),
-                      class: "text-blue underline" %>
-        </td>
+        <th style="width: 140px;">Serial</th>
+        <th>Attendee</th>
+        <th>Appointment</th>
+        <th>Submitted</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @applications.each do |application| %>
+        <% booking = application.embassy_booking %>
+        <% schedule_item = booking.schedule_item %>
+        <% user = booking.user %>
+        <tr>
+          <td class="mono"><%= application.serial %></td>
+          <td>
+            <div><%= user.full_name %></div>
+            <div class="text-muted text-sm"><%= user.email %></div>
+          </td>
+          <td>
+            <%= ScheduleItem::DAY_META.dig(schedule_item.day, :date) %>
+            · <%= schedule_item.time_label %>
+          </td>
+          <td><%= application.submitted_at&.strftime("%b %-d · %-l:%M %p") %></td>
+          <td class="text-right">
+            <%= link_to "View", admin_embassy_application_path(application),
+                        class: "text-blue underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
