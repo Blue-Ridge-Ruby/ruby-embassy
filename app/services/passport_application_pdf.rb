@@ -72,6 +72,7 @@ class PassportApplicationPdf
     render_section(pdf, application, 4, "ATTESTATION OF COMMUNITY STANDING")
     render_section(pdf, application, 5, "AFFIDAVIT OF ATTENDANCE")
     render_signature_block(pdf, application)
+    render_instructions(pdf)
   end
 
   # ================================================================== page 2
@@ -251,28 +252,21 @@ class PassportApplicationPdf
     consumed + 2
   end
 
-  # Two-column checkbox group rendering — 7 options become 4 rows instead of 7.
+  # Inline checkbox group: emit each option as a [X] label fragment and let
+  # Prawn auto-wrap based on measured text width. Short option lists pack
+  # onto one line; longer ones flow to 2-3 lines as space requires.
   def render_checkbox_group(pdf, question, answer, width:)
     selected = Array(answer&.display_value)
     options  = question.options
     return if options.empty?
 
-    col_width = (width - 8) / 2.0
-    rows = (options.length / 2.0).ceil
-    y = pdf.cursor
-    rows.times do |row|
-      [0, 1].each do |col|
-        opt = options[row * 2 + col]
-        next unless opt
-        pdf.bounding_box([col * (col_width + 8), y - row * 10], width: col_width, height: 10) do
-          pdf.formatted_text [
-            { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
-            { text: opt, size: 7.5 }
-          ]
-        end
-      end
+    fragments = options.flat_map do |opt|
+      [
+        { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
+        { text: "#{opt}      " } # trailing spaces give breathing room between options
+      ]
     end
-    pdf.move_cursor_to(y - rows * 10 - 2)
+    pdf.formatted_text fragments, size: 7.5, leading: 1
   end
 
   def long_box_height(question, width)
@@ -296,7 +290,7 @@ class PassportApplicationPdf
     pdf.font_size 8
     pdf.text FORM_CODE, align: :right, style: :bold, size: 7
     pdf.text title, size: 11, style: :bold, align: :center
-    pdf.text "United Embassy of Ruby · Asheville, NC", size: 7.5, align: :center, style: :italic
+    pdf.text "Blue Ridge Ruby Embassy · Asheville, NC", size: 7.5, align: :center, style: :italic
     pdf.move_down 3
     pdf.stroke_horizontal_rule
     pdf.move_down 3
@@ -332,6 +326,49 @@ class PassportApplicationPdf
   end
 
   # =============================================================== signature
+
+  INSTRUCTIONS = [
+    [
+      "INSTRUCTIONS TO THE APPLICANT",
+      [
+        "1. Print this form on standard letter-size paper. Both pages of the application and the Notary Certification Addendum must be presented at the Embassy.",
+        "2. Section 3 is drawn from a rotating pool of supplementary declarations. The Applicant should answer the questions as printed; substitution is not permitted.",
+        "3. The Notary in Part B of the Addendum must be located on Embassy premises and must affix their signature in the presence of the Embassy Attaché. Remote attestation is not recognized.",
+        "4. Applicants are encouraged to arrive five (5) minutes before their appointment. Late arrivals may be accommodated at the Attaché's sole discretion."
+      ]
+    ],
+    [
+      "EMBASSY ORDINANCES (EXCERPTED)",
+      [
+        "§1.  Validity. This application shall remain valid for the duration of Blue Ridge Ruby 2026 and may not be transferred to any subsequent calendar year, conference, or commemorative gathering.",
+        "§2.  Discretion. The Embassy reserves sole and absolute discretion to deny issuance for cause, including but not limited to: insufficient ceremony, ill-fitting suspenders, or a documented preference for tabs over spaces.",
+        "§3.  Truthfulness. Falsified declarations may result in revocation of Ruby Embassy privileges for up to three (3) business gems and forfeiture of any commemorative stamps so obtained.",
+        "§4.  Notary Conduct. The Applicant shall conduct themselves with reasonable courtesy toward the Notary. Bribery of the Notary is strictly prohibited unless said bribery consists of coffee, in which case discretion is advised.",
+        "§5.  Right of Appeal. Applicants whose stamping is denied may request review by writing to /dev/null on Embassy stationery. Review proceedings, where granted, are conducted ex parte.",
+        "§6.  Liability. The Embassy assumes no liability for stamping-related psychological distress, including but not limited to: imposter syndrome, premature optimization, or the realization that one has been pronouncing \"RubyGems\" wrong this entire time.",
+        "§7.  Severability. Should any provision herein be deemed invalid by competent jurisdiction, the remaining provisions shall continue in full effect, possibly more so."
+      ]
+    ]
+  ].freeze
+
+  def render_instructions(pdf)
+    return if pdf.cursor < 110 # not enough room for even a partial section
+
+    INSTRUCTIONS.each do |title, paragraphs|
+      break if pdf.cursor < 60
+
+      pdf.move_down 16
+      pdf.text title, size: 8, style: :bold
+      pdf.stroke_horizontal_rule
+      pdf.move_down 4
+
+      paragraphs.each do |para|
+        break if pdf.cursor < 24 # don't orphan a paragraph
+        pdf.text para, size: 7, leading: 1.5, color: "333333"
+        pdf.move_down 3
+      end
+    end
+  end
 
   SIGNATURE_MIN_HEIGHT = 50
 

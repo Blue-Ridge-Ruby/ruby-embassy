@@ -15,7 +15,7 @@ module EmbassyQuestionsHelper
     "Please arrive 5 minutes before your appointment time.",
     "Bring your printed application. Unprinted applications will be filled out on-site — paper only, please.",
     "Stamping appointments require an existing Ruby passport. No passport, no stamp.",
-    "Photography inside the Embassy Office is permitted, but do not photograph the Stamping Apparatus.",
+    "Photography is permitted inside the Embassy Office, but please do not photograph other attendees without their consent.",
     "The Embassy Office is located in the Main Hall. Look for the ruby-red awning."
   ].freeze
 
