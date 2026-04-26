@@ -253,51 +253,44 @@ class PassportApplicationPdf
     consumed + 2
   end
 
-  # Checkbox group rendering — picks layout based on option length:
-  #   - inline (formatted_text auto-wrap) for short options like "Vibes",
-  #     "Networking" — packs 4-5 onto one line.
-  #   - two-column grid for longer affirmations like Section 4's, where
-  #     packing them inline reads as a messy run-on.
+  # Checkbox group rendering — always uses a fixed-column grid so options
+  # line up vertically within a question. Number of columns adapts to
+  # option width: short options ("Vibes") get 4 cols on one line; medium
+  # phrases get 3; longer affirmations like Section 4's drop to 2 columns.
   def render_checkbox_group(pdf, question, answer, width:)
     selected = Array(answer&.display_value)
     options  = question.options
     return if options.empty?
 
-    if two_column_options?(options)
-      render_checkbox_group_grid(pdf, options, selected, width: width)
-    else
-      render_checkbox_group_inline(pdf, options, selected)
-    end
+    cols = optimal_column_count(options, width)
+    render_checkbox_group_grid(pdf, options, selected, width: width, cols: cols)
   end
 
-  def two_column_options?(options)
-    options.size >= 6 || options.any? { |o| o.length > 30 }
+  # Picks 1-4 columns based on the widest option's character length so each
+  # column has room for the longest label without wrapping.
+  def optimal_column_count(options, width)
+    max_len = options.map(&:length).max
+    char_w  = 3.8 # rough avg width of 7.5pt Helvetica char
+    prefix  = 4   # "[X] "
+    padding = 14
+    col_width_needed = (max_len + prefix) * char_w + padding
+    fit = (width / col_width_needed).floor
+    fit.clamp(1, 4)
   end
 
-  def render_checkbox_group_inline(pdf, options, selected)
-    fragments = options.flat_map do |opt|
-      [
-        { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
-        { text: "#{opt}      " }
-      ]
-    end
-    pdf.formatted_text fragments, size: 7.5, leading: 1
-  end
-
-  def render_checkbox_group_grid(pdf, options, selected, width:)
-    col_width = (width - 8) / 2.0
-    rows = (options.length / 2.0).ceil
+  def render_checkbox_group_grid(pdf, options, selected, width:, cols:)
+    col_width = (width - (cols - 1) * 8) / cols.to_f
+    rows = (options.length.to_f / cols).ceil
     y = pdf.cursor
-    rows.times do |row|
-      [0, 1].each do |col|
-        opt = options[row * 2 + col]
-        next unless opt
-        pdf.bounding_box([col * (col_width + 8), y - row * 10], width: col_width, height: 10) do
-          pdf.formatted_text [
-            { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
-            { text: opt, size: 7.5 }
-          ]
-        end
+    options.each_with_index do |opt, i|
+      row = i / cols
+      col = i % cols
+      x = col * (col_width + 8)
+      pdf.bounding_box([x, y - row * 10], width: col_width, height: 10) do
+        pdf.formatted_text [
+          { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
+          { text: opt, size: 7.5 }
+        ]
       end
     end
     pdf.move_cursor_to(y - rows * 10 - 2)
