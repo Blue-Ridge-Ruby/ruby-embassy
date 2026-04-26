@@ -87,6 +87,57 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_not_includes ScheduleItem.public_items, private_item
   end
 
+  test "audience defaults to everyone" do
+    item = ScheduleItem.create!(valid_attrs)
+    assert_equal "everyone", item.audience
+    assert item.audience_everyone?
+  end
+
+  test "visible_to admin returns all public items including volunteers_only" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+    private_   = ScheduleItem.create!(valid_attrs(title: "Private", is_public: false))
+
+    visible = ScheduleItem.visible_to(users(:jeremy))
+    assert_includes visible, everyone
+    assert_includes visible, volunteers
+    assert_not_includes visible, private_
+  end
+
+  test "visible_to volunteer returns all public items including volunteers_only" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+
+    visible = ScheduleItem.visible_to(users(:volunteer_one))
+    assert_includes visible, everyone
+    assert_includes visible, volunteers
+  end
+
+  test "visible_to attendee returns only audience: everyone items" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+
+    visible = ScheduleItem.visible_to(users(:attendee_one))
+    assert_includes visible, everyone
+    assert_not_includes visible, volunteers
+  end
+
+  test "visible_to nil (signed-out) returns only audience: everyone items" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+
+    visible = ScheduleItem.visible_to(nil)
+    assert_includes visible, everyone
+    assert_not_includes visible, volunteers
+  end
+
+  test "visible_to never returns private items regardless of role" do
+    private_ = ScheduleItem.create!(valid_attrs(title: "Private", is_public: false))
+    [ users(:jeremy), users(:volunteer_one), users(:attendee_one), nil ].each do |user|
+      assert_not_includes ScheduleItem.visible_to(user), private_, "private items must not appear for #{user&.role || 'nil'}"
+    end
+  end
+
   test "ordered scope orders by day then sort_time" do
     wed_am = ScheduleItem.create!(valid_attrs(day: "wed", sort_time: 900, title: "Wed AM"))
     wed_pm = ScheduleItem.create!(valid_attrs(day: "wed", sort_time: 1800, title: "Wed PM"))

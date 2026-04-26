@@ -46,7 +46,12 @@
               <span class="item-badge text-muted">unknown (<%= item.read_attribute_before_type_cast(:kind) %>)</span>
             <% end %>
           </td>
-          <td><%= item.is_public? ? "Public" : "Private" %></td>
+          <td>
+            <%= item.is_public? ? "Public" : "Private" %>
+            <% if item.is_public? && item.audience_volunteers_only? %>
+              <span class="text-muted text-sm">(volunteers)</span>
+            <% end %>
+          </td>
           <td><%= item.host.presence || "—" %></td>
           <td class="text-right">
             <div class="flex gap-2 justify-end">

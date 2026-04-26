@@ -48,7 +48,7 @@ module Admin
     def schedule_item_params
       attrs = params.require(:schedule_item).permit(
         :day, :time_label, :sort_time, :title, :host,
-        :location, :description, :kind, :flexible, :is_public,
+        :location, :description, :kind, :flexible, :is_public, :audience,
         :embassy_mode, :embassy_capacity
       )
       unless attrs[:kind] == "embassy"

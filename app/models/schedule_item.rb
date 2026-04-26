@@ -11,6 +11,8 @@ class ScheduleItem < ApplicationRecord
     reception: 4, meal: 5, community: 6, volunteer: 7
   }
 
+  enum :audience, { everyone: "everyone", volunteers_only: "volunteers_only" }, prefix: :audience
+
   validates :title, presence: true
   validates :day,   presence: true
   validates :kind,  presence: true
@@ -26,6 +28,13 @@ class ScheduleItem < ApplicationRecord
   }.freeze
 
   scope :public_items, -> { where(is_public: true) }
+  # Public items filtered to what `user` is allowed to see. Admins and
+  # volunteers see all public items; everyone else (attendees, signed-out)
+  # sees only items with audience: "everyone".
+  scope :visible_to, ->(user) {
+    return public_items if user&.admin? || user&.volunteer?
+    public_items.where(audience: "everyone")
+  }
   scope :ordered, -> {
     order(
       Arel.sql(

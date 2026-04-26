@@ -103,4 +103,40 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
     assert sat_index, "Saturday header should render"
     assert thu_index < sat_index, "Thursday should render before Saturday"
   end
+
+  test "attendees do not see volunteers_only items on /schedule" do
+    ScheduleItem.create!(
+      slug: "volunteer-briefing",
+      day: "fri", time_label: "8:00 AM", sort_time: 800,
+      title: "Volunteer Briefing",
+      kind: :volunteer, is_public: true, audience: "volunteers_only"
+    )
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_no_match "Volunteer Briefing", response.body
+  end
+
+  test "volunteers see volunteers_only items on /schedule" do
+    ScheduleItem.create!(
+      slug: "volunteer-briefing",
+      day: "fri", time_label: "8:00 AM", sort_time: 800,
+      title: "Volunteer Briefing",
+      kind: :volunteer, is_public: true, audience: "volunteers_only"
+    )
+    sign_in_as users(:volunteer_one)
+    get schedule_path
+    assert_match "Volunteer Briefing", response.body
+  end
+
+  test "admins see volunteers_only items on /schedule" do
+    ScheduleItem.create!(
+      slug: "volunteer-briefing",
+      day: "fri", time_label: "8:00 AM", sort_time: 800,
+      title: "Volunteer Briefing",
+      kind: :volunteer, is_public: true, audience: "volunteers_only"
+    )
+    sign_in_as users(:jeremy)
+    get schedule_path
+    assert_match "Volunteer Briefing", response.body
+  end
 end
