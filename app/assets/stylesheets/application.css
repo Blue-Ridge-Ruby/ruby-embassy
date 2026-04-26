@@ -511,6 +511,19 @@ hr {
   color: #7a8189;
 }
 
+.schedule-item__location a,
+.plan-item__location a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.schedule-item__location a:hover,
+.plan-item__location a:hover {
+  color: #C41C1C;
+}
+
 .schedule-item__description {
   font-size: 0.9375rem;
   color: #404040;
@@ -698,6 +711,18 @@ hr {
 @media (min-width: 640px) {
   .field-grid-3 {
     grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.field-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .field-grid-2 {
+    grid-template-columns: 1fr 1fr;
   }
 }
 

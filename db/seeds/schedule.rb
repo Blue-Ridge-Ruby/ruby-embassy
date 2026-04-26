@@ -18,6 +18,7 @@ schedule_data[:days].each do |day|
     record.title       = item[:title]
     record.host        = item[:host]
     record.location    = item[:location]
+    record.map_url     = item[:map_url]
     record.description = item[:description]
     record.kind        = item[:type]
     record.flexible    = item[:flexible] || false

@@ -33,7 +33,7 @@
           <td>
             <div class="font-medium text-navy"><%= item.title %></div>
             <% if item.location.present? %>
-              <div class="text-gray text-sm"><%= item.location %></div>
+              <div class="text-gray text-sm"><%= location_or_map_link(item) %></div>
             <% end %>
             <% if item.description.present? %>
               <div class="text-gray text-sm"><%= item.description %></div>

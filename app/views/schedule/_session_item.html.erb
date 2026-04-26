@@ -53,7 +53,7 @@
       <% end %>
 
       <% if item.location.present? %>
-        <p class="schedule-item__location"><%= item.location %></p>
+        <p class="schedule-item__location"><%= location_or_map_link(item) %></p>
       <% end %>
 
       <% if item.description.present? %>

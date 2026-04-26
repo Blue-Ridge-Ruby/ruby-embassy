@@ -93,7 +93,7 @@
         <% end %>
 
         <% if item.location.present? %>
-          <p class="plan-item__location"><%= item.location %></p>
+          <p class="plan-item__location"><%= location_or_map_link(item) %></p>
         <% end %>
 
         <% if item.description.present? %>
