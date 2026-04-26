@@ -227,17 +227,26 @@ module EmbassyQuestionsSeed
   # === Notary Pool =========================================================
   # Each notary asks ONE follow-up question. (The original seed had multi-prompt
   # notaries; the schema now stores a single canonical prompt per notary.)
+  #
+  # external_ids are stable. New entries get the next available N## — never
+  # renumber existing ones, since prior applications reference them.
+  # Removed entries (e.g., N03 — "Harbors resentment toward Ruby on Rails") are
+  # archived from the seed; admins archive existing DB rows via /admin/embassy_questions.
   NOTARY_POOL = [
     { external_id: "N01", description: "Uses a different language than Ruby",
       followup_prompt: "What does the notary like about it?" },
     { external_id: "N02", description: "Has attended three (3) or more Ruby conferences",
       followup_prompt: "Which is the notary's favorite?" },
-    { external_id: "N03", description: "Harbors documented resentment toward Ruby on Rails",
-      followup_prompt: "State the notary's grievance." },
     { external_id: "N04", description: "Has deployed to production on today's date",
       followup_prompt: "Describe what the notary shipped." },
     { external_id: "N05", description: "Actively uses Hotwire",
       followup_prompt: "State what the notary loves about Hotwire." },
+    { external_id: "N19", description: "Prefers React over Hotwire",
+      followup_prompt: "Summarize the notary's reasoning." },
+    { external_id: "N20", description: "Actively uses Phlex",
+      followup_prompt: "State the notary's reason for adoption." },
+    { external_id: "N21", description: "Prefers spaces over tabs",
+      followup_prompt: "State the notary's justification." },
     { external_id: "N06", description: "Prefers tabs over spaces",
       followup_prompt: "State the notary's justification." },
     { external_id: "N07", description: "Has formally rage-quit JavaScript at least once",
@@ -249,6 +258,8 @@ module EmbassyQuestionsSeed
     { external_id: "N10", description: "Believes JavaScript is, in fact, fine",
       followup_prompt: "Assess the notary's well-being." },
     { external_id: "N11", description: "Prefers monoliths to microservices",
+      followup_prompt: "State the notary's justification." },
+    { external_id: "N22", description: "Prefers microservices to monoliths",
       followup_prompt: "State the notary's justification." },
     { external_id: "N12", description: "Is new to the Ruby programming language",
       followup_prompt: "State what the notary is currently learning." },
@@ -263,6 +274,34 @@ module EmbassyQuestionsSeed
     { external_id: "N17", description: "Possesses the funniest documented bug story",
       followup_prompt: "Record the account in full." },
     { external_id: "N18", description: "Sustained the worst production incident in recent memory",
-      followup_prompt: "Record the account in full." }
+      followup_prompt: "Record the account in full." },
+    { external_id: "N23", description: "Uses vim",
+      followup_prompt: "Record the notary's exit strategy." },
+    { external_id: "N24", description: "Has been employed by the smallest startup in attendance (a head count of two (2) or greater)",
+      followup_prompt: "State the head count." },
+    { external_id: "N25", description: "Has been employed by the largest company in attendance",
+      followup_prompt: "State the head count." },
+    { external_id: "N26", description: "Has traveled the farthest in attendance to this conference",
+      followup_prompt: "State the city of origin." },
+    { external_id: "N27", description: "Has traveled the shortest distance in attendance to this conference",
+      followup_prompt: "Name the notary's favorite local spot." },
+    { external_id: "N28", description: "Has operated, in production, a database known to no other party in attendance",
+      followup_prompt: "Name the database." },
+    { external_id: "N29", description: "Maintains the oldest GitHub account in attendance",
+      followup_prompt: "State the year of registration." },
+    { external_id: "N30", description: "Has attended more conferences in the past twelve (12) months than anyone else in attendance",
+      followup_prompt: "State the count." },
+    { external_id: "N31", description: "Is in attendance at their first technical conference of any kind",
+      followup_prompt: "Record the notary's first impressions." },
+    { external_id: "N32", description: "Has appeared as a guest on more podcasts than anyone else in attendance",
+      followup_prompt: "Name the most recent appearance." },
+    { external_id: "N33", description: "Hosts a podcast on a recurring basis",
+      followup_prompt: "State the title of the podcast." },
+    { external_id: "N34", description: "Has previously attended a Blue Ridge Ruby conference",
+      followup_prompt: "State the year(s) of prior attendance." },
+    { external_id: "N35", description: "Is, at the time of signing, in attendance at the current Blue Ridge Ruby",
+      followup_prompt: "Render a likeness of the notary in the space provided." },
+    { external_id: "N36", description: "Maintains the newest GitHub account in attendance",
+      followup_prompt: "State the year of registration." }
   ].freeze
 end
