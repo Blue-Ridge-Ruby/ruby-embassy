@@ -3,7 +3,8 @@ module Admin
     before_action :set_schedule_item, only: %i[edit update destroy]
 
     def index
-      @schedule_items = ScheduleItem.ordered
+      @selected_kind  = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : nil
+      @schedule_items = ScheduleItem.by_kind(@selected_kind).ordered
     end
 
     def new

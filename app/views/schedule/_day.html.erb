@@ -1,11 +1,12 @@
+<%
+  month, day_num_str = meta[:date].to_s.split(" ", 2)
+  day_num = day_num_str.to_i
+  ordinal_suffix = day_num.ordinalize.delete("0-9")
+%>
 <section class="schedule-day" id="<%= day_key %>">
-  <header class="schedule-day__header">
-    <h2 class="schedule-day__label"><%= meta[:label] %></h2>
-    <span class="schedule-day__date"><%= meta[:date] %></span>
-    <% if meta[:subtitle].present? %>
-      <span class="schedule-day__subtitle"><%= meta[:subtitle] %></span>
-    <% end %>
-  </header>
+  <h3 class="schedule-day__heading">
+    <%= meta[:label] %>, <%= month %> <%= day_num %><sup><%= ordinal_suffix %></sup>
+  </h3>
 
   <div class="schedule-day__items">
     <% items.each do |item| %>
