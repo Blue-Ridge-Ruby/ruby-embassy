@@ -276,6 +276,7 @@ hr {
 .mb-1 { margin-bottom: 0.25rem; }
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-6 { margin-bottom: 1.5rem; }
+.mb-10 { margin-bottom: 2.5rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mb-16 { margin-bottom: 4rem; }
 
@@ -302,6 +303,18 @@ hr {
 .space-y-12 > * + * { margin-top: 3rem; }
 
 .grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
 .inline-block { display: inline-block; }
 
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -1201,6 +1214,16 @@ hr {
   transform: translateX(2px);
 }
 
+/* Tighter variant for dense dashboards — title only, no description */
+.action-card--compact {
+  padding: 0.875rem 1.125rem;
+}
+.action-card--compact .action-card__title {
+  font-size: 1rem;
+  margin-bottom: 0;
+  padding-right: 0;
+}
+
 .action-card--soon {
   background-color: #fafbfc;
   border-style: dashed;
@@ -1235,6 +1258,59 @@ hr {
 }
 
 /* ============================================================
+   ADMIN DASHBOARD STAT CARDS
+   ============================================================ */
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card__label {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.stat-card__value {
+  font-family: "Playfair Display", serif;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  color: #0C2866;
+  margin-top: 0.25rem;
+}
+
+.stat-card__sub {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* Disabled "coming soon" item inside the admin navbar */
+.admin-nav .nav-disabled {
+  color: rgba(255, 255, 255, 0.55);
+  cursor: not-allowed;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-nav .nav-soon {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+}
+
+/* ============================================================
    EMBASSY (mockup)
    ============================================================ */
 
@@ -1243,6 +1319,13 @@ hr {
 }
 
 .flex-1 { flex: 1 1 auto; }
+.whitespace-nowrap { white-space: nowrap; }
+
+/* Sortable column header — used by app/helpers/application_helper.rb#sort_link */
+.table th a { color: inherit; text-decoration: none; }
+.table th a:hover { text-decoration: underline; }
+.table th .sort-active,
+.table th a.sort-active { color: #0C2866; font-weight: 700; }
 
 /* Embassy page wrappers ------------------------------------------------ */
 

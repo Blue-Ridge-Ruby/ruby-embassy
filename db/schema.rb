@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_031943) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_042718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_031943) do
     t.jsonb "drawn_question_ids", default: [], null: false
     t.bigint "embassy_booking_id", null: false
     t.bigint "notary_profile_id"
+    t.datetime "passport_received_at"
     t.string "serial", null: false
     t.string "state", default: "draft", null: false
     t.datetime "submitted_at"

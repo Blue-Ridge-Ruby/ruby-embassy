@@ -1,63 +1,65 @@
+<% content_for :container_width, "max-w-6xl" %>
+
 <h1 class="text-2xl font-bold text-navy mb-6">Admin Dashboard</h1>
 
+<h2 class="text-lg font-semibold text-navy mb-4">At a glance</h2>
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
   <div class="stat-card">
-    <div class="stat-card__label">Users</div>
-    <div class="stat-card__value"><%= @total_users %></div>
-    <div class="stat-card__sub">
-      <%= @user_counts["admin"] || 0 %> admin ·
-      <%= @user_counts["volunteer"] || 0 %> volunteer ·
-      <%= @user_counts["attendee"] || 0 %> attendee
-    </div>
+    <div class="stat-card__label">Attendees</div>
+    <div class="stat-card__value"><%= @attendees_count %></div>
+    <div class="stat-card__sub">registered</div>
   </div>
   <div class="stat-card">
-    <div class="stat-card__label">Schedule Items</div>
-    <div class="stat-card__value"><%= @total_schedule_items %></div>
-    <div class="stat-card__sub"><%= @public_items %> public</div>
+    <div class="stat-card__label">Embassy Applications</div>
+    <div class="stat-card__value"><%= @embassy_applications_count %></div>
+    <div class="stat-card__sub">awaiting passport</div>
   </div>
   <div class="stat-card">
-    <div class="stat-card__label">RSVPs / Plans</div>
-    <div class="stat-card__value"><%= @total_rsvps %></div>
+    <div class="stat-card__label">RSVPs</div>
+    <div class="stat-card__value"><%= @rsvps_count %></div>
     <div class="stat-card__sub">across all items</div>
   </div>
   <div class="stat-card">
-    <div class="stat-card__label">Days until kickoff</div>
-    <div class="stat-card__value"><%= [ (Date.new(2026, 4, 29) - Date.current).to_i, 0 ].max %></div>
-    <div class="stat-card__sub">Wed, Apr 29 2026</div>
+    <div class="stat-card__label">Schedule Items</div>
+    <div class="stat-card__value"><%= @schedule_items_count %></div>
   </div>
 </div>
 
-<h2 class="text-lg font-semibold text-navy mb-3">Manage</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-  <%= link_to admin_users_path, class: "nav-card" do %>
-    <div class="nav-card__title">Users</div>
-    <div class="nav-card__desc">Manage attendees, volunteers, and admins. Sync from Tito.</div>
-  <% end %>
-
-  <%= link_to admin_schedule_items_path, class: "nav-card" do %>
-    <div class="nav-card__title">Schedule Items</div>
-    <div class="nav-card__desc">Full CRUD over the conference agenda — talks, lightning, embassy, activities.</div>
-  <% end %>
-
-  <%= link_to "/admin/jobs", class: "nav-card" do %>
-    <div class="nav-card__title">Jobs</div>
-    <div class="nav-card__desc">Inspect background jobs and the Solid Queue dashboard.</div>
-  <% end %>
-</div>
-<h2 class="text-lg font-semibold text-navy mb-3">Ruby Embassy</h2>
+<h2 class="text-lg font-semibold text-navy mb-4">Manage</h2>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-  <%= link_to admin_embassy_questions_path, class: "nav-card" do %>
-    <div class="nav-card__title">Question Bank</div>
-    <div class="nav-card__desc">Add, edit, and archive application questions. Randomization draws from the active pool.</div>
+  <%= link_to admin_users_path, class: "action-card" do %>
+    <div class="action-card__title">Attendees</div>
+    <div class="action-card__description">Manage attendees, volunteers, and admins. Sync from Tito.</div>
   <% end %>
 
-  <%= link_to admin_embassy_applications_path, class: "nav-card" do %>
-    <div class="nav-card__title">Submitted Applications</div>
-    <div class="nav-card__desc">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>
+  <div class="action-card action-card--soon">
+    <div class="action-card__title">Volunteers</div>
+    <div class="action-card__description">Coordinate volunteer signups, shifts, and assignments.</div>
+    <span class="action-card__badge">Soon</span>
+  </div>
+
+  <%= link_to admin_embassy_applications_path, class: "action-card" do %>
+    <div class="action-card__title">Embassy Applications</div>
+    <div class="action-card__description">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>
   <% end %>
 
-  <%= link_to new_admin_embassy_blank_pdfs_path, class: "nav-card" do %>
-    <div class="nav-card__title">Generate Blank Forms</div>
-    <div class="nav-card__desc">Print N blank randomized applications for walk-ins and stragglers.</div>
+  <%= link_to admin_embassy_questions_path, class: "action-card" do %>
+    <div class="action-card__title">Embassy Question Bank</div>
+    <div class="action-card__description">Add, edit, and archive application questions. Randomization draws from the active pool.</div>
+  <% end %>
+
+  <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card" do %>
+    <div class="action-card__title">Generate Blank Forms</div>
+    <div class="action-card__description">Print N blank randomized applications for walk-ins and stragglers.</div>
+  <% end %>
+
+  <%= link_to admin_schedule_items_path, class: "action-card" do %>
+    <div class="action-card__title">Schedule Items</div>
+    <div class="action-card__description">Full CRUD over the conference agenda — talks, lightning, embassy, activities.</div>
+  <% end %>
+
+  <%= link_to "/admin/jobs", class: "action-card" do %>
+    <div class="action-card__title">Background Jobs</div>
+    <div class="action-card__description">Inspect background jobs and the Solid Queue dashboard.</div>
   <% end %>
 </div>
