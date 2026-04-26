@@ -10,6 +10,6 @@ class CreateEmbassyBookings < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :embassy_bookings, [:user_id, :schedule_item_id], unique: true
+    add_index :embassy_bookings, [ :user_id, :schedule_item_id ], unique: true
   end
 end

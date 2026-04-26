@@ -82,19 +82,19 @@ module EmbassyQuestionsSeed
       placeholder: "e.g., 9 years of Ruby, 14 years of existential dread",
       help: "For adjudication purposes only. The Embassy does not acknowledge biological years." },
     { id: "1e", label: "Declared Ruby Proficiency", type: :select, required: true,
-      options: ["Just installed it", "I use Ruby", "I fight Ruby", "I am Ruby"] },
+      options: [ "Just installed it", "I use Ruby", "I fight Ruby", "I am Ruby" ] },
     { id: "1f", label: "Primary language, other than Ruby", type: :short, required: false,
       placeholder: "e.g., Go, Elixir, Fortran, Emotional Support" },
     { id: "1g", label: "Stated purpose of visit (select all that apply)",
       type: :checkbox_group, required: false,
-      options: ["Learning", "Networking", "Vibes", "Free coffee"] },
+      options: [ "Learning", "Networking", "Vibes", "Free coffee" ] },
     { id: "1h", label: "Most recent sentiment experienced while programming (select all that apply)",
       type: :checkbox_group, required: false,
-      options: ["Powerful", "Confused", "Betrayed", "Like a genius", "Like quitting forever"] },
+      options: [ "Powerful", "Confused", "Betrayed", "Like a genius", "Like quitting forever" ] },
     { id: "1i", label: "Declared developer persona (select all that apply)",
       type: :checkbox_group, required: false,
-      options: ["The Debugger", "The Ship-It Gremlin", "The Perfectionist",
-                "The \"it works, don't touch it\"", "The Vibe Coder"] }
+      options: [ "The Debugger", "The Ship-It Gremlin", "The Perfectionist",
+                "The \"it works, don't touch it\"", "The Vibe Coder" ] }
   ].freeze
 
   # === Section 2 · Statement of Intent & Character =========================
@@ -103,7 +103,7 @@ module EmbassyQuestionsSeed
       type: :long, required: true },
     { id: "2b", label: "First Ruby release the Applicant remembers using",
       type: :select, required: false,
-      options: ["1.8.x", "1.9.x", "2.0–2.6", "2.7–3.0", "3.1+", "I refuse to answer"] },
+      options: [ "1.8.x", "1.9.x", "2.0–2.6", "2.7–3.0", "3.1+", "I refuse to answer" ] },
     { id: "2c", label: "Ruby release for which the Applicant harbors sentimental attachment",
       type: :short, required: false,
       placeholder: "e.g., 1.8.7, for reasons the Embassy need not know." },
@@ -181,9 +181,9 @@ module EmbassyQuestionsSeed
     { id: "3i05", type: :long, label: "The Applicant experiences a complete lack of motivation to code. Describe the remedy." },
 
     { id: "3j01", type: :select, label: "Declared number of keyboards currently owned by the Applicant",
-      options: ["0", "1", "2–3", "4–6", "More than the Applicant wishes to state"] },
+      options: [ "0", "1", "2–3", "4–6", "More than the Applicant wishes to state" ] },
     { id: "3j02", type: :select, label: "Preferred test runner",
-      options: ["RSpec", "Minitest", "Both, as mood dictates", "Neither; the Applicant tests in production"] },
+      options: [ "RSpec", "Minitest", "Both, as mood dictates", "Neither; the Applicant tests in production" ] },
     { id: "3j03", type: :long, label: "Describe the Applicant's most embarrassing production incident (brief)",
       help: "Names will be redacted. Scars will not." },
     { id: "3j04", type: :long, label: "State the Applicant's worst Rails upgrade narrative, in no more than three sentences." },
@@ -218,7 +218,7 @@ module EmbassyQuestionsSeed
     { id: "5b", label: "Date of arrival in Asheville", type: :date, required: true },
     { id: "5c", label: "Does the Applicant currently possess unreleased gems of unknown provenance?",
       type: :select, required: true,
-      options: ["No", "Yes", "I plead the fifth"] },
+      options: [ "No", "Yes", "I plead the fifth" ] },
     { id: "5d", label: "Signature of Applicant (type full legal name)",
       type: :short, required: true,
       help: "Electronic signature. Carries the same legal weight as a stamped declaration — which is to say, very little." }

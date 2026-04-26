@@ -16,7 +16,7 @@ class CreateQuestions < ActiveRecord::Migration[8.1]
     end
 
     add_index :questions, :external_id, unique: true
-    add_index :questions, [:section, :position]
-    add_index :questions, [:scope, :status]
+    add_index :questions, [ :section, :position ]
+    add_index :questions, [ :scope, :status ]
   end
 end

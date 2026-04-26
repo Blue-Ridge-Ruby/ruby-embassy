@@ -119,20 +119,20 @@ class PassportApplicationPdf
 
     pdf.move_down 18
     two_column_signatures(pdf, [
-      ["Notary's printed name", nil],
-      ["Date executed",         nil]
+      [ "Notary's printed name", nil ],
+      [ "Date executed",         nil ]
     ])
     pdf.move_down 12
     two_column_signatures(pdf, [
-      ["Notary's signature", nil],
-      ["Notary ID (assigned)", notary&.external_id]
+      [ "Notary's signature", nil ],
+      [ "Notary ID (assigned)", notary&.external_id ]
     ])
 
     pdf.move_down 24
     pdf.text "FOR OFFICIAL EMBASSY USE ONLY", size: 8, style: :bold, align: :center
     pdf.stroke do
       pdf.line_width 0.5
-      pdf.rectangle [pdf.bounds.left, pdf.cursor - 4], pdf.bounds.width, 56
+      pdf.rectangle [ pdf.bounds.left, pdf.cursor - 4 ], pdf.bounds.width, 56
     end
     pdf.move_down 60
   end
@@ -193,10 +193,10 @@ class PassportApplicationPdf
     half   = (pdf.bounds.width - gutter) / 2.0
     y      = pdf.cursor
 
-    pdf.bounding_box([0, y], width: half, height: PAIRED_ROW_HEIGHT) do
+    pdf.bounding_box([ 0, y ], width: half, height: PAIRED_ROW_HEIGHT) do
       render_question_in_box(pdf, application, q1, label1, width: half, height: PAIRED_ROW_HEIGHT)
     end
-    pdf.bounding_box([half + gutter, y], width: half, height: PAIRED_ROW_HEIGHT) do
+    pdf.bounding_box([ half + gutter, y ], width: half, height: PAIRED_ROW_HEIGHT) do
       render_question_in_box(pdf, application, q2, label2, width: half, height: PAIRED_ROW_HEIGHT)
     end
     pdf.move_cursor_to(y - PAIRED_ROW_HEIGHT - 2)
@@ -208,17 +208,17 @@ class PassportApplicationPdf
     answer = application&.answer_for(question)
     label_text = "#{item_label}  #{question.label}"
 
-    pdf.text_box label_text, at: [0, height - 1], width: width, height: 9,
+    pdf.text_box label_text, at: [ 0, height - 1 ], width: width, height: 9,
                  size: 7.5, style: :bold, overflow: :truncate
 
     box_top = height - 11
     box_h   = 13
     pdf.line_width 0.5
-    pdf.stroke_rectangle [0, box_top], width, box_h
+    pdf.stroke_rectangle [ 0, box_top ], width, box_h
 
     value = answer&.display_value.to_s
     if value.length.positive?
-      pdf.text_box value, at: [4, box_top - 2], width: width - 8, height: box_h - 4,
+      pdf.text_box value, at: [ 4, box_top - 2 ], width: width - 8, height: box_h - 4,
                    size: 7.5, overflow: :truncate
     end
   end
@@ -241,7 +241,7 @@ class PassportApplicationPdf
     when "checkbox"
       checked = answer&.display_value == true
       pdf.formatted_text [
-        { text: checked ? "[X] " : "[ ] ", styles: [:bold] },
+        { text: checked ? "[X] " : "[ ] ", styles: [ :bold ] },
         { text: "I affirm.", size: 7.5 }
       ]
     when "checkbox_group"
@@ -286,9 +286,9 @@ class PassportApplicationPdf
       row = i / cols
       col = i % cols
       x = col * (col_width + 8)
-      pdf.bounding_box([x, y - row * 10], width: col_width, height: 10) do
+      pdf.bounding_box([ x, y - row * 10 ], width: col_width, height: 10) do
         pdf.formatted_text [
-          { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [:bold] },
+          { text: selected.include?(opt) ? "[X] " : "[ ] ", styles: [ :bold ] },
           { text: opt, size: 7.5 }
         ]
       end
@@ -330,10 +330,10 @@ class PassportApplicationPdf
     submitted   = application&.submitted_at&.strftime("%b %-d, %Y · %-l:%M %p") || "—"
 
     metadata_row(pdf, [
-      ["Serial No.",  serial],
-      ["Appointment", when_text],
-      ["Applicant",   applicant],
-      ["Submitted",   submitted]
+      [ "Serial No.",  serial ],
+      [ "Appointment", when_text ],
+      [ "Applicant",   applicant ],
+      [ "Submitted",   submitted ]
     ])
     pdf.move_down 2
     pdf.stroke_horizontal_rule
@@ -342,9 +342,9 @@ class PassportApplicationPdf
   def metadata_row(pdf, pairs)
     col_width = (pdf.bounds.width / pairs.length.to_f).floor
     y = pdf.cursor
-    pdf.bounding_box([0, y], width: pdf.bounds.width, height: 18) do
+    pdf.bounding_box([ 0, y ], width: pdf.bounds.width, height: 18) do
       pairs.each_with_index do |(label, value), i|
-        pdf.bounding_box([i * col_width, pdf.bounds.top], width: col_width, height: 18) do
+        pdf.bounding_box([ i * col_width, pdf.bounds.top ], width: col_width, height: 18) do
           pdf.text label.to_s, size: 6, style: :bold, color: "666666"
           pdf.text value.to_s, size: 8
         end
@@ -462,7 +462,7 @@ class PassportApplicationPdf
     box_top    = pdf.cursor
     box_height = box_top - FOOTER_RESERVE
 
-    pdf.column_box([0, box_top], columns: 3, width: pdf.bounds.width,
+    pdf.column_box([ 0, box_top ], columns: 3, width: pdf.bounds.width,
                    height: box_height, spacer: 10) do
       INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
         if COLUMN_BREAK_BEFORE.include?(title)
@@ -496,8 +496,8 @@ class PassportApplicationPdf
     submitted_on = application&.submitted_at&.strftime("%Y-%m-%d") || ""
 
     two_column_signatures(pdf, [
-      ["Signature of Applicant", nil],
-      ["Date executed",          submitted_on]
+      [ "Signature of Applicant", nil ],
+      [ "Date executed",          submitted_on ]
     ])
   end
 
@@ -511,13 +511,13 @@ class PassportApplicationPdf
     pairs.each_with_index do |(caption, value), i|
       x = i * (half + gutter)
       # bounding_box shifts cursor inside; draw value, line, caption at fixed offsets.
-      pdf.bounding_box([x, y_top], width: half, height: box_h) do
+      pdf.bounding_box([ x, y_top ], width: half, height: box_h) do
         if value.to_s.length.positive?
-          pdf.draw_text value.to_s, at: [2, box_h - 11], size: 8.5
+          pdf.draw_text value.to_s, at: [ 2, box_h - 11 ], size: 8.5
         end
         pdf.line_width 0.6
-        pdf.stroke_line [0, box_h - 14], [half, box_h - 14]
-        pdf.draw_text caption, at: [2, box_h - 22], size: 6.5
+        pdf.stroke_line [ 0, box_h - 14 ], [ half, box_h - 14 ]
+        pdf.draw_text caption, at: [ 2, box_h - 22 ], size: 6.5
       end
     end
     pdf.move_cursor_to(y_top - box_h - 4)
@@ -530,16 +530,16 @@ class PassportApplicationPdf
     top = pdf.cursor
     pdf.stroke do
       pdf.line_width 0.5
-      pdf.rectangle [0, top], width, height
+      pdf.rectangle [ 0, top ], width, height
     end
     if text.to_s.strip.length.positive?
       # Use draw_text for single-line short fields (no auto-pagination); for taller
       # boxes use bounding_box with overflow:truncate, but ensure the inner height
       # is at least one full line of 8pt text so Prawn doesn't paginate.
       if height <= 14
-        pdf.draw_text text.to_s, at: [5, top - height + 4], size: 7.5
+        pdf.draw_text text.to_s, at: [ 5, top - height + 4 ], size: 7.5
       else
-        pdf.bounding_box([5, top - 2], width: width - 10, height: height - 4) do
+        pdf.bounding_box([ 5, top - 2 ], width: width - 10, height: height - 4) do
           pdf.text text.to_s, size: 7.5, overflow: :truncate, leading: 1
         end
       end
@@ -559,11 +559,11 @@ class PassportApplicationPdf
         w = pdf.bounds.width - 2 * MARGIN
         pdf.line_width 0.4
         pdf.stroke_color "999999"
-        pdf.stroke_line [x, y + 14], [x + w, y + 14]
+        pdf.stroke_line [ x, y + 14 ], [ x + w, y + 14 ]
         pdf.fill_color  "666666"
         pdf.draw_text "Form RE-1 · Serial #{serial} · Page #{pdf.page_number} of #{total}",
-                      at: [x + (w / 2.0) - 90, y], size: 7
-        pdf.fill_color  "000000"
+                      at: [ x + (w / 2.0) - 90, y ], size: 7
+        pdf.fill_color "000000"
         pdf.stroke_color "000000"
       end
     end

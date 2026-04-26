@@ -10,7 +10,7 @@ class CreateEmbassyApplicationAnswers < ActiveRecord::Migration[8.1]
     end
 
     add_index :embassy_application_answers,
-              [:embassy_application_id, :question_id],
+              [ :embassy_application_id, :question_id ],
               unique: true,
               name: "index_embassy_application_answers_on_app_question_uniq"
   end

@@ -2,7 +2,7 @@ class Admin::EmbassyApplicationsController < AdminController
   def index
     @applications = EmbassyApplication
       .submitted
-      .includes(:notary_profile, embassy_booking: [:user, :schedule_item])
+      .includes(:notary_profile, embassy_booking: [ :user, :schedule_item ])
       .order(submitted_at: :desc)
   end
 
@@ -10,7 +10,7 @@ class Admin::EmbassyApplicationsController < AdminController
     @application = EmbassyApplication.includes(
       :notary_profile,
       embassy_application_answers: :question,
-      embassy_booking: [:user, :schedule_item]
+      embassy_booking: [ :user, :schedule_item ]
     ).find_by!(serial: params[:id])
 
     @booking       = @application.embassy_booking
