@@ -18,14 +18,16 @@
 
       <dt>Block classification</dt>
       <dd>
-        <%= FakeEmbassy.mode_label(@block_mode) %>
+        <%= embassy_mode_label(@block_mode) %>
         <% if @block_mode == "both" %>
           <span class="text-muted">(Applicant to elect below)</span>
         <% end %>
       </dd>
 
-      <dt>Seats available</dt>
-      <dd><%= FakeEmbassy.seats_remaining(@schedule_item.id) %> of <%= @capacity %></dd>
+      <% if @capacity %>
+        <dt>Seats available</dt>
+        <dd><%= @schedule_item.seats_remaining %> of <%= @capacity %></dd>
+      <% end %>
     </dl>
   </section>
 

@@ -28,7 +28,7 @@
 
     <dl class="embassy-dl mt-6">
       <dt>Confirmation number</dt>
-      <dd class="mono"><%= FakeEmbassy.serial_for(@plan_item.id) %></dd>
+      <dd class="mono">RE-STAMP-<%= @booking.id.to_s.rjust(4, "0") %></dd>
 
       <dt>Attendee</dt>
       <dd><%= current_user.full_name %></dd>
@@ -37,7 +37,7 @@
     <div class="embassy-etiquette mt-6">
       <h3 class="embassy-section-subhead">Please note</h3>
       <ul>
-        <% FakeEmbassy.embassy_etiquette.first(3).each do |note| %>
+        <% embassy_etiquette.first(3).each do |note| %>
           <li><%= note %></li>
         <% end %>
       </ul>

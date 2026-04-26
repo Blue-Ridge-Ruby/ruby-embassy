@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  schedule_item: one
+  plan_item: one
+  mode: MyString
+  state: MyString
+
+two:
+  user: two
+  schedule_item: two
+  plan_item: two
+  mode: MyString
+  state: MyString
