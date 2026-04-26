@@ -38,6 +38,11 @@
     <span class="action-card__badge">Soon</span>
   </div>
 
+  <%= link_to admin_schedule_items_path, class: "action-card" do %>
+    <div class="action-card__title">Schedule</div>
+    <div class="action-card__description">Full CRUD over the conference agenda — all schedule items, by kind.</div>
+  <% end %>
+
   <%= link_to admin_embassy_applications_path, class: "action-card" do %>
     <div class="action-card__title">Embassy Applications</div>
     <div class="action-card__description">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>
@@ -51,11 +56,6 @@
   <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card" do %>
     <div class="action-card__title">Generate Blank Forms</div>
     <div class="action-card__description">Print N blank randomized applications for walk-ins and stragglers.</div>
-  <% end %>
-
-  <%= link_to admin_schedule_items_path, class: "action-card" do %>
-    <div class="action-card__title">Schedule Items</div>
-    <div class="action-card__description">Full CRUD over the conference agenda — talks, lightning, embassy, activities.</div>
   <% end %>
 
   <%= link_to "/admin/jobs", class: "action-card" do %>

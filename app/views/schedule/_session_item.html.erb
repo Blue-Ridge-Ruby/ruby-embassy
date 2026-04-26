@@ -3,7 +3,11 @@
     "talk"      => "Talk",
     "lightning" => "Lightning",
     "embassy"   => "Embassy",
-    "activity"  => "Activity"
+    "activity"  => "Activity",
+    "reception" => "Reception",
+    "meal"      => "Meal",
+    "community" => "Community",
+    "volunteer" => "Volunteer"
   }[item.kind]
   flexible_classes = item.flexible? ? "schedule-item--flexible" : ""
 
@@ -12,24 +16,28 @@
 
   button_label =
     if planned
-      if item.talk?
-        "✓ Added"
-      elsif item.embassy?
+      if item.embassy?
         "✓ Booked"
-      else
+      elsif item.activity?
         "✓ RSVP'd"
+      elsif item.volunteer?
+        "✓ Volunteering"
+      else
+        "✓ Added"
       end
     else
-      if item.talk?
-        "+ Add to plan"
-      elsif item.embassy?
+      if item.embassy?
         "Schedule Appointment"
-      else
+      elsif item.activity?
         "+ RSVP"
+      elsif item.volunteer?
+        "+ Volunteer"
+      else
+        "+ Add to plan"
       end
     end
 
-  rsvp_note = (!item.talk? && !item.embassy? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
+  rsvp_note = (item.activity? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
 %>
 
 <%= turbo_frame_tag dom_id(item) do %>

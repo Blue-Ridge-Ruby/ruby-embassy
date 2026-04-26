@@ -520,12 +520,12 @@ hr {
   color: #ffffff;
 }
 
-.item-badge--social {
+.item-badge--meal {
   background-color: #FEF3C7;
   color: #8A5A00;
 }
 
-.item-badge--logistics {
+.item-badge--reception {
   background-color: #EEF1F4;
   color: #525C66;
 }
@@ -543,6 +543,16 @@ hr {
 .item-badge--embassy {
   background-color: #DCEBF5;
   color: #1E5A8A;
+}
+
+.item-badge--community {
+  background-color: #E6F4EC;
+  color: #1F6B45;
+}
+
+.item-badge--volunteer {
+  background-color: #FFEDD5;
+  color: #9A3412;
 }
 
 .item-badge--custom {

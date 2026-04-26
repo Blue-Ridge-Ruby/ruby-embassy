@@ -1,7 +1,8 @@
 ---
 # Blue Ridge Ruby 2025 conference schedule.
-# Item kinds: talk, lightning, embassy, activity
-# `flexible: true` renders the item with a dashed/TBD treatment (Saturday activities).
+# Item kinds: talk, lightning, embassy, activity, reception, meal, community, volunteer
+# `flexible: true` renders the item with a dashed/TBD treatment.
+# Mirrors https://blueridgeruby.com/schedule — keep in sync if the public schedule changes.
 
 :days:
   - :anchor: wed
@@ -13,8 +14,9 @@
         :time: "7:00 PM"
         :sort_time: 1900
         :title: "Pre-Conference Meetup"
-        :type: activity
+        :type: community
         :location: "Wicked Weed Brew Pub"
+        :description: "We'll probably try to find a spot for all of us in the beer garden downstairs in the back."
 
   - :anchor: thu
     :date: "April 30"
@@ -24,25 +26,35 @@
       - :id: thu-registration
         :time: "8:00 AM"
         :sort_time: 800
-        :title: "Registration & Coffee"
-        :type: embassy
+        :title: "Registration, Coffee, Light Snacks"
+        :type: reception
       - :id: thu-welcome
         :time: "9:00 AM"
         :sort_time: 900
-        :title: "Welcome"
-        :type: embassy
+        :title: "Welcome, Day 1"
+        :type: reception
       - :id: thu-talk-1
         :time: "9:30 AM"
         :sort_time: 930
         :host: "John Athayde"
         :title: "Learning from Permaculture: Sustainable Software Development"
         :type: talk
+      - :id: thu-break-1
+        :time: "10:00 AM"
+        :sort_time: 1000
+        :title: "Break"
+        :type: reception
       - :id: thu-talk-2
         :time: "10:30 AM"
         :sort_time: 1030
         :host: "Joël Quenneville"
         :title: "State is the First Decision You Never Made"
         :type: talk
+      - :id: thu-break-2
+        :time: "11:00 AM"
+        :sort_time: 1100
+        :title: "Break"
+        :type: reception
       - :id: thu-talk-3
         :time: "11:30 AM"
         :sort_time: 1130
@@ -53,29 +65,52 @@
         :time: "12:00 PM"
         :sort_time: 1200
         :title: "Open Lunch"
-        :type: activity
+        :type: meal
+        :description: "(Coordinate on Slack)"
       - :id: thu-mystery
         :time: "2:00 PM"
         :sort_time: 1400
-        :title: "Mystery Activity"
-        :type: activity
+        :title: "Mystery Activity 👀"
+        :type: community
+      - :id: thu-break-3
+        :time: "2:30 PM"
+        :sort_time: 1430
+        :title: "Break"
+        :type: reception
       - :id: thu-talk-4
         :time: "3:00 PM"
         :sort_time: 1500
         :host: "Annie Kiley"
         :title: "How To Finish What You Start: Lessons From Actually Shipping a Big Refactor"
         :type: talk
+      - :id: thu-break-4
+        :time: "3:30 PM"
+        :sort_time: 1530
+        :title: "Break"
+        :type: reception
       - :id: thu-talk-5
         :time: "4:00 PM"
         :sort_time: 1600
         :host: "Kevin Murphy"
         :title: "InstiLLment of Successful Practices in an Agentic World"
         :type: talk
+      - :id: thu-closing
+        :time: "4:30 PM"
+        :sort_time: 1630
+        :title: "Closing, Day 1"
+        :type: reception
       - :id: thu-dinner
-        :time: "Evening"
-        :sort_time: 1800
-        :title: "Open Dinner & Roundtable"
-        :type: activity
+        :time: "5:00 PM"
+        :sort_time: 1700
+        :title: "Open Dinner"
+        :type: meal
+        :description: "(Coordinate on Slack)"
+      - :id: thu-roundtable
+        :time: "7:00 PM"
+        :sort_time: 1900
+        :title: "Roundtable Discussion"
+        :type: community
+        :location: "YMI Cultural Center"
 
   - :anchor: fri
     :date: "May 1"
@@ -85,82 +120,109 @@
       - :id: fri-coffee
         :time: "8:00 AM"
         :sort_time: 800
-        :title: "Coffee"
-        :type: embassy
+        :title: "Coffee, Light Snacks"
+        :type: reception
+      - :id: fri-welcome
+        :time: "9:00 AM"
+        :sort_time: 900
+        :title: "Welcome, Day 2"
+        :type: reception
       - :id: fri-talk-1
         :time: "9:30 AM"
         :sort_time: 930
         :host: "Brooke Kuhlmann"
         :title: "Terminus: A Hanami + htmx web application for e-ink devices"
         :type: talk
+      - :id: fri-break-1
+        :time: "10:00 AM"
+        :sort_time: 1000
+        :title: "Break"
+        :type: reception
       - :id: fri-talk-2
         :time: "10:30 AM"
         :sort_time: 1030
         :host: "Rachael Wright-Munn"
         :title: "Your First Open-Source Contribution"
         :type: talk
+      - :id: fri-break-2
+        :time: "11:00 AM"
+        :sort_time: 1100
+        :title: "Break"
+        :type: reception
       - :id: fri-talk-3
         :time: "11:30 AM"
         :sort_time: 1130
         :host: "David Paluy"
         :title: "LLM Telemetry as a First-Class Rails Concern"
         :type: talk
+      - :id: fri-lunch
+        :time: "12:00 PM"
+        :sort_time: 1200
+        :title: "Open Lunch"
+        :type: meal
+        :description: "(Coordinate on Slack)"
       - :id: fri-lightning
         :time: "2:00 PM"
         :sort_time: 1400
         :title: "Lightning Talks"
         :type: lightning
+        :description: "8–10 Total"
+      - :id: fri-break-3
+        :time: "3:00 PM"
+        :sort_time: 1500
+        :title: "Break"
+        :type: reception
       - :id: fri-talk-4
         :time: "3:30 PM"
         :sort_time: 1530
         :host: "Christine Seeman"
         :title: "Optimize Your Mindset (Without Overclocking)"
         :type: talk
+      - :id: fri-break-4
+        :time: "4:00 PM"
+        :sort_time: 1600
+        :title: "Break"
+        :type: reception
       - :id: fri-talk-5
         :time: "4:30 PM"
         :sort_time: 1630
         :host: "Thomas Cannon"
         :title: "5 ways to invest in yourself for the long haul"
         :type: talk
+      - :id: fri-closing
+        :time: "5:00 PM"
+        :sort_time: 1700
+        :title: "Closing, Day 2"
+        :type: reception
+      - :id: fri-dinner
+        :time: "5:30 PM"
+        :sort_time: 1730
+        :title: "Open Dinner"
+        :type: meal
+        :description: "(Coordinate on Slack)"
       - :id: fri-afterparty
-        :time: "Evening"
-        :sort_time: 1900
+        :time: "8:00 PM"
+        :sort_time: 2000
         :title: "Afterparty"
-        :type: activity
+        :type: community
         :location: "Burial Beer Co. South Slope"
 
   - :anchor: sat
     :date: "May 2"
     :label: "Saturday"
-    :subtitle: "Activities & Ruby Embassy"
+    :subtitle: "Hack Day & Ruby Embassy"
     :items:
-      - :id: sat-morning
-        :time: "Morning"
+      - :id: sat-hackday
+        :time: "9:00 AM"
         :sort_time: 900
-        :title: "Morning Activities"
+        :title: "Hack Day"
+        :type: community
+        :location: "YMI Cultural Center"
+        :description: "Hack on projects, or just come and hang out! (Ends at 4:00 PM)"
+      - :id: sat-dinner
+        :time: "5:00 PM"
+        :sort_time: 1700
+        :title: "Informal Dinner"
         :type: activity
-        :flexible: true
-      - :id: sat-embassy-am
-        :time: "Morning Block"
-        :sort_time: 1000
-        :title: "Ruby Embassy Appointments"
-        :type: embassy
-        :flexible: true
-      - :id: sat-afternoon
-        :time: "Afternoon"
-        :sort_time: 1300
-        :title: "Afternoon Activities"
-        :type: activity
-        :flexible: true
-      - :id: sat-embassy-pm
-        :time: "Afternoon Block"
-        :sort_time: 1400
-        :title: "Ruby Embassy Appointments"
-        :type: embassy
-        :flexible: true
-      - :id: sat-evening
-        :time: "Evening"
-        :sort_time: 1800
-        :title: "Evening Activities"
-        :type: activity
-        :flexible: true
+        :location: "Asheville Pizza South Slope"
+        :description: "For those still in town, let's get dinner one last time!"

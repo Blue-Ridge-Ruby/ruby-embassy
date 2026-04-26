@@ -6,7 +6,10 @@ class ScheduleItem < ApplicationRecord
   has_many :attendees, through: :plan_items, source: :user
   has_many :embassy_bookings, dependent: :destroy
 
-  enum :kind, { talk: 0, lightning: 1, embassy: 2, activity: 3 }
+  enum :kind, {
+    talk: 0, lightning: 1, embassy: 2, activity: 3,
+    reception: 4, meal: 5, community: 6, volunteer: 7
+  }
 
   validates :title, presence: true
   validates :day,   presence: true

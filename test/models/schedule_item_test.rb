@@ -28,12 +28,16 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_includes item.errors[:kind], "can't be blank"
   end
 
-  test "kind enum exposes talk/lightning/embassy/activity" do
-    assert_equal %w[talk lightning embassy activity], ScheduleItem.kinds.keys
+  test "kind enum exposes all 8 kinds with stable integer values" do
+    assert_equal %w[talk lightning embassy activity reception meal community volunteer], ScheduleItem.kinds.keys
     assert_equal 0, ScheduleItem.kinds["talk"]
     assert_equal 1, ScheduleItem.kinds["lightning"]
     assert_equal 2, ScheduleItem.kinds["embassy"]
     assert_equal 3, ScheduleItem.kinds["activity"]
+    assert_equal 4, ScheduleItem.kinds["reception"]
+    assert_equal 5, ScheduleItem.kinds["meal"]
+    assert_equal 6, ScheduleItem.kinds["community"]
+    assert_equal 7, ScheduleItem.kinds["volunteer"]
   end
 
   test "is_public defaults to false" do

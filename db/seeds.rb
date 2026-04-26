@@ -16,31 +16,11 @@ admin_users.each do |attrs|
   user.save!
 end
 
-# 2. Canonical schedule from config/schedule.yml. Upsert by slug so re-runs
-#    never duplicate. After seeding, admins edit via /admin/schedule_items;
-#    the YAML is reference data.
-schedule_data = YAML.load_file(
-  Rails.root.join("config/schedule.yml"),
-  permitted_classes: [ Symbol ]
-)
-
-schedule_data[:days].each do |day|
-  day[:items].each do |item|
-    record = ScheduleItem.find_or_initialize_by(slug: item[:id])
-    record.day         = day[:anchor]
-    record.time_label  = item[:time]
-    record.sort_time   = item[:sort_time]
-    record.title       = item[:title]
-    record.host        = item[:host]
-    record.location    = item[:location]
-    record.description = item[:description]
-    record.kind        = item[:type]
-    record.flexible    = item[:flexible] || false
-    record.is_public   = true
-    record.created_by  = nil
-    record.save!
-  end
-end
+# 2. Schedule items — extracted to a standalone file so it can be run
+#    independently in production to re-sync the schedule without re-running
+#    admin-user seeds:
+#       rails runner db/seeds/schedule.rb
+load Rails.root.join("db/seeds/schedule.rb").to_s
 
 # 3. Embassy Question Bank + Notary Pool. Loaded from the curated source
 #    file; idempotent upsert by external_id. Admins can edit/archive/add
