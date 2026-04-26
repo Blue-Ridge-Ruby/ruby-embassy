@@ -245,8 +245,6 @@ hr {
   .md\:text-right { text-align: right; }
   .md\:text-hero { font-size: 2.375rem; }
   .md\:leading-tight { line-height: 1.25; }
-  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 @media (min-width: 1024px) {
@@ -309,6 +307,14 @@ hr {
 .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
 .inline-block { display: inline-block; }
 
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -1206,6 +1212,16 @@ hr {
 
 .action-card:hover .action-card__arrow {
   transform: translateX(2px);
+}
+
+/* Tighter variant for dense dashboards — title only, no description */
+.action-card--compact {
+  padding: 0.875rem 1.125rem;
+}
+.action-card--compact .action-card__title {
+  font-size: 1rem;
+  margin-bottom: 0;
+  padding-right: 0;
 }
 
 .action-card--soon {

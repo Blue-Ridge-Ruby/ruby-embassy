@@ -1,40 +1,9 @@
+<% content_for :container_width, "max-w-6xl" %>
+
 <h1 class="text-2xl font-bold text-navy mb-6">Admin Dashboard</h1>
 
-<h2 class="text-lg font-semibold text-navy mb-6">Manage</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-  <%= link_to admin_users_path, class: "action-card" do %>
-    <div class="action-card__title">Attendees</div>
-    <div class="action-card__description">Manage attendees, volunteers, and admins. Sync from Tito.</div>
-  <% end %>
-
-  <%= link_to admin_schedule_items_path, class: "action-card" do %>
-    <div class="action-card__title">Schedule Items</div>
-    <div class="action-card__description">Full CRUD over the conference agenda — talks, lightning, embassy, activities.</div>
-  <% end %>
-
-  <%= link_to admin_embassy_applications_path, class: "action-card" do %>
-    <div class="action-card__title">Embassy Applications</div>
-    <div class="action-card__description">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>
-  <% end %>
-
-  <%= link_to admin_embassy_questions_path, class: "action-card" do %>
-    <div class="action-card__title">Question Bank</div>
-    <div class="action-card__description">Add, edit, and archive application questions. Randomization draws from the active pool.</div>
-  <% end %>
-
-  <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card" do %>
-    <div class="action-card__title">Generate Blank Forms</div>
-    <div class="action-card__description">Print N blank randomized applications for walk-ins and stragglers.</div>
-  <% end %>
-
-  <%= link_to "/admin/jobs", class: "action-card" do %>
-    <div class="action-card__title">Background Jobs</div>
-    <div class="action-card__description">Inspect background jobs and the Solid Queue dashboard.</div>
-  <% end %>
-</div>
-
-<h2 class="text-lg font-semibold text-navy mb-6">At a glance</h2>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<h2 class="text-lg font-semibold text-navy mb-4">At a glance</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
   <div class="stat-card">
     <div class="stat-card__label">Attendees</div>
     <div class="stat-card__value"><%= @attendees_count %></div>
@@ -55,4 +24,26 @@
     <div class="stat-card__value"><%= @hosted_activities_count %></div>
     <div class="stat-card__sub"><%= @public_items_count %> public schedule items</div>
   </div>
+</div>
+
+<h2 class="text-lg font-semibold text-navy mb-4">Manage</h2>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+  <%= link_to admin_users_path, class: "action-card action-card--compact" do %>
+    <div class="action-card__title">Attendees</div>
+  <% end %>
+  <%= link_to admin_schedule_items_path, class: "action-card action-card--compact" do %>
+    <div class="action-card__title">Schedule Items</div>
+  <% end %>
+  <%= link_to admin_embassy_applications_path, class: "action-card action-card--compact" do %>
+    <div class="action-card__title">Embassy Applications</div>
+  <% end %>
+  <%= link_to admin_embassy_questions_path, class: "action-card action-card--compact" do %>
+    <div class="action-card__title">Question Bank</div>
+  <% end %>
+  <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card action-card--compact" do %>
+    <div class="action-card__title">Generate Blank Forms</div>
+  <% end %>
+  <%= link_to "/admin/jobs", class: "action-card action-card--compact" do %>
+    <div class="action-card__title">Background Jobs</div>
+  <% end %>
 </div>
