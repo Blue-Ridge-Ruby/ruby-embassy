@@ -13,6 +13,16 @@
       What would you like to do?
     </p>
 
+    <% if current_user.volunteer? || current_user.admin? %>
+      <%= link_to schedule_path(kind: :volunteer), class: "action-card action-card--hero mb-6" do %>
+        <h2 class="action-card__title">Volunteers Needed</h2>
+        <p class="action-card__description">
+          We could use a hand. Pick a slot whenever you've got time.
+        </p>
+        <span class="action-card__arrow" aria-hidden="true">&rarr;</span>
+      <% end %>
+    <% end %>
+
     <div class="action-grid">
       <%= link_to schedule_path, class: "action-card" do %>
         <h2 class="action-card__title">See the schedule</h2>
@@ -20,11 +30,11 @@
         <span class="action-card__arrow" aria-hidden="true">&rarr;</span>
       <% end %>
 
-      <div class="action-card action-card--soon">
+      <%= link_to new_schedule_item_path(schedule_item: { is_public: true }), class: "action-card" do %>
         <h2 class="action-card__title">Host an Activity</h2>
         <p class="action-card__description">Lead a meetup, group hike, or informal gathering.</p>
-        <span class="action-card__badge">Coming soon</span>
-      </div>
+        <span class="action-card__arrow" aria-hidden="true">&rarr;</span>
+      <% end %>
 
       <%= link_to plan_path, class: "action-card" do %>
         <h2 class="action-card__title">Plan your trip</h2>
@@ -38,17 +48,17 @@
         <span class="action-card__arrow" aria-hidden="true">&#8599;</span>
       </a>
 
-      <div class="action-card action-card--soon">
+      <a href="https://ashevillagers.blueridgeruby.com" class="action-card" target="_blank" rel="noopener">
         <h2 class="action-card__title">Get your Ashevillagers</h2>
         <p class="action-card__description">Claim your conference crew for meals, walks, and hangs.</p>
-        <span class="action-card__badge">Coming soon</span>
-      </div>
+        <span class="action-card__arrow" aria-hidden="true">&#8599;</span>
+      </a>
 
-      <div class="action-card action-card--soon">
+      <%= link_to schedule_path(kind: :embassy), class: "action-card" do %>
         <h2 class="action-card__title">Book a Ruby Embassy Appointment</h2>
         <p class="action-card__description">Pick a time block to stop by the Ruby Embassy.</p>
-        <span class="action-card__badge">Coming soon</span>
-      </div>
+        <span class="action-card__arrow" aria-hidden="true">&rarr;</span>
+      <% end %>
     </div>
   </div>
 </section>
