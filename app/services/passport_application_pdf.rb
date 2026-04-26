@@ -451,6 +451,12 @@ class PassportApplicationPdf
 
   FOOTER_RESERVE = 20 # space the page footer occupies at the bottom
 
+  # Section titles that should always start at the top of a fresh column,
+  # so they don't get orphaned at the bottom of a previous one.
+  COLUMN_BREAK_BEFORE = [
+    "SCHEDULE C — RULES OF CONSTRUCTION"
+  ].freeze
+
   def render_instructions(pdf)
     pdf.move_down 12
     box_top    = pdf.cursor
@@ -459,7 +465,13 @@ class PassportApplicationPdf
     pdf.column_box([0, box_top], columns: 3, width: pdf.bounds.width,
                    height: box_height, spacer: 10) do
       INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
-        pdf.move_down 5 if i > 0
+        if COLUMN_BREAK_BEFORE.include?(title)
+          # Force the next column by overflowing the current one.
+          pdf.move_down(pdf.cursor + 1)
+        elsif i > 0
+          pdf.move_down 5
+        end
+
         pdf.text title, size: 6.5, style: :bold
         pdf.stroke_horizontal_rule
         pdf.move_down 3
