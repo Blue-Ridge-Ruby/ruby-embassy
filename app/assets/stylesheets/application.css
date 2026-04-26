@@ -245,6 +245,8 @@ hr {
   .md\:text-right { text-align: right; }
   .md\:text-hero { font-size: 2.375rem; }
   .md\:leading-tight { line-height: 1.25; }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 @media (min-width: 1024px) {
@@ -276,6 +278,7 @@ hr {
 .mb-1 { margin-bottom: 0.25rem; }
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-6 { margin-bottom: 1.5rem; }
+.mb-10 { margin-bottom: 2.5rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mb-16 { margin-bottom: 4rem; }
 
@@ -302,6 +305,10 @@ hr {
 .space-y-12 > * + * { margin-top: 3rem; }
 
 .grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .inline-block { display: inline-block; }
 
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -1231,6 +1238,59 @@ hr {
   letter-spacing: 0.06em;
   color: #7a8189;
   background-color: #eef1f4;
+  border-radius: 999px;
+}
+
+/* ============================================================
+   ADMIN DASHBOARD STAT CARDS
+   ============================================================ */
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card__label {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.stat-card__value {
+  font-family: "Playfair Display", serif;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  color: #0C2866;
+  margin-top: 0.25rem;
+}
+
+.stat-card__sub {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* Disabled "coming soon" item inside the admin navbar */
+.admin-nav .nav-disabled {
+  color: rgba(255, 255, 255, 0.55);
+  cursor: not-allowed;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-nav .nav-soon {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  padding: 0.125rem 0.5rem;
   border-radius: 999px;
 }
 
