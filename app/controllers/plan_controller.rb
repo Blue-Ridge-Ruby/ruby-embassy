@@ -1,9 +1,9 @@
 class PlanController < ApplicationController
-  # Travel times are mocked until we wire up arrival_at/departure_at on User.
-  MOCK_TRAVEL = {
-    arrival: "2026-04-29T15:30",
-    departure: "2026-05-02T20:00"
-  }.freeze
+  # Travel section hidden in view — see app/views/plan/index.html.erb.
+  # MOCK_TRAVEL = {
+  #   arrival: "2026-04-29T15:30",
+  #   departure: "2026-05-02T20:00"
+  # }.freeze
 
   def index
     @plan_items_by_day = current_user.plan_items
@@ -11,6 +11,6 @@ class PlanController < ApplicationController
                                      .sort_by { |pi| [ ScheduleItem::DAY_META.keys.index(pi.schedule_item.day) || 99, pi.schedule_item.sort_time.to_i ] }
                                      .group_by { |pi| pi.schedule_item.day }
 
-    @travel = MOCK_TRAVEL
+    # @travel = MOCK_TRAVEL
   end
 end
