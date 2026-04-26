@@ -67,6 +67,15 @@
     </div>
 
     <div>
+      <%= f.label :map_url, "Map URL", class: "label" %>
+      <%= f.url_field :map_url, class: "input",
+            placeholder: "https://maps.app.goo.gl/..." %>
+      <p class="text-muted text-sm mt-1">
+        Optional. Paste a Google Maps short URL. If set, the venue name becomes a link on the schedule.
+      </p>
+    </div>
+
+    <div>
       <%= f.label :description, class: "label" %>
       <%= f.text_area :description, rows: 3, class: "input" %>
     </div>
