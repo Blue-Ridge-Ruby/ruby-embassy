@@ -370,13 +370,13 @@ class PassportApplicationPdf
       [
         "§1.  Validity. This application shall remain valid for the duration of Blue Ridge Ruby 2026 and may not be transferred to any subsequent calendar year, conference, or commemorative gathering. Validity does not survive the expiration of the lead maintainer's patience.",
         "§2.  Discretion. The Embassy reserves sole and absolute discretion to deny issuance for cause, including but not limited to: insufficient ceremony, ill-fitting suspenders, or a documented hatred of the Ruby programming language.",
-        "§3.  Truthfulness. Falsified declarations may result in revocation of Ruby Embassy privileges for up to three (3) business gems and forfeiture of any commemorative stamps so obtained. Repeat offenders may be required to write a sincere apology in YAML.",
+        "§3.  Truthfulness. Falsified declarations may result in revocation of Ruby Embassy privileges for up to three (3) event days and forfeiture of any commemorative stamps so obtained. Repeat offenders may be required to write a sincere apology in YAML.",
         "§4.  Notary Conduct. The Applicant shall conduct themselves with reasonable courtesy toward the Notary. Bribery of the Notary is strictly prohibited unless said bribery consists of coffee, in which case discretion is advised.",
         "§5.  Right of Appeal. Applicants whose stamping is denied may request review by writing to noreply@blueridgeruby.com. Review proceedings, where granted, are conducted ex parte and concluded summarily.",
         "§6.  Liability. The Embassy assumes no liability for stamping-related psychological distress, including but not limited to: imposter syndrome, premature optimization, or the realization that one has been pronouncing \"RubyGems\" wrong this entire time.",
         "§7.  Decorum. The Applicant shall maintain decorum throughout proceedings, defined for purposes of this ordinance as: not laughing audibly during the stamping, not narrating the Notary's signature in real time, and not attempting to high-five the Attaché unless reciprocity is clearly indicated.",
         "§8.  Documentation. The Applicant must retain a copy of the stamped Passport for a period of not less than seven (7) calendar days, after which the document may be displayed on the Applicant's mantel, refrigerator, or other location of comparable ceremony.",
-        "§9.  Reciprocal Recognition. The Embassy shall, upon request and at the Attaché's discretion, recognize Passports issued by allied embassies including but not limited to: the Embassy of Crystal, the Embassy of Elixir (with reservations), and the unofficial Embassy of CoffeeScript (with extensive reservations).",
+        "§9.  Reciprocal Recognition. The Embassy shall, upon request and at the Attaché's discretion, recognize Passports issued by sister Ruby Embassies hosted at other regional and international Ruby gatherings, subject to verification of the issuing event's standing.",
         "§10. Jurisdiction. Disputes arising under these ordinances shall be adjudicated within the geographic boundaries of Asheville, North Carolina, or wherever good coffee can be reasonably procured, whichever is more convenient.",
         "§11. Force Majeure. The Embassy shall not be held liable for failures caused by acts of God, acts of CDN, deprecated dependencies, expired SSL certificates, or the abrupt unavailability of the lead maintainer.",
         "§12. Amendments. These ordinances may be amended at any time by the Embassy Attaché, with or without notice, retroactively if necessary, and the Applicant hereby acknowledges this fact in advance and without further objection.",
@@ -394,8 +394,8 @@ class PassportApplicationPdf
       "SCHEDULE A — DEFINITIONS",
       [
         "\"Applicant\" means the natural person identified in Section 1 of this Application, including any pseudonyms, callsigns, GitHub handles, or other documented aliases.",
-        "\"Attaché\" means the duly appointed representative of the Embassy on premises during business gems, identifiable by official Embassy lanyard and a faintly weary expression.",
-        "\"Business Gem\" means any 24-hour period commencing at the opening of the Embassy and ending at the cessation of activities, exclusive of breaks for coffee, snacks, or interpretive discussion of language design.",
+        "\"Attaché\" means the duly appointed representative of the Embassy on premises during the three (3) event days, identifiable by official Embassy lanyard and a faintly weary expression.",
+        "\"Business Gems\" means three (3) precious gemstones jointly designated by the Embassy Council for ceremonial business purposes, including but not limited to: weighing the Passport for symbolic gravitas, paying a Notary in extraordinary cases, and enhancing the credibility of the Stamping Apparatus.",
         "\"Embassy\" means the Blue Ridge Ruby Embassy at Blue Ridge Ruby 2026, including all temporary structures, designated tables, hallway corners, and adjacent vibe zones.",
         "\"Notary\" means any attendee meeting the criteria set forth in Box A.1 of the Addendum, voluntarily acting in such capacity for purposes of this Application only.",
         "\"Passport\" means the formal document issued by the Embassy bearing one or more stamps of recognition, accompanied by such ceremony as the Attaché deems appropriate.",
@@ -407,13 +407,11 @@ class PassportApplicationPdf
       "SCHEDULE B — PROHIBITED ACTIVITIES",
       [
         "(a) Forgery, alteration, or material misrepresentation of any portion of this Application.",
-        "(b) Photography of the Stamping Apparatus during operation. Photography of the Apparatus at rest is permitted with attribution.",
-        "(c) Acceptance of bribes from the Applicant, in any form other than the consensual transfer of caffeinated beverages.",
-        "(d) Narration of the proceedings in real time, including livestreaming, color commentary, or unsolicited play-by-play.",
-        "(e) Loud or sustained criticism of the Ruby programming language within audible range of the Embassy, except as part of an appeal duly filed under §5.",
-        "(f) Solicitation of the Attaché's opinion on tabs vs. spaces, unless the Applicant is prepared to listen for an indeterminate period.",
-        "(g) Conducting unauthorized parallel stamping ceremonies on Embassy premises or in any reasonable proximity thereto.",
-        "(h) Use of the Embassy seal in any context not expressly authorized by the Embassy, including but not limited to social media avatars, conference badges, and unauthorized merchandise."
+        "(b) Acceptance of bribes from the Applicant, in any form other than the consensual transfer of caffeinated beverages.",
+        "(c) Loud or sustained criticism of the Ruby programming language within audible range of the Embassy, except as part of an appeal duly filed under §5.",
+        "(d) Solicitation of the Attaché's opinion on tabs vs. spaces, unless the Applicant is prepared to listen for an indeterminate period.",
+        "(e) Conducting unauthorized parallel stamping ceremonies on Embassy premises or in any reasonable proximity thereto.",
+        "(f) Use of the Embassy seal in any context not expressly authorized by the Embassy, including but not limited to social media avatars, conference badges, and unauthorized merchandise."
       ]
     ],
     [
@@ -425,8 +423,7 @@ class PassportApplicationPdf
         "4. References to a person include such person's heirs, successors, executors, assigns, and the on-call engineer.",
         "5. Where this document refers to \"the Embassy,\" such reference shall include any tent, pop-up structure, table, designated chair, or unattended laptop temporarily designated as such by reasonable people.",
         "6. The phrase \"in the Embassy's sole discretion\" appears throughout this document and means precisely what it says, regardless of how aggrieved the Applicant may feel about it.",
-        "7. Time periods specified in \"business gems\" shall be calculated exclusive of weekends, recognized Embassy holidays, and any period during which the Attaché is on a coffee run.",
-        "8. The masculine, feminine, and Schrödinger-cat genders are used interchangeably herein and shall not be construed as expressing any preference."
+        "7. Time periods specified in event days shall be calculated exclusive of weekends, recognized Embassy holidays, and any period during which the Attaché is on a coffee run."
       ]
     ],
     [
@@ -437,7 +434,7 @@ class PassportApplicationPdf
         "(b) The Applicant has read, or at least scrolled past, the entirety of the foregoing ordinances;",
         "(c) No other Embassy of any kind, whether real, parodic, or aspirational, has issued the Applicant a Passport that would create a conflict of allegiance herewith;",
         "(d) The Applicant is not knowingly under the influence of any framework or paradigm that would impair their judgment during the stamping ceremony;",
-        "(e) All declarations made in Sections 1 through 5 above are true to the best of the Applicant's recollection, with allowances for the late hour and the open bar; and",
+        "(e) All declarations made in Sections 1 through 5 above are true to the best of the Applicant's recollection, with allowances for the late hour; and",
         "(f) The Applicant understands that no warranty, express or implied, is made by the Embassy as to the durability, transferability, or impressiveness of any stamp issued hereunder."
       ]
     ],
@@ -452,21 +449,37 @@ class PassportApplicationPdf
     ]
   ].freeze
 
+  ACKNOWLEDGMENT_RESERVE = 95 # vertical space to keep free at bottom of page
+
   def render_instructions(pdf)
-    INSTRUCTIONS.each_with_index do |(title, paragraphs), idx|
-      # Force a new page if a heading would orphan at the bottom of the
-      # current one. Allows the full legal text to flow across pages.
-      pdf.start_new_page if idx > 0 && pdf.cursor < 80
+    bulk_sections = INSTRUCTIONS[0..-2] # everything except ACKNOWLEDGMENT
+    ack_title, ack_paragraphs = INSTRUCTIONS.last
 
-      pdf.move_down 14
-      pdf.text title, size: 8, style: :bold
-      pdf.stroke_horizontal_rule
-      pdf.move_down 4
+    pdf.move_down 12
+    box_top    = pdf.cursor
+    box_height = box_top - ACKNOWLEDGMENT_RESERVE
 
-      paragraphs.each do |para|
-        pdf.text para, size: 7, leading: 1.5, color: "333333"
-        pdf.move_down 3
+    pdf.column_box([0, box_top], columns: 3, width: pdf.bounds.width,
+                   height: box_height, spacer: 10) do
+      bulk_sections.each_with_index do |(title, paragraphs), i|
+        pdf.move_down 4 if i > 0
+        pdf.text title, size: 6.5, style: :bold
+        pdf.stroke_horizontal_rule
+        pdf.move_down 1
+        paragraphs.each do |para|
+          pdf.text para, size: 5.5, leading: 0.5, color: "333333"
+          pdf.move_down 1
+        end
       end
+    end
+
+    pdf.move_down 6
+    pdf.text ack_title, size: 7, style: :bold
+    pdf.stroke_horizontal_rule
+    pdf.move_down 2
+    ack_paragraphs.each do |para|
+      pdf.text para, size: 6, leading: 1, color: "333333"
+      pdf.move_down 1.5
     end
   end
 
