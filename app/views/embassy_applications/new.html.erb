@@ -43,12 +43,17 @@
       </div>
 
       <div class="application-canvas__actions">
-        <%= f.submit "Submit Application",
-                     name: "submit", value: "1",
-                     class: "btn btn-red btn-lg",
-                     data: { turbo_confirm: "Submit application? You cannot edit after submission." } %>
+        <button type="submit"
+                name="intent"
+                value="submit"
+                class="btn btn-red btn-lg"
+                data-turbo-confirm="Submit application? You cannot edit after submission.">
+          Submit Application
+        </button>
         <% if editing %>
-          <%= f.submit "Save draft", name: "submit", value: "0", class: "btn btn-muted" %>
+          <button type="submit" name="intent" value="draft" class="btn btn-muted">
+            Save draft
+          </button>
         <% end %>
         <%= link_to "Save & Return Later", plan_path, class: "btn btn-muted" %>
       </div>

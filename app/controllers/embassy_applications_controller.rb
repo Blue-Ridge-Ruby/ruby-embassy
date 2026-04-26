@@ -66,7 +66,7 @@ class EmbassyApplicationsController < ApplicationController
 
     save_answers!(@application, params[:q] || {})
 
-    if params[:submit] == "1"
+    if params[:intent] == "submit"
       @application.update!(state: "submitted", submitted_at: Time.current)
       redirect_to embassy_application_path(@application),
                   notice: "Application submitted. Your serial is #{@application.serial}."
