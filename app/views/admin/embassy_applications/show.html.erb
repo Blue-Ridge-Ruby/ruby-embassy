@@ -1,43 +1,70 @@
-<% content_for :title, "Application #{@application[:serial]} — Embassy Admin" %>
+<% content_for :title, "Application #{@application.serial} — Embassy Admin" %>
 
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-2xl font-bold text-navy">
-      Application <span class="mono"><%= @application[:serial] %></span>
+      Application <span class="mono"><%= @application.serial %></span>
     </h1>
     <p class="text-muted">
-      <%= @application[:attendee_name] %> ·
-      <%= @application[:slot] %> ·
-      submitted <%= @application[:submitted_at] %>
+      <%= @booking.user.full_name %> ·
+      <%= ScheduleItem::DAY_META.dig(@schedule_item.day, :date) %> · <%= @schedule_item.time_label %> ·
+      submitted <%= @application.submitted_at&.strftime("%b %-d · %-l:%M %p") %>
     </p>
   </div>
   <div class="flex gap-2">
-    <button class="btn btn-red" onclick="window.print(); return false;">
-      Print Application
-    </button>
+    <%= link_to "Download PDF",
+                admin_embassy_application_path(@application, format: :pdf),
+                class: "btn btn-red btn-lg" %>
     <%= link_to "← Back", admin_embassy_applications_path, class: "btn btn-muted" %>
   </div>
 </div>
 
-<% drawn_ids = @application[:drawn_ids] %>
-<% notary    = FakeEmbassy.notary_for(@application) %>
-<% if drawn_ids %>
-  <div class="alert alert-notice mb-4">
-    <strong>Random pool draw:</strong>
-    <span class="mono"><%= drawn_ids.join(", ") %></span>
-    (from the <%= FakeEmbassy.random_pool_total %>-question Section 3 pool).
+<div class="alert alert-notice mb-4">
+  <strong>Random pool draw:</strong>
+  <span class="mono"><%= @application.drawn_question_ids.join(", ") %></span>
+  (4 questions from the active Section 3 pool).
+  <% if @notary %>
     <br>
     <strong>Notary assignment:</strong>
-    <span class="mono"><%= notary[:id] %></span> · &ldquo;Someone who <%= notary[:description].downcase.sub(/^./, &:downcase) %>&rdquo;
-  </div>
-<% end %>
+    <span class="mono"><%= @notary.external_id %></span> ·
+    &ldquo;Someone who <%= @notary.description.sub(/^./, &:downcase) %>&rdquo;
+  <% end %>
+</div>
 
-<div class="application-canvas application-canvas--pdf">
-  <%= render "embassy_applications/pdf",
-             serial: @application[:serial],
-             schedule_item: ScheduleItem.embassy.first || ScheduleItem.first,
-             sections: FakeEmbassy.sections_for(@application),
-             notary: FakeEmbassy.notary_for(@application),
-             applicant_name: @application[:attendee_name],
-             submitted_at: @application[:submitted_at] %>
+<div class="card">
+  <h2 class="embassy-section-header mb-4">Submitted Answers</h2>
+  <% [1, 2, 3, 4, 5].each do |n| %>
+    <div class="embassy-admin-section mb-4">
+      <h3 class="embassy-section-subhead">
+        Section <%= n %> · <%= embassy_section_title(n) %>
+      </h3>
+      <dl class="embassy-admin-dl">
+        <% @sections[n].each do |question| %>
+          <% answer = @application.answer_for(question) %>
+          <dt><span class="mono"><%= question.external_id %></span> · <%= question.label %></dt>
+          <dd>
+            <% case question.field_type %>
+            <% when "checkbox_group" %>
+              <% values = Array(answer&.value_array) %>
+              <% if values.any? %>
+                <ul class="list-disc">
+                  <% values.each { |v| %><li><%= v %></li><% } %>
+                </ul>
+              <% else %>
+                <span class="text-muted">— None selected —</span>
+              <% end %>
+            <% when "checkbox" %>
+              <%= answer&.value_text == "true" ? "✓ Affirmed" : "— Not affirmed —" %>
+            <% else %>
+              <% if answer&.value_text.present? %>
+                <%= simple_format(answer.value_text) %>
+              <% else %>
+                <span class="text-muted">— Blank —</span>
+              <% end %>
+            <% end %>
+          </dd>
+        <% end %>
+      </dl>
+    </div>
+  <% end %>
 </div>

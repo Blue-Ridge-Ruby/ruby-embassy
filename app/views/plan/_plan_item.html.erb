@@ -7,18 +7,38 @@
 <%= turbo_frame_tag dom_id(plan_item) do %>
   <% if item.embassy? %>
     <%
-      state        = FakeEmbassy.appointment_state_for(plan_item.id)
-      mode         = state == "stamping" ? "stamping" : "new_passport"
-      serial       = FakeEmbassy.serial_for(plan_item.id)
-      minutes_left = FakeEmbassy.reservation_minutes_left(plan_item.id)
+      booking     = current_user.embassy_bookings.find_by(schedule_item: item)
+      application = booking&.embassy_application
+      mode        = booking&.mode || "new_passport"
+      state       =
+        if booking.nil? then "stamping"
+        elsif booking.stamping? then "stamping"
+        elsif application&.submitted? then "submitted"
+        else "pending"
+        end
     %>
     <article class="plan-item plan-item--embassy plan-item--embassy-<%= state %>">
       <div class="plan-item__embassy-body">
-        <%= render "embassy_applications/appointment_card",
-                   serial: serial,
-                   schedule_item: item,
-                   mode: mode,
-                   state: state %>
+        <div class="embassy-appointment-card embassy-appointment-card--<%= state %>">
+          <% if application&.serial %>
+            <div class="embassy-appointment-card__serial mono"><%= application.serial %></div>
+          <% end %>
+          <p class="embassy-appointment-card__eyebrow">Ruby Embassy Appointment</p>
+          <h3 class="embassy-appointment-card__when">
+            <%= ScheduleItem::DAY_META.dig(item.day, :label) %>
+            <span class="embassy-appointment-card__dot">·</span>
+            <%= item.time_label %>
+          </h3>
+          <p class="embassy-appointment-card__where">
+            <%= item.location.presence || "Embassy Office · Main Hall" %>
+          </p>
+          <dl class="embassy-appointment-card__dl">
+            <dt>Classification</dt>
+            <dd><%= embassy_mode_label(mode) %></dd>
+            <dt>Applicant</dt>
+            <dd><%= current_user.full_name %></dd>
+          </dl>
+        </div>
 
         <div class="plan-item__embassy-action">
           <% case state %>
@@ -30,30 +50,20 @@
 
           <% when "pending" %>
             <p class="plan-item__embassy-note">
-              Application in progress · Session expires in
-              <strong><%= minutes_left %> min</strong>
+              Application in progress.
             </p>
-            <%= link_to "Complete Application",
-                        new_embassy_application_path(plan_item_id: plan_item.id),
+            <%= link_to "Continue Application",
+                        edit_embassy_application_path(application),
                         class: "btn btn-red",
                         data: { turbo_frame: "_top" } %>
 
           <% when "submitted" %>
             <p class="plan-item__embassy-note">
-              Application filed &middot; Serial <span class="mono"><%= serial %></span>
+              Application filed · Serial <span class="mono"><%= application.serial %></span>
             </p>
-            <%= link_to "Download PDF",
-                        embassy_application_path(serial),
+            <%= link_to "View / Download PDF",
+                        embassy_application_path(application),
                         class: "btn btn-navy",
-                        data: { turbo_frame: "_top" } %>
-
-          <% when "expired" %>
-            <p class="plan-item__embassy-note">
-              Session lapsed · Appointment remains confirmed.
-            </p>
-            <%= link_to "Start a New Application",
-                        new_embassy_application_path(plan_item_id: plan_item.id),
-                        class: "btn btn-red",
                         data: { turbo_frame: "_top" } %>
           <% end %>
         </div>
@@ -91,7 +101,9 @@
         <% end %>
 
         <div class="schedule-item__badges">
-          <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <% if item.kind.present? %>
+            <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <% end %>
           <span class="item-badge item-badge--<%= item.is_public? ? "public" : "private" %>">
             <%= item.is_public? ? "Public" : "Private" %>
           </span>

@@ -13,7 +13,7 @@
             <%= link_to "Schedule", schedule_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <%= link_to "My Plan", plan_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <% if admin? %>
-              <%= link_to "Admin", admin_users_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
+              <%= link_to "Admin", admin_root_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <% end %>
             <%= button_to "Sign Out", session_path, method: :delete, class: "text-blue px-3 py-1 text-lg font-medium cursor-pointer" %>
           <% else %>
@@ -41,7 +41,7 @@
           <%= link_to "Schedule", schedule_path, class: "text-blue block py-2 font-medium" %>
           <%= link_to "My Plan", plan_path, class: "text-blue block py-2 font-medium" %>
           <% if admin? %>
-            <%= link_to "Admin", admin_users_path, class: "text-blue block py-2 font-medium" %>
+            <%= link_to "Admin", admin_root_path, class: "text-blue block py-2 font-medium" %>
           <% end %>
           <%= button_to "Sign Out", session_path, method: :delete, class: "text-blue block py-2 font-medium text-left cursor-pointer" %>
         <% else %>

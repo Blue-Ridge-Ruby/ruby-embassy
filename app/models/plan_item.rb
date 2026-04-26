@@ -1,6 +1,7 @@
 class PlanItem < ApplicationRecord
   belongs_to :user
   belongs_to :schedule_item
+  has_one :embassy_booking, dependent: :destroy
 
   validates :user_id, uniqueness: {
     scope: :schedule_item_id,
