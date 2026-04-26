@@ -1291,6 +1291,35 @@ hr {
   border-radius: 999px;
 }
 
+/* Volunteer/admin "Volunteers Needed" hero — sits above the grid */
+.action-card--hero {
+  background-color: #C41C1C;
+  border-color: #C41C1C;
+  padding: 1.75rem 2rem;
+}
+
+.action-card--hero:hover {
+  border-color: #0C2866;
+  box-shadow: 0 6px 20px -6px rgba(196, 28, 28, 0.45);
+}
+
+.action-card--hero .action-card__title {
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.action-card--hero .action-card__description {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  max-width: 56ch;
+}
+
+.action-card--hero .action-card__arrow {
+  color: #ffffff;
+  top: 1.75rem;
+  right: 2rem;
+}
+
 /* ============================================================
    ADMIN DASHBOARD STAT CARDS
    ============================================================ */
