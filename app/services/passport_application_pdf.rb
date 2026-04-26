@@ -366,7 +366,7 @@ class PassportApplicationPdf
       "INSTRUCTIONS TO THE APPLICANT",
       [
         "1. Print this form on standard letter-size paper. Both pages of the application and the Notary Certification Addendum must be presented at the Embassy.",
-        "2. Section 3 is drawn from a rotating pool of supplementary declarations. The Applicant should answer the questions as printed; substitution is not permitted.",
+        "2. Answer all questions as printed. Substitution, omission, or creative reinterpretation may result in delay at the Embassy desk.",
         "3. The Notary in Part B of the Addendum must be located on Embassy premises and must affix their signature in the presence of the Embassy Attaché. Remote attestation is not recognized.",
         "4. Applicants are encouraged to arrive five (5) minutes before their appointment. Late arrivals may be accommodated at the Attaché's sole discretion."
       ]
@@ -375,10 +375,10 @@ class PassportApplicationPdf
       "EMBASSY ORDINANCES (EXCERPTED)",
       [
         "§1.  Validity. This application shall remain valid for the duration of Blue Ridge Ruby 2026 and may not be transferred to any subsequent calendar year, conference, or commemorative gathering.",
-        "§2.  Discretion. The Embassy reserves sole and absolute discretion to deny issuance for cause, including but not limited to: insufficient ceremony, ill-fitting suspenders, or a documented preference for tabs over spaces.",
+        "§2.  Discretion. The Embassy reserves sole and absolute discretion to deny issuance for cause, including but not limited to: insufficient ceremony, ill-fitting suspenders, or a documented hatred of the Ruby programming language.",
         "§3.  Truthfulness. Falsified declarations may result in revocation of Ruby Embassy privileges for up to three (3) business gems and forfeiture of any commemorative stamps so obtained.",
         "§4.  Notary Conduct. The Applicant shall conduct themselves with reasonable courtesy toward the Notary. Bribery of the Notary is strictly prohibited unless said bribery consists of coffee, in which case discretion is advised.",
-        "§5.  Right of Appeal. Applicants whose stamping is denied may request review by writing to /dev/null on Embassy stationery. Review proceedings, where granted, are conducted ex parte.",
+        "§5.  Right of Appeal. Applicants whose stamping is denied may request review by writing to noreply@blueridgeruby.com. Review proceedings, where granted, are conducted ex parte.",
         "§6.  Liability. The Embassy assumes no liability for stamping-related psychological distress, including but not limited to: imposter syndrome, premature optimization, or the realization that one has been pronouncing \"RubyGems\" wrong this entire time.",
         "§7.  Severability. Should any provision herein be deemed invalid by competent jurisdiction, the remaining provisions shall continue in full effect, possibly more so."
       ]
@@ -414,12 +414,11 @@ class PassportApplicationPdf
     pdf.stroke_horizontal_rule
     pdf.move_down 4
 
-    signed_name = answer_text(application, "5d")
     submitted_on = application&.submitted_at&.strftime("%Y-%m-%d") || ""
 
     two_column_signatures(pdf, [
-      ["Signature of Applicant (typed)", signed_name],
-      ["Date executed",                  submitted_on]
+      ["Signature of Applicant", nil],
+      ["Date executed",          submitted_on]
     ])
   end
 
@@ -467,14 +466,6 @@ class PassportApplicationPdf
       end
     end
     pdf.move_cursor_to(top - height - 2)
-  end
-
-  def answer_text(application, external_id)
-    return nil unless application
-    application.embassy_application_answers
-               .joins(:question)
-               .where(questions: { external_id: external_id })
-               .first&.value_text
   end
 
   # ============================================================== pagination
