@@ -1,13 +1,18 @@
 class ScheduleItem < ApplicationRecord
+  EMBASSY_MODES = %w[new_passport stamping both].freeze
+
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
   has_many :attendees, through: :plan_items, source: :user
+  has_many :embassy_bookings, dependent: :destroy
 
   enum :kind, { talk: 0, lightning: 1, embassy: 2, activity: 3 }
 
   validates :title, presence: true
   validates :day,   presence: true
   validates :kind,  presence: true
+  validates :embassy_mode, inclusion: { in: EMBASSY_MODES }, allow_nil: true
+  validates :embassy_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
   DAY_META = {
     "wed" => { label: "Wednesday", date: "April 29", subtitle: "Pre-Conference" },
@@ -40,6 +45,19 @@ class ScheduleItem < ApplicationRecord
 
   def rsvp_count
     plan_items.count
+  end
+
+  def seats_taken
+    embassy_bookings.active.count
+  end
+
+  def seats_remaining
+    return nil unless embassy_capacity
+    [ embassy_capacity - seats_taken, 0 ].max
+  end
+
+  def full?
+    embassy_capacity.present? && seats_remaining.zero?
   end
 
   def editable_by?(user)

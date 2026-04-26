@@ -45,10 +45,16 @@ module Admin
     # :slug is intentionally omitted — it's a seed idempotency key for
     # config/schedule.yml items and should never be set by hand.
     def schedule_item_params
-      params.require(:schedule_item).permit(
+      attrs = params.require(:schedule_item).permit(
         :day, :time_label, :sort_time, :title, :host,
-        :location, :description, :kind, :flexible, :is_public
+        :location, :description, :kind, :flexible, :is_public,
+        :embassy_mode, :embassy_capacity
       )
+      unless attrs[:kind] == "embassy"
+        attrs[:embassy_mode] = nil
+        attrs[:embassy_capacity] = nil
+      end
+      attrs
     end
   end
 end
