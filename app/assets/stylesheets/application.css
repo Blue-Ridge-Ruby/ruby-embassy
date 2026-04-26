@@ -1303,6 +1303,13 @@ hr {
 }
 
 .flex-1 { flex: 1 1 auto; }
+.whitespace-nowrap { white-space: nowrap; }
+
+/* Sortable column header — used by app/helpers/application_helper.rb#sort_link */
+.table th a { color: inherit; text-decoration: none; }
+.table th a:hover { text-decoration: underline; }
+.table th .sort-active,
+.table th a.sort-active { color: #0C2866; font-weight: 700; }
 
 /* Embassy page wrappers ------------------------------------------------ */
 

@@ -19,7 +19,15 @@ Rails.application.routes.draw do
     end
     resources :schedule_items
     resources :embassy_questions
-    resources :embassy_applications, only: %i[index show]
+    resources :embassy_applications, only: %i[index show] do
+      member do
+        patch :mark_received
+        patch :unmark_received
+      end
+      collection do
+        get :delivered
+      end
+    end
     resource  :embassy_blank_pdfs, only: %i[new create]
   end
 
