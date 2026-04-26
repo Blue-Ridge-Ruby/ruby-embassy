@@ -70,6 +70,7 @@ class PassportApplicationPdf
     render_section(pdf, application, 2, "STATEMENT OF INTENT & CHARACTER")
     render_section(pdf, application, 3, "SUPPLEMENTARY DECLARATIONS", drawn: true)
     render_section(pdf, application, 4, "ATTESTATION OF COMMUNITY STANDING")
+    pdf.start_new_page
     render_section(pdf, application, 5, "AFFIDAVIT OF ATTENDANCE")
     render_signature_block(pdf, application)
     render_instructions(pdf)
