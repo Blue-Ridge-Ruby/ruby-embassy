@@ -1,14 +1,5 @@
 <%
-  kind_label = {
-    "talk"      => "Talk",
-    "lightning" => "Lightning",
-    "embassy"   => "Embassy",
-    "activity"  => "Activity",
-    "reception" => "Reception",
-    "meal"      => "Meal",
-    "community" => "Community",
-    "volunteer" => "Volunteer"
-  }[item.kind]
+  kind_label = kind_display_label(item.kind)
   flexible_classes = item.flexible? ? "schedule-item--flexible" : ""
 
   existing_plan = current_user.plan_items.find_by(schedule_item: item) if planned

@@ -41,7 +41,7 @@
           </td>
           <td>
             <% if item.kind.present? %>
-              <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+              <span class="item-badge item-badge--<%= item.kind %>"><%= kind_display_label(item.kind) %></span>
             <% else %>
               <span class="item-badge text-muted">unknown (<%= item.read_attribute_before_type_cast(:kind) %>)</span>
             <% end %>

@@ -11,8 +11,8 @@
         base_path + (qp_clear.any? ? "?#{qp_clear.to_query}" : ""),
         class: "kind-filter__btn #{'kind-filter__btn--active' if selected_kind.blank?}" %>
 
-  <% ScheduleItem.kinds.each_key do |kind| %>
-    <%= link_to kind.humanize,
+  <% visible_filter_kinds(current_user).each do |kind| %>
+    <%= link_to kind_display_label(kind),
           base_path + "?#{request.query_parameters.merge(kind: kind).to_query}",
           class: "kind-filter__btn #{'kind-filter__btn--active' if selected_kind == kind}" %>
   <% end %>
