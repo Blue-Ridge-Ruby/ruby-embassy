@@ -32,6 +32,10 @@ class ScheduleItem < ApplicationRecord
       :sort_time
     )
   }
+  # Junk-safe: returns all rows when kind is blank or unknown.
+  scope :by_kind, ->(kind) {
+    kind.present? && kinds.key?(kind.to_s) ? where(kind: kind) : all
+  }
 
   # Creators always get auto-added to their own plan — whether the item is
   # private (only they see it) or public (others can RSVP). The rationale:

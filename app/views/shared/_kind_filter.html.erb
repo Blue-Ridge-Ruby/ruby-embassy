@@ -1,0 +1,19 @@
+<%#
+  locals:
+    base_path     - String, e.g. schedule_path or admin_schedule_items_path
+    selected_kind - String or nil, the currently active kind
+%>
+<% qp_clear = request.query_parameters.except(:kind) %>
+<nav class="kind-filter" aria-label="Filter by kind">
+  <span class="kind-filter__label">Filter:</span>
+
+  <%= link_to "All",
+        base_path + (qp_clear.any? ? "?#{qp_clear.to_query}" : ""),
+        class: "kind-filter__btn #{'kind-filter__btn--active' if selected_kind.blank?}" %>
+
+  <% ScheduleItem.kinds.each_key do |kind| %>
+    <%= link_to kind.humanize,
+          base_path + "?#{request.query_parameters.merge(kind: kind).to_query}",
+          class: "kind-filter__btn #{'kind-filter__btn--active' if selected_kind == kind}" %>
+  <% end %>
+</nav>
