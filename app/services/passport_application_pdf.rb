@@ -395,7 +395,7 @@ class PassportApplicationPdf
       [
         "\"Applicant\" means the natural person identified in Section 1 of this Application, including any pseudonyms, callsigns, GitHub handles, or other documented aliases.",
         "\"Attaché\" means the duly appointed representative of the Embassy on premises during the three (3) event days, identifiable by official Embassy lanyard and a faintly weary expression.",
-        "\"Business Gems\" means three (3) precious gemstones jointly designated by the Embassy Council for ceremonial business purposes, including but not limited to: weighing the Passport for symbolic gravitas, paying a Notary in extraordinary cases, and enhancing the credibility of the Stamping Apparatus.",
+        "\"Business Gems\" means three (3) RubyGems published open source by Embassy personnel and listed on rubygems.org, irrespective of download count, semantic versioning practices, or whether such Gems remain actively maintained.",
         "\"Embassy\" means the Blue Ridge Ruby Embassy at Blue Ridge Ruby 2026, including all temporary structures, designated tables, hallway corners, and adjacent vibe zones.",
         "\"Notary\" means any attendee meeting the criteria set forth in Box A.1 of the Addendum, voluntarily acting in such capacity for purposes of this Application only.",
         "\"Passport\" means the formal document issued by the Embassy bearing one or more stamps of recognition, accompanied by such ceremony as the Attaché deems appropriate.",
@@ -449,19 +449,16 @@ class PassportApplicationPdf
     ]
   ].freeze
 
-  ACKNOWLEDGMENT_RESERVE = 95 # vertical space to keep free at bottom of page
+  FOOTER_RESERVE = 20 # space the page footer occupies at the bottom
 
   def render_instructions(pdf)
-    bulk_sections = INSTRUCTIONS[0..-2] # everything except ACKNOWLEDGMENT
-    ack_title, ack_paragraphs = INSTRUCTIONS.last
-
     pdf.move_down 12
     box_top    = pdf.cursor
-    box_height = box_top - ACKNOWLEDGMENT_RESERVE
+    box_height = box_top - FOOTER_RESERVE
 
     pdf.column_box([0, box_top], columns: 3, width: pdf.bounds.width,
                    height: box_height, spacer: 10) do
-      bulk_sections.each_with_index do |(title, paragraphs), i|
+      INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
         pdf.move_down 4 if i > 0
         pdf.text title, size: 6.5, style: :bold
         pdf.stroke_horizontal_rule
@@ -471,15 +468,6 @@ class PassportApplicationPdf
           pdf.move_down 1
         end
       end
-    end
-
-    pdf.move_down 6
-    pdf.text ack_title, size: 7, style: :bold
-    pdf.stroke_horizontal_rule
-    pdf.move_down 2
-    ack_paragraphs.each do |para|
-      pdf.text para, size: 6, leading: 1, color: "333333"
-      pdf.move_down 1.5
     end
   end
 
