@@ -16,20 +16,27 @@
         submit the intended day without an extra dropdown. %>
     <%= f.hidden_field :day %>
 
-    <div class="field-grid-3">
+    <div class="field-grid-2">
       <div>
         <%= f.label :title, class: "label" %>
         <%= f.text_field :title, required: true, class: "input", placeholder: "e.g., Dinner with crew" %>
       </div>
 
       <div>
+        <%= f.label :time_label, "Time", class: "label" %>
+        <%= f.text_field :time_label, class: "input", placeholder: "e.g., 6:30 PM" %>
+      </div>
+    </div>
+
+    <div class="field-grid-2">
+      <div>
         <%= f.label :location, "Location", class: "label" %>
-        <%= f.text_field :location, class: "input", placeholder: "e.g., Tupelo Honey" %>
+        <%= f.text_field :location, class: "input", placeholder: "e.g., The Venetian" %>
       </div>
 
       <div>
-        <%= f.label :time_label, "Time", class: "label" %>
-        <%= f.text_field :time_label, class: "input", placeholder: "e.g., 6:30 PM" %>
+        <%= f.label :map_url, "Map URL (optional)", class: "label" %>
+        <%= f.url_field :map_url, class: "input", placeholder: "https://maps.app.goo.gl/..." %>
       </div>
     </div>
 
