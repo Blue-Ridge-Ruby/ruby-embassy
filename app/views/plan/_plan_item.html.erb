@@ -101,7 +101,9 @@
         <% end %>
 
         <div class="schedule-item__badges">
-          <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <% if item.kind.present? %>
+            <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <% end %>
           <span class="item-badge item-badge--<%= item.is_public? ? "public" : "private" %>">
             <%= item.is_public? ? "Public" : "Private" %>
           </span>
