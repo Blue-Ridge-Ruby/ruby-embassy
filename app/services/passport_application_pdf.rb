@@ -146,10 +146,10 @@ class PassportApplicationPdf
   def render_section(pdf, application, section_number, title, drawn: false)
     pdf.start_new_page if pdf.cursor < MIN_SECTION_REMAINDER
 
-    pdf.move_down 5
+    pdf.move_down 8
     pdf.text "SECTION #{section_number}  ·  #{title}", size: 8.5, style: :bold
     pdf.stroke_horizontal_rule
-    pdf.move_down 2
+    pdf.move_down 3
 
     questions = section_questions(application, section_number, drawn: drawn)
     return if questions.empty?
@@ -361,38 +361,124 @@ class PassportApplicationPdf
         "1. Print this form on standard letter-size paper. Both pages of the application and the Notary Certification Addendum must be presented at the Embassy.",
         "2. Answer all questions as printed. Substitution, omission, or creative reinterpretation may result in delay at the Embassy desk.",
         "3. The Notary in Part B of the Addendum must be located on Embassy premises and must affix their signature in the presence of the Embassy Attaché. Remote attestation is not recognized.",
-        "4. Applicants are encouraged to arrive five (5) minutes before their appointment. Late arrivals may be accommodated at the Attaché's sole discretion."
+        "4. Applicants are encouraged to arrive five (5) minutes before their appointment. Late arrivals may be accommodated at the Attaché's sole discretion.",
+        "5. Use a pen. The Embassy does not provide pens, but reserves the right to comment on the Applicant's chosen instrument."
       ]
     ],
     [
       "EMBASSY ORDINANCES (EXCERPTED)",
       [
-        "§1.  Validity. This application shall remain valid for the duration of Blue Ridge Ruby 2026 and may not be transferred to any subsequent calendar year, conference, or commemorative gathering.",
+        "§1.  Validity. This application shall remain valid for the duration of Blue Ridge Ruby 2026 and may not be transferred to any subsequent calendar year, conference, or commemorative gathering. Validity does not survive the expiration of the lead maintainer's patience.",
         "§2.  Discretion. The Embassy reserves sole and absolute discretion to deny issuance for cause, including but not limited to: insufficient ceremony, ill-fitting suspenders, or a documented hatred of the Ruby programming language.",
-        "§3.  Truthfulness. Falsified declarations may result in revocation of Ruby Embassy privileges for up to three (3) business gems and forfeiture of any commemorative stamps so obtained.",
+        "§3.  Truthfulness. Falsified declarations may result in revocation of Ruby Embassy privileges for up to three (3) event days and forfeiture of any commemorative stamps so obtained. Repeat offenders may be required to write a sincere apology in YAML.",
         "§4.  Notary Conduct. The Applicant shall conduct themselves with reasonable courtesy toward the Notary. Bribery of the Notary is strictly prohibited unless said bribery consists of coffee, in which case discretion is advised.",
-        "§5.  Right of Appeal. Applicants whose stamping is denied may request review by writing to noreply@blueridgeruby.com. Review proceedings, where granted, are conducted ex parte.",
+        "§5.  Right of Appeal. Applicants whose stamping is denied may request review by writing to noreply@blueridgeruby.com. Review proceedings, where granted, are conducted ex parte and concluded summarily.",
         "§6.  Liability. The Embassy assumes no liability for stamping-related psychological distress, including but not limited to: imposter syndrome, premature optimization, or the realization that one has been pronouncing \"RubyGems\" wrong this entire time.",
-        "§7.  Severability. Should any provision herein be deemed invalid by competent jurisdiction, the remaining provisions shall continue in full effect, possibly more so."
+        "§7.  Decorum. The Applicant shall maintain decorum throughout proceedings, defined for purposes of this ordinance as: not laughing audibly during the stamping, not narrating the Notary's signature in real time, and not attempting to high-five the Attaché unless reciprocity is clearly indicated.",
+        "§8.  Documentation. The Applicant must retain a copy of the stamped Passport for a period of not less than seven (7) calendar days, after which the document may be displayed on the Applicant's mantel, refrigerator, or other location of comparable ceremony.",
+        "§9.  Reciprocal Recognition. The Embassy shall, upon request and at the Attaché's discretion, recognize Passports issued by sister Ruby Embassies hosted at other regional and international Ruby gatherings, subject to verification of the issuing event's standing.",
+        "§10. Jurisdiction. Disputes arising under these ordinances shall be adjudicated within the geographic boundaries of Asheville, North Carolina, or wherever good coffee can be reasonably procured, whichever is more convenient.",
+        "§11. Force Majeure. The Embassy shall not be held liable for failures caused by acts of God, acts of CDN, deprecated dependencies, expired SSL certificates, or the abrupt unavailability of the lead maintainer.",
+        "§12. Amendments. These ordinances may be amended at any time by the Embassy Attaché, with or without notice, retroactively if necessary, and the Applicant hereby acknowledges this fact in advance and without further objection.",
+        "§13. Counterparts. This document may be executed in counterparts, each of which shall be deemed an original, even when neither is, in fact, an original.",
+        "§14. No Third-Party Beneficiaries. Nothing in this document creates rights enforceable by any third party, including but not limited to: the Applicant's coworkers, the Applicant's manager, the Applicant's mother, or the larger Ruby community at any historical moment.",
+        "§15. Indemnification. The Applicant shall indemnify and hold harmless the Embassy, its Attachés, its Notaries, and any other persons who happened to be standing nearby, from any and all claims arising from the Applicant's voluntary participation in stamping ceremonies, including but not limited to claims sounding in tort, contract, or vibes.",
+        "§16. Survival. The provisions of §6 (Liability), §14 (No Third-Party Beneficiaries), and §15 (Indemnification) shall survive the expiration, revocation, or stamping of any Passport issued hereunder, and shall continue in perpetuity or until the heat death of the framework, whichever occurs first.",
+        "§17. Severability. Should any provision herein be deemed invalid by competent jurisdiction, the remaining provisions shall continue in full effect, possibly more so. Invalidated provisions may be reasonably construed to give effect to the parties' original ceremonial intent.",
+        "§18. Entire Agreement. This document, together with the Notary Certification Addendum and any seal affixed thereto, constitutes the entire agreement between the Applicant and the Embassy and supersedes all prior promises, including those made over coffee, on Slack, or in conference hallways.",
+        "§19. Conflict of Laws. In the event of any conflict between these ordinances and applicable Embassy precedent, these ordinances shall control. In the event of conflict between two clauses of these ordinances, the clause more inconvenient to the Applicant shall control.",
+        "§20. Notices. All notices required hereunder shall be deemed given when transmitted by carrier pigeon, ceremonial scroll, or @-mention in the conference Slack, whichever the Embassy Attaché finds most amusing at the time."
+      ]
+    ],
+    [
+      "SCHEDULE A — DEFINITIONS",
+      [
+        "\"Applicant\" means the natural person identified in Section 1 of this Application, including any pseudonyms, callsigns, GitHub handles, or other documented aliases.",
+        "\"Attaché\" means the duly appointed representative of the Embassy on premises during the three (3) event days, identifiable by official Embassy lanyard and a faintly weary expression.",
+        "\"Business Gems\" means three (3) RubyGems published open source by Embassy personnel and listed on rubygems.org, irrespective of download count, semantic versioning practices, or whether such Gems remain actively maintained.",
+        "\"Embassy\" means the Blue Ridge Ruby Embassy at Blue Ridge Ruby 2026, including all temporary structures, designated tables, hallway corners, and adjacent vibe zones.",
+        "\"Notary\" means any attendee meeting the criteria set forth in Box A.1 of the Addendum, voluntarily acting in such capacity for purposes of this Application only.",
+        "\"Passport\" means the formal document issued by the Embassy bearing one or more stamps of recognition, accompanied by such ceremony as the Attaché deems appropriate.",
+        "\"Stamping\" means the act of applying said stamp to said Passport, performed by the Attaché in the presence of the Applicant and any onlookers who happen to be present.",
+        "\"Vibe\" means the prevailing affective state at the Embassy at any given moment, which the Attaché shall have sole discretion to characterize, calibrate, or dismiss."
+      ]
+    ],
+    [
+      "SCHEDULE B — PROHIBITED ACTIVITIES",
+      [
+        "(a) Forgery, alteration, or material misrepresentation of any portion of this Application.",
+        "(b) Acceptance of bribes from the Applicant, in any form other than the consensual transfer of caffeinated beverages.",
+        "(c) Loud or sustained criticism of the Ruby programming language within audible range of the Embassy, except as part of an appeal duly filed under §5.",
+        "(d) Solicitation of the Attaché's opinion on tabs vs. spaces, unless the Applicant is prepared to listen for an indeterminate period.",
+        "(e) Conducting unauthorized parallel stamping ceremonies on Embassy premises or in any reasonable proximity thereto.",
+        "(f) Use of the Embassy seal in any context not expressly authorized by the Embassy, including but not limited to social media avatars, conference badges, and unauthorized merchandise."
+      ]
+    ],
+    [
+      "SCHEDULE C — RULES OF CONSTRUCTION",
+      [
+        "1. Headings used herein are for convenience only and shall not affect interpretation, except where convenient interpretation favors the Embassy.",
+        "2. References to the singular include the plural and vice versa, except where context clearly indicates the Applicant is a unique individual, in which case discretion is advised.",
+        "3. \"Including\" shall mean \"including without limitation\" unless context requires otherwise, and even then, probably still without limitation.",
+        "4. References to a person include such person's heirs, successors, executors, assigns, and the on-call engineer.",
+        "5. Where this document refers to \"the Embassy,\" such reference shall include any tent, pop-up structure, table, designated chair, or unattended laptop temporarily designated as such by reasonable people.",
+        "6. The phrase \"in the Embassy's sole discretion\" appears throughout this document and means precisely what it says, regardless of how aggrieved the Applicant may feel about it.",
+        "7. Time periods specified in event days shall be calculated exclusive of weekends, recognized Embassy holidays, and any period during which the Attaché is on a coffee run."
+      ]
+    ],
+    [
+      "SCHEDULE D — REPRESENTATIONS AND WARRANTIES",
+      [
+        "The Applicant represents and warrants that, as of the date of this Application:",
+        "(a) The Applicant has full legal capacity to enter into this ceremonial relationship with the Embassy;",
+        "(b) The Applicant has read, or at least scrolled past, the entirety of the foregoing ordinances;",
+        "(c) No other Embassy of any kind, whether real, parodic, or aspirational, has issued the Applicant a Passport that would create a conflict of allegiance herewith;",
+        "(d) The Applicant is not knowingly under the influence of any framework or paradigm that would impair their judgment during the stamping ceremony;",
+        "(e) All declarations made in Sections 1 through 5 above are true to the best of the Applicant's recollection, with allowances for the late hour; and",
+        "(f) The Applicant understands that no warranty, express or implied, is made by the Embassy as to the durability, transferability, or impressiveness of any stamp issued hereunder."
+      ]
+    ],
+    [
+      "ACKNOWLEDGMENT",
+      [
+        "By submitting this Application, the Applicant acknowledges having read, understood, and willfully ignored the entirety of the foregoing ordinances. The Applicant further acknowledges that any disputes arising hereunder shall be resolved through informal mediation, which may include but is not limited to: a stern look from the Attaché, a brief lecture on community standards, or, in extreme cases, the writing of a strongly worded post-mortem.",
+        "The Applicant additionally acknowledges that the Embassy retains the right to update, revise, supplement, deprecate, or rebrand any of the foregoing at any time, in any way, for any reason, with or without changelog.",
+        "Should the Applicant wish to revoke this Acknowledgment, they may do so by completing a separate Form RE-7 (Notice of Withdrawal), which the Embassy has not yet drafted but reserves the right to draft retroactively.",
+        "IN WITNESS WHEREOF, the Applicant has caused this Application to be executed by clicking a button on a website, which the Embassy hereby accepts as legally equivalent to a handwritten signature in indelible ink, notwithstanding any local jurisdiction's opinion on the matter."
       ]
     ]
   ].freeze
 
+  FOOTER_RESERVE = 20 # space the page footer occupies at the bottom
+
+  # Section titles that should always start at the top of a fresh column,
+  # so they don't get orphaned at the bottom of a previous one.
+  COLUMN_BREAK_BEFORE = [
+    "SCHEDULE C — RULES OF CONSTRUCTION"
+  ].freeze
+
   def render_instructions(pdf)
-    return if pdf.cursor < 110 # not enough room for even a partial section
+    pdf.move_down 12
+    box_top    = pdf.cursor
+    box_height = box_top - FOOTER_RESERVE
 
-    INSTRUCTIONS.each do |title, paragraphs|
-      break if pdf.cursor < 60
+    pdf.column_box([ 0, box_top ], columns: 3, width: pdf.bounds.width,
+                   height: box_height, spacer: 10) do
+      INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
+        if COLUMN_BREAK_BEFORE.include?(title)
+          # Force the next column by overflowing the current one.
+          pdf.move_down(pdf.cursor + 1)
+        elsif i > 0
+          pdf.move_down 5
+        end
 
-      pdf.move_down 16
-      pdf.text title, size: 8, style: :bold
-      pdf.stroke_horizontal_rule
-      pdf.move_down 4
-
-      paragraphs.each do |para|
-        break if pdf.cursor < 24 # don't orphan a paragraph
-        pdf.text para, size: 7, leading: 1.5, color: "333333"
+        pdf.text title, size: 6.5, style: :bold
+        pdf.stroke_horizontal_rule
         pdf.move_down 3
+        paragraphs.each do |para|
+          pdf.text para, size: 5.5, leading: 0.5, color: "333333", align: :justify
+          pdf.move_down 2
+        end
       end
     end
   end

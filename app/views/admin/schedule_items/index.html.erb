@@ -31,7 +31,13 @@
             <div class="text-gray text-sm"><%= item.description %></div>
           <% end %>
         </td>
-        <td><span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span></td>
+        <td>
+          <% if item.kind.present? %>
+            <span class="item-badge item-badge--<%= item.kind %>"><%= item.kind.humanize %></span>
+          <% else %>
+            <span class="item-badge text-muted">unknown (<%= item.read_attribute_before_type_cast(:kind) %>)</span>
+          <% end %>
+        </td>
         <td><%= item.is_public? ? "Public" : "Private" %></td>
         <td><%= item.host.presence || "—" %></td>
         <td class="text-right">
