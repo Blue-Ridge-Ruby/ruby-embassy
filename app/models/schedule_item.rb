@@ -53,7 +53,7 @@ class ScheduleItem < ApplicationRecord
 
   def seats_remaining
     return nil unless embassy_capacity
-    [embassy_capacity - seats_taken, 0].max
+    [ embassy_capacity - seats_taken, 0 ].max
   end
 
   def full?

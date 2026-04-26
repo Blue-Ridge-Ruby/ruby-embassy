@@ -29,7 +29,7 @@ class Admin::EmbassyApplicationsController < AdminController
     @application = EmbassyApplication.includes(
       :notary_profile,
       embassy_application_answers: :question,
-      embassy_booking: [:user, :schedule_item]
+      embassy_booking: [ :user, :schedule_item ]
     ).find_by!(serial: params[:id])
 
     @booking       = @application.embassy_booking
@@ -67,8 +67,8 @@ class Admin::EmbassyApplicationsController < AdminController
   def filtered_scope
     scope = EmbassyApplication
       .submitted
-      .joins(embassy_booking: [:user, :schedule_item])
-      .includes(:notary_profile, embassy_booking: [:user, :schedule_item])
+      .joins(embassy_booking: [ :user, :schedule_item ])
+      .includes(:notary_profile, embassy_booking: [ :user, :schedule_item ])
 
     return scope if params[:q].blank?
 

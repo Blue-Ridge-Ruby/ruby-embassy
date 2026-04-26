@@ -28,7 +28,7 @@ Rails.application.routes.draw do
         get :delivered
       end
     end
-    resource  :embassy_blank_pdfs, only: %i[new create]
+    resource :embassy_blank_pdfs, only: %i[new create]
   end
 
   # Background jobs dashboard (admin-only mount inside /admin/)
