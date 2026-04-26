@@ -10,20 +10,22 @@
       Your personal conference itinerary.
     </p>
 
-    <%# Travel times are view-only mock for now; backend wiring comes later. %>
-    <div class="travel-section">
-      <h2 class="travel-section__title">Travel</h2>
-      <div class="travel-grid">
-        <div class="travel-row">
-          <label for="arrival">Arriving</label>
-          <input type="datetime-local" id="arrival" name="arrival" value="<%= @travel[:arrival] %>">
-        </div>
-        <div class="travel-row">
-          <label for="departure">Departing</label>
-          <input type="datetime-local" id="departure" name="departure" value="<%= @travel[:departure] %>">
+    <%# Travel section hidden — keep code in place for possible future implementation. %>
+    <% if false %>
+      <div class="travel-section">
+        <h2 class="travel-section__title">Travel</h2>
+        <div class="travel-grid">
+          <div class="travel-row">
+            <label for="arrival">Arriving</label>
+            <input type="datetime-local" id="arrival" name="arrival" value="<%= @travel[:arrival] %>">
+          </div>
+          <div class="travel-row">
+            <label for="departure">Departing</label>
+            <input type="datetime-local" id="departure" name="departure" value="<%= @travel[:departure] %>">
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
 
     <% ScheduleItem::DAY_META.each do |day_key, meta| %>
       <%= render "day", day_key: day_key, meta: meta, plan_items: @plan_items_by_day[day_key] || [] %>
