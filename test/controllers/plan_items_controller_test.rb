@@ -127,7 +127,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-block", day: "sat", title: "Embassy Block",
-      kind: :embassy, is_public: true, embassy_mode: "new_passport", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
     )
     plan        = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     booking     = EmbassyBooking.create!(
@@ -151,7 +151,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-block", day: "sat", title: "Embassy Block",
-      kind: :embassy, is_public: true, embassy_mode: "new_passport", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
     )
     plan    = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     booking = EmbassyBooking.create!(
@@ -169,7 +169,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-block", day: "sat", title: "Embassy Block",
-      kind: :embassy, is_public: true, embassy_mode: "new_passport", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
     )
     plan    = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     booking = EmbassyBooking.create!(
@@ -187,7 +187,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-stamp", day: "sat", title: "Embassy Stamping",
-      kind: :embassy, is_public: true, embassy_mode: "stamping", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_stamping: true, stamping_capacity: 10
     )
     plan = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     EmbassyBooking.create!(
