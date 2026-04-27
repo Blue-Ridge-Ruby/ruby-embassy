@@ -1932,6 +1932,8 @@ hr {
 .schedule-item.schedule-item--volunteer-empty {
   border-left: 4px solid #b91c1c;
   background: #fef2f2;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 /* Admin tabs ----------------------------------------------------------- */
