@@ -1,5 +1,9 @@
 class ScheduleItem < ApplicationRecord
   EMBASSY_MODES = %w[new_passport stamping passport_pickup].freeze
+  DEFAULT_PLAN_KINDS = %w[talk reception].freeze
+  # One-off slugs that don't fit a default-plan kind but are still part of
+  # the main programming every attendee is auto-RSVPed to.
+  DEFAULT_PLAN_SLUGS = %w[thu-mystery].freeze
 
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
@@ -79,6 +83,16 @@ class ScheduleItem < ApplicationRecord
     day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
   }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
+  # Items every attendee is auto-RSVPed to on signup (and via the backfill
+  # task). Restricted to public, audience: "everyone" so volunteer-only items
+  # are never auto-added to attendees' plans. Matches by kind OR by an
+  # explicit allowlist of slugs (for one-off items that don't fit a kind).
+  scope :default_plan, -> {
+    public_items.where(audience: "everyone")
+                .where("kind IN (?) OR slug IN (?)",
+                       kinds.values_at(*DEFAULT_PLAN_KINDS),
+                       DEFAULT_PLAN_SLUGS)
+  }
 
   # Creators always get auto-added to their own plan — whether the item is
   # private (only they see it) or public (others can RSVP). The rationale:
