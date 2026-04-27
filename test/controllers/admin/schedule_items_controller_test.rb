@@ -115,4 +115,22 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
       assert_select "option[selected='selected']", text: "John Athayde"
     end
   end
+
+  test "admin can create a volunteers_only public item" do
+    sign_in_as users(:jeremy)
+    post admin_schedule_items_path, params: valid_form_params(
+      title: "Volunteer briefing", audience: "volunteers_only"
+    )
+    item = ScheduleItem.find_by(title: "Volunteer briefing")
+    assert_equal "volunteers_only", item.audience
+  end
+
+  test "admin can update an item's audience" do
+    item = ScheduleItem.create!(day: "thu", title: "Update test", kind: :talk, is_public: true)
+    assert_equal "everyone", item.audience
+
+    sign_in_as users(:jeremy)
+    patch admin_schedule_item_path(item), params: valid_form_params(audience: "volunteers_only")
+    assert_equal "volunteers_only", item.reload.audience
+  end
 end

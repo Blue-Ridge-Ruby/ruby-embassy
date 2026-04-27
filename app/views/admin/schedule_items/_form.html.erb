@@ -90,6 +90,17 @@
       <%= f.label :is_public, "Public (appears on /schedule for all attendees)" %>
     </div>
 
+    <div>
+      <%= f.label :audience, "Visible to", class: "label" %>
+      <%= f.select :audience,
+            [ [ "Everyone", "everyone" ], [ "Volunteers only", "volunteers_only" ] ],
+            {}, class: "select" %>
+      <p class="text-muted text-sm mt-1">
+        "Volunteers only" hides the event from regular attendees on /schedule.
+        Admins always see all public events.
+      </p>
+    </div>
+
     <div class="embassy-form-extras"
          data-embassy-settings-target="extras"
          <%= "hidden".html_safe unless schedule_item.kind == "embassy" %>>
