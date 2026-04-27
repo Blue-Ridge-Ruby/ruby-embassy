@@ -4,7 +4,7 @@ class EmbassyBooking < ApplicationRecord
   belongs_to :plan_item
   has_one :embassy_application, dependent: :destroy
 
-  enum :mode,  { new_passport: "new_passport", stamping: "stamping" }
+  enum :mode,  { new_passport: "new_passport", stamping: "stamping", passport_pickup: "passport_pickup" }
   enum :state, { confirmed: "confirmed", cancelled: "cancelled" }
 
   validates :mode, presence: true

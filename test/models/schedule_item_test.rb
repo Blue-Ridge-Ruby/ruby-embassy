@@ -265,4 +265,104 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_not_includes result, filled
     assert_not_includes result, other
   end
+
+  # ----- Per-mode embassy capacity ---------------------------------------
+
+  def embassy_attrs(overrides = {})
+    valid_attrs(
+      kind: :embassy,
+      title: "Test Embassy",
+      offers_new_passport: true,
+      new_passport_capacity: 4
+    ).merge(overrides)
+  end
+
+  test "embassy block requires at least one mode" do
+    item = ScheduleItem.new(valid_attrs(kind: :embassy))
+    assert_not item.valid?
+    assert_includes item.errors[:base].join, "must offer at least one mode"
+  end
+
+  test "embassy block requires capacity for each offered mode" do
+    item = ScheduleItem.new(embassy_attrs(offers_stamping: true, stamping_capacity: nil))
+    assert_not item.valid?
+    assert_includes item.errors[:stamping_capacity], "must be set when this mode is offered"
+  end
+
+  test "embassy block valid with single mode and matching capacity" do
+    item = ScheduleItem.new(embassy_attrs)
+    assert item.valid?, item.errors.full_messages.inspect
+  end
+
+  test "embassy block valid with all three modes" do
+    item = ScheduleItem.new(embassy_attrs(
+      offers_stamping: true, stamping_capacity: 3,
+      offers_passport_pickup: true, passport_pickup_capacity: 2
+    ))
+    assert item.valid?, item.errors.full_messages.inspect
+  end
+
+  test "active_embassy_modes lists only enabled modes" do
+    item = ScheduleItem.create!(embassy_attrs(offers_stamping: true, stamping_capacity: 2))
+    assert_equal %w[new_passport stamping].sort, item.active_embassy_modes.sort
+  end
+
+  test "seats_taken_for counts only that mode's bookings" do
+    item = ScheduleItem.create!(embassy_attrs(offers_stamping: true, stamping_capacity: 2))
+    user = users(:attendee_one)
+    plan_item = user.plan_items.create!(schedule_item: item)
+    EmbassyBooking.create!(user: user, schedule_item: item, plan_item: plan_item,
+                           mode: "stamping", state: "confirmed")
+    assert_equal 0, item.seats_taken_for("new_passport")
+    assert_equal 1, item.seats_taken_for("stamping")
+  end
+
+  test "full_for? is per-mode" do
+    item = ScheduleItem.create!(embassy_attrs(
+      new_passport_capacity: 1,
+      offers_stamping: true, stamping_capacity: 5
+    ))
+    user = users(:attendee_one)
+    plan_item = user.plan_items.create!(schedule_item: item)
+    EmbassyBooking.create!(user: user, schedule_item: item, plan_item: plan_item,
+                           mode: "new_passport", state: "confirmed")
+    assert item.full_for?("new_passport")
+    assert_not item.full_for?("stamping")
+  end
+
+  test "embassy_mode derives 'both' when passport and stamping are offered" do
+    item = ScheduleItem.new(embassy_attrs(offers_stamping: true, stamping_capacity: 2))
+    assert_equal "both", item.embassy_mode
+  end
+
+  test "embassy_mode derives 'passport_pickup' when only pickup is offered" do
+    item = ScheduleItem.new(valid_attrs(
+      kind: :embassy,
+      offers_new_passport: false,
+      offers_passport_pickup: true,
+      passport_pickup_capacity: 3
+    ))
+    assert_equal "passport_pickup", item.embassy_mode
+  end
+
+  test "full? returns true only when every active mode is full" do
+    item = ScheduleItem.create!(embassy_attrs(
+      new_passport_capacity: 1,
+      offers_stamping: true, stamping_capacity: 5
+    ))
+    user = users(:attendee_one)
+    plan_item = user.plan_items.create!(schedule_item: item)
+    EmbassyBooking.create!(user: user, schedule_item: item, plan_item: plan_item,
+                           mode: "new_passport", state: "confirmed")
+    assert_not item.full?, "passport full but stamping has seats — block isn't fully full"
+  end
+
+  test "total_capacity sums all per-mode capacities" do
+    item = ScheduleItem.create!(embassy_attrs(
+      new_passport_capacity: 4,
+      offers_stamping: true, stamping_capacity: 3,
+      offers_passport_pickup: true, passport_pickup_capacity: 2
+    ))
+    assert_equal 9, item.total_capacity
+  end
 end

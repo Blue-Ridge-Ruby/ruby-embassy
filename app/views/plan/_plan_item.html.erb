@@ -13,6 +13,7 @@
       mode        = booking&.mode || "new_passport"
       state       =
         if booking.nil? then "stamping"
+        elsif booking.passport_pickup? then "pickup"
         elsif booking.stamping? then "stamping"
         elsif application&.submitted? then "submitted"
         else "pending"
@@ -66,16 +67,25 @@
                         embassy_application_path(application),
                         class: "btn btn-navy",
                         data: { turbo_frame: "_top" } %>
+
+          <% when "pickup" %>
+            <p class="plan-item__embassy-note">
+              <strong>Passport pickup.</strong>
+              Your finished Ruby Embassy Passport will be ready for collection at this time.
+              Bring photo ID. This appointment was scheduled by an Embassy Attaché and cannot be changed here.
+            </p>
           <% end %>
         </div>
       </div>
 
-      <%= button_to "×",
-                    plan_item_path(plan_item),
-                    method: :delete,
-                    class: "plan-item__remove",
-                    aria: { label: "Cancel appointment" },
-                    data: { turbo_confirm: "Cancel your Embassy appointment?" } %>
+      <% unless %w[pickup submitted].include?(state) %>
+        <%= button_to "×",
+                      plan_item_path(plan_item),
+                      method: :delete,
+                      class: "plan-item__remove",
+                      aria: { label: "Cancel appointment" },
+                      data: { turbo_confirm: "Cancel your Embassy appointment?" } %>
+      <% end %>
     </article>
 
   <% else %>

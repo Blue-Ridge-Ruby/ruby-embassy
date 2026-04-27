@@ -15,6 +15,7 @@ class Admin::EmbassyApplicationsController < AdminController
     @applications = filtered_scope
       .where(passport_received_at: nil)
       .reorder(Arel.sql(ACTIVE_SORTS[@sort]))
+    @pickups_by_user_id = preload_pickups_for(@applications)
   end
 
   def delivered
@@ -23,6 +24,7 @@ class Admin::EmbassyApplicationsController < AdminController
     @applications = filtered_scope
       .where.not(passport_received_at: nil)
       .reorder(Arel.sql(DELIVERED_SORTS[@sort]))
+    @pickups_by_user_id = preload_pickups_for(@applications)
   end
 
   def show
@@ -36,6 +38,8 @@ class Admin::EmbassyApplicationsController < AdminController
     @schedule_item = @application.schedule_item
     @notary        = @application.notary_profile
     @sections      = sections_for(@application)
+    @pickup_booking  = @booking.user.embassy_bookings.active.passport_pickup.first
+    @pickup_blocks   = ScheduleItem.embassy.where(offers_passport_pickup: true).ordered
 
     respond_to do |format|
       format.html
@@ -62,6 +66,41 @@ class Admin::EmbassyApplicationsController < AdminController
                   notice: "Moved #{application.serial} back to the active queue."
   end
 
+  def schedule_pickup
+    application   = EmbassyApplication.find_by!(serial: params[:id])
+    applicant     = application.embassy_booking.user
+    schedule_item = ScheduleItem.embassy.find(params[:schedule_item_id])
+
+    unless schedule_item.offers_passport_pickup?
+      redirect_back fallback_location: admin_embassy_application_path(application.serial),
+                    alert: "That block isn't set up for passport pickup."
+      return
+    end
+
+    result = ActiveRecord::Base.transaction do
+      ScheduleItem.lock.find(schedule_item.id)
+      next :full if schedule_item.full_for?("passport_pickup")
+
+      plan_item = applicant.plan_items.find_or_create_by!(schedule_item: schedule_item)
+      booking   = EmbassyBooking.find_or_initialize_by(user: applicant, schedule_item: schedule_item)
+      booking.assign_attributes(
+        plan_item: plan_item,
+        mode:      "passport_pickup",
+        state:     "confirmed"
+      )
+      booking.save!
+      booking
+    end
+
+    if result == :full
+      redirect_back fallback_location: admin_embassy_application_path(application.serial),
+                    alert: "That pickup block is full."
+    else
+      redirect_to admin_embassy_application_path(application.serial),
+                  notice: "Pickup scheduled for #{applicant.full_name}."
+    end
+  end
+
   private
 
   def filtered_scope
@@ -77,6 +116,16 @@ class Admin::EmbassyApplicationsController < AdminController
       "users.first_name ILIKE :t OR users.last_name ILIKE :t OR users.email ILIKE :t OR embassy_applications.serial ILIKE :t",
       t: term
     )
+  end
+
+  def preload_pickups_for(applications)
+    user_ids = applications.map { |a| a.embassy_booking.user_id }.uniq
+    EmbassyBooking
+      .active
+      .passport_pickup
+      .where(user_id: user_ids)
+      .includes(:schedule_item)
+      .index_by(&:user_id)
   end
 
   def sections_for(application)
