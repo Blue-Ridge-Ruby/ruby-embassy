@@ -10,8 +10,10 @@
       <div class="hidden lg:block">
         <div class="flex items-center gap-x-3">
           <% if current_user %>
+            <%= link_to "Dashboard", dashboard_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <%= link_to "Schedule", schedule_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <%= link_to "My Plan", plan_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
+            <a href="https://blueridgeruby.com/guide" target="_blank" rel="noopener" class="text-blue px-3 py-1 text-lg font-medium">Guide</a>
             <% if admin? %>
               <%= link_to "Admin", admin_root_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <% end %>
@@ -38,8 +40,10 @@
     <div data-toggle-target="toggleable" class="hidden lg:hidden">
       <div class="flex flex-col py-4 gap-y-2">
         <% if current_user %>
+          <%= link_to "Dashboard", dashboard_path, class: "text-blue block py-2 font-medium" %>
           <%= link_to "Schedule", schedule_path, class: "text-blue block py-2 font-medium" %>
           <%= link_to "My Plan", plan_path, class: "text-blue block py-2 font-medium" %>
+          <a href="https://blueridgeruby.com/guide" target="_blank" rel="noopener" class="text-blue block py-2 font-medium">Guide</a>
           <% if admin? %>
             <%= link_to "Admin", admin_root_path, class: "text-blue block py-2 font-medium" %>
           <% end %>

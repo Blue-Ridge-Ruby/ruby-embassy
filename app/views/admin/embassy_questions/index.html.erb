@@ -1,6 +1,6 @@
 <% content_for :title, "Question Bank — Embassy Admin" %>
 
-<div class="flex items-center justify-between mb-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
   <div>
     <h1 class="text-2xl font-bold text-navy">Question Bank</h1>
     <p class="text-muted">
@@ -39,6 +39,7 @@
       </div>
     </header>
 
+    <div class="table-scroll">
     <table class="table">
       <thead>
         <tr>
@@ -56,6 +57,7 @@
         <% end %>
       </tbody>
     </table>
+    </div>
   </section>
 <% end %>
 
@@ -70,6 +72,7 @@
         </p>
       </div>
     </header>
+    <div class="table-scroll">
     <table class="table">
       <thead>
         <tr>
@@ -87,5 +90,6 @@
         <% end %>
       </tbody>
     </table>
+    </div>
   </section>
 <% end %>

@@ -1,70 +1,53 @@
 <% content_for :title, "Application #{@application.serial} — Embassy Admin" %>
 
-<div class="flex items-center justify-between mb-6">
+<div class="qa-header">
   <div>
-    <h1 class="text-2xl font-bold text-navy">
+    <h1 class="qa-header__title">
       Application <span class="mono"><%= @application.serial %></span>
     </h1>
-    <p class="text-muted">
-      <%= @booking.user.full_name %> ·
+    <p class="qa-header__sub">
+      <strong><%= @booking.user.full_name %></strong> ·
       <%= ScheduleItem::DAY_META.dig(@schedule_item.day, :date) %> · <%= @schedule_item.time_label %> ·
       submitted <%= @application.submitted_at&.strftime("%b %-d · %-l:%M %p") %>
     </p>
   </div>
-  <div class="flex gap-2">
-    <%= link_to "Download PDF",
-                admin_embassy_application_path(@application, format: :pdf),
-                class: "btn btn-red btn-lg" %>
+  <div class="qa-header__actions">
+    <%= link_to "Download PDF", admin_embassy_application_path(@application, format: :pdf), class: "btn btn-red" %>
     <%= link_to "← Back", admin_embassy_applications_path, class: "btn btn-muted" %>
   </div>
 </div>
 
-<div class="alert alert-notice mb-4">
-  <strong>Random pool draw:</strong>
-  <span class="mono"><%= @application.drawn_question_ids.join(", ") %></span>
-  (4 questions from the active Section 3 pool).
-  <% if @notary %>
-    <br>
-    <strong>Notary assignment:</strong>
-    <span class="mono"><%= @notary.external_id %></span> ·
-    &ldquo;Someone who <%= @notary.description.sub(/^./, &:downcase) %>&rdquo;
-  <% end %>
-</div>
-
-<div class="card">
-  <h2 class="embassy-section-header mb-4">Submitted Answers</h2>
-  <% [1, 2, 3, 4, 5].each do |n| %>
-    <div class="embassy-admin-section mb-4">
-      <h3 class="embassy-section-subhead">
-        Section <%= n %> · <%= embassy_section_title(n) %>
-      </h3>
-      <dl class="embassy-admin-dl">
-        <% @sections[n].each do |question| %>
-          <% answer = @application.answer_for(question) %>
-          <dt><span class="mono"><%= question.external_id %></span> · <%= question.label %></dt>
-          <dd>
-            <% case question.field_type %>
-            <% when "checkbox_group" %>
-              <% values = Array(answer&.value_array) %>
-              <% if values.any? %>
-                <ul class="list-disc">
-                  <% values.each { |v| %><li><%= v %></li><% } %>
-                </ul>
-              <% else %>
-                <span class="text-muted">— None selected —</span>
-              <% end %>
-            <% when "checkbox" %>
-              <%= answer&.value_text == "true" ? "✓ Affirmed" : "— Not affirmed —" %>
-            <% else %>
-              <% if answer&.value_text.present? %>
-                <%= simple_format(answer.value_text) %>
-              <% else %>
-                <span class="text-muted">— Blank —</span>
-              <% end %>
-            <% end %>
-          </dd>
+<% if @notary %>
+  <%# What notary the applicant must locate, plus the follow-up question they'll be asked. %>
+  <div class="qa-strip">
+    <div class="qa-strip__cell">
+      <span class="qa-strip__label">Notary</span>
+      <span class="qa-strip__value">
+        <span class="mono"><%= @notary.external_id %></span> ·
+        <em>Someone who <%= @notary.description.sub(/^./, &:downcase) %></em>
+        <% if @notary.followup_prompt.present? %>
+          · follow-up: &ldquo;<%= @notary.followup_prompt %>&rdquo;
         <% end %>
-      </dl>
+      </span>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>
+
+<% [ 1, 2, 3, 4, 5 ].each do |n| %>
+  <section class="qa-section <%= "qa-section--pool" if n == 3 %>">
+    <h2 class="qa-section__head">
+      <span class="qa-section__num">§ <%= n %></span>
+      <span class="qa-section__title"><%= embassy_section_title(n) %></span>
+      <% if n == 3 %>
+        <span class="qa-section__badge">★ Randomized question pool</span>
+      <% end %>
+    </h2>
+
+    <% @sections[n].each_with_index do |question, idx| %>
+      <%= render "question_row",
+                 application: @application,
+                 question: question,
+                 section_label: "#{n}.#{idx + 1}" %>
+    <% end %>
+  </section>
+<% end %>

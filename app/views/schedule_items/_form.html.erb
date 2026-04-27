@@ -10,11 +10,23 @@
 
 <div class="card card-compact">
   <%= form_with model: schedule_item, class: "space-y-4" do |f| %>
-    <%# Day is implied by the plan section this form was opened from —
-        ScheduleItemsController#new seeds @schedule_item.day from params[:day].
-        We render it as a hidden field so admins-browsing-as-attendees still
-        submit the intended day without an extra dropdown. %>
-    <%= f.hidden_field :day %>
+    <%# Day is set one of two ways:
+        - When the form is opened from a /plan day section ("+ Add custom block"),
+          ScheduleItemsController#new seeds @schedule_item.day from params[:day]
+          and we keep the field hidden — the user already chose the day implicitly.
+        - When opened from /dashboard ("Host an Activity"), no day is implied,
+          so the caller passes show_day_picker: true and we render a select. %>
+    <% if local_assigns.fetch(:show_day_picker, false) %>
+      <div>
+        <%= f.label :day, "Day", class: "label" %>
+        <%= f.select :day,
+                     ScheduleItem::DAY_META.map { |key, meta| [ "#{meta[:label]} · #{meta[:date]}", key ] },
+                     {},
+                     class: "input" %>
+      </div>
+    <% else %>
+      <%= f.hidden_field :day %>
+    <% end %>
 
     <div class="field-grid-2">
       <div>

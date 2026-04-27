@@ -38,6 +38,7 @@
         :time: "9:30 AM"
         :sort_time: 930
         :host: "John Athayde"
+        :host_url: "https://blueridgeruby.com/speakers/john-athayde/"
         :title: "Learning from Permaculture: Sustainable Software Development"
         :type: talk
       - :id: thu-break-1
@@ -49,6 +50,7 @@
         :time: "10:30 AM"
         :sort_time: 1030
         :host: "Joël Quenneville"
+        :host_url: "https://blueridgeruby.com/speakers/joel-quenneville/"
         :title: "State is the First Decision You Never Made"
         :type: talk
       - :id: thu-break-2
@@ -60,6 +62,7 @@
         :time: "11:30 AM"
         :sort_time: 1130
         :host: "Ifat Ribon"
+        :host_url: "https://blueridgeruby.com/speakers/ifat-ribon/"
         :title: "Yes, &…: Ruby's Secret Talent for Improvisation"
         :type: talk
       - :id: thu-lunch
@@ -82,6 +85,7 @@
         :time: "3:00 PM"
         :sort_time: 1500
         :host: "Annie Kiley"
+        :host_url: "https://blueridgeruby.com/speakers/annie-kiley/"
         :title: "How To Finish What You Start: Lessons From Actually Shipping a Big Refactor"
         :type: talk
       - :id: thu-break-4
@@ -93,6 +97,7 @@
         :time: "4:00 PM"
         :sort_time: 1600
         :host: "Kevin Murphy"
+        :host_url: "https://blueridgeruby.com/speakers/kevin-murphy/"
         :title: "InstiLLment of Successful Practices in an Agentic World"
         :type: talk
       - :id: thu-closing
@@ -132,6 +137,7 @@
         :time: "9:30 AM"
         :sort_time: 930
         :host: "Brooke Kuhlmann"
+        :host_url: "https://blueridgeruby.com/speakers/brooke-kuhlmann/"
         :title: "Terminus: A Hanami + htmx web application for e-ink devices"
         :type: talk
       - :id: fri-break-1
@@ -143,6 +149,7 @@
         :time: "10:30 AM"
         :sort_time: 1030
         :host: "Rachael Wright-Munn"
+        :host_url: "https://blueridgeruby.com/speakers/rachael-wright-munn/"
         :title: "Your First Open-Source Contribution"
         :type: talk
       - :id: fri-break-2
@@ -154,6 +161,7 @@
         :time: "11:30 AM"
         :sort_time: 1130
         :host: "David Paluy"
+        :host_url: "https://blueridgeruby.com/speakers/david-paluy/"
         :title: "LLM Telemetry as a First-Class Rails Concern"
         :type: talk
       - :id: fri-lunch
@@ -177,6 +185,7 @@
         :time: "3:30 PM"
         :sort_time: 1530
         :host: "Christine Seeman"
+        :host_url: "https://blueridgeruby.com/speakers/christine-seeman/"
         :title: "Optimize Your Mindset (Without Overclocking)"
         :type: talk
       - :id: fri-break-4
@@ -188,6 +197,7 @@
         :time: "4:30 PM"
         :sort_time: 1630
         :host: "Thomas Cannon"
+        :host_url: "https://blueridgeruby.com/speakers/thomas-cannon/"
         :title: "5 ways to invest in yourself for the long haul"
         :type: talk
       - :id: fri-closing

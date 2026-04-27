@@ -14,7 +14,7 @@
         on /plan this fragment is extracted into that frame (form
         expands inline). On direct visit, the surrounding page renders. %>
     <%= turbo_frame_tag "new_schedule_item_#{@schedule_item.day}" do %>
-      <%= render "form", schedule_item: @schedule_item %>
+      <%= render "form", schedule_item: @schedule_item, show_day_picker: params[:day].blank? %>
     <% end %>
   </div>
 </section>

@@ -22,4 +22,17 @@ module ApplicationHelper
       item.location
     end
   end
+
+  # Renders a talk's host as a link to their blueridgeruby.com speaker page
+  # when host_url is set, otherwise as plain text. Returns nil if no host.
+  def speaker_link(item)
+    return nil if item.host.blank?
+    if item.host_url.present?
+      link_to item.host, item.host_url,
+              target: "_blank",
+              rel:    "noopener noreferrer"
+    else
+      item.host
+    end
+  end
 end
