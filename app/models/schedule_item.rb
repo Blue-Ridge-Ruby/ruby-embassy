@@ -61,6 +61,10 @@ class ScheduleItem < ApplicationRecord
   scope :by_kind, ->(kind) {
     kind.present? && kinds.key?(kind.to_s) ? where(kind: kind) : all
   }
+  # Junk-safe: returns all rows when day is blank or unknown.
+  scope :by_day, ->(day) {
+    day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
+  }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
 
   # Creators always get auto-added to their own plan — whether the item is
@@ -101,6 +105,33 @@ class ScheduleItem < ApplicationRecord
 
   def lightning_slots_full?
     lightning? && lightning_talk_signups.count >= LightningTalkSignup::MAX_SPEAKERS
+  end
+
+  def seats_taken_for(mode)
+    embassy_bookings.active.where(mode: mode).count
+  end
+
+  def capacity_for(mode)
+    public_send("#{mode}_capacity")
+  end
+
+  def offers?(mode)
+    public_send("offers_#{mode}?")
+  end
+
+  def seats_remaining_for(mode)
+    cap = capacity_for(mode)
+    return nil unless cap
+    [ cap - seats_taken_for(mode), 0 ].max
+  end
+
+  def full_for?(mode)
+    cap = capacity_for(mode)
+    cap.present? && seats_remaining_for(mode).zero?
+  end
+
+  def active_embassy_modes
+    EMBASSY_MODES.select { |m| offers?(m) }
   end
 
   def seats_taken
