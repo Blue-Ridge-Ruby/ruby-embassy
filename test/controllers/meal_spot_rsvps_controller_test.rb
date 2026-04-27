@@ -25,6 +25,16 @@ class MealSpotRsvpsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "POST persists meet_up_spot on a newly-created transport" do
+    sign_in_as users(:volunteer_one)
+    post schedule_item_meal_spot_rsvps_path(@meal, @spot_a),
+         params: { mode: "driving", departs_at: 90.minutes.from_now, seats_offered: 2,
+                   meet_up_spot: "south parking lot" }
+
+    new_transport = @spot_a.transports.find_by(mode: :driving)
+    assert_equal "south parking lot", new_transport.meet_up_spot
+  end
+
   test "POST switches the driver from a driving transport to a walking transport at the same spot" do
     sign_in_as users(:volunteer_one)
     drive_t = @spot_a.transports.create!(mode: :driving, departs_at: 1.hour.from_now, seats_offered: 3)

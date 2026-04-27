@@ -69,6 +69,10 @@ class ScheduleItem < ApplicationRecord
     plan_items.count
   end
 
+  def hosted?
+    meal? && host.present?
+  end
+
   def lightning_slots_full?
     lightning? && lightning_talk_signups.count >= LightningTalkSignup::MAX_SPEAKERS
   end

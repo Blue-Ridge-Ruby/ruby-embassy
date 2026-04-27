@@ -50,7 +50,8 @@ class MealSpotRsvpsController < ApplicationController
       @meal_spot.transports.create!(
         mode:          params[:mode],
         departs_at:    params[:departs_at],
-        seats_offered: params[:seats_offered]
+        seats_offered: params[:seats_offered],
+        meet_up_spot:  params[:meet_up_spot]
       )
     end
   end

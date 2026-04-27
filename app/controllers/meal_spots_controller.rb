@@ -2,9 +2,10 @@ class MealSpotsController < ApplicationController
   before_action :set_meal
   before_action :set_meal_spot, only: %i[edit update]
   before_action :require_editable!, only: %i[edit update]
-  before_action :require_not_hosting!, only: %i[new create]
+  before_action :require_creation_allowed!, only: %i[new create]
 
   def index
+    MealSpot.canonical_for_hosted!(@meal) if @meal.hosted?
     @meal_spots = @meal.meal_spots
                        .where("is_public = TRUE OR created_by_id = ?", current_user.id)
                        .includes(transports: { rsvps: :user })
@@ -65,7 +66,14 @@ class MealSpotsController < ApplicationController
                 alert: "This spot can only be edited by an admin once others have RSVPd."
   end
 
-  def require_not_hosting!
+  def require_creation_allowed!
+    if @meal.hosted?
+      where = @meal.location.presence || @meal.host
+      return redirect_to schedule_item_meal_spots_path(@meal),
+                         alert: "This meal is hosted at #{where}. " \
+                                "Add your way to get there below."
+    end
+
     existing = @meal.meal_spots.find_by(created_by: current_user)
     return unless existing
     redirect_to schedule_item_meal_spots_path(@meal),

@@ -57,6 +57,14 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_not ScheduleItem.new(valid_attrs(kind: :embassy)).talk?
   end
 
+  test "hosted? is true only for meals with a host present" do
+    assert ScheduleItem.new(valid_attrs(kind: :meal, host: "Alice")).hosted?
+    assert_not ScheduleItem.new(valid_attrs(kind: :meal, host: nil)).hosted?
+    assert_not ScheduleItem.new(valid_attrs(kind: :meal, host: "")).hosted?
+    assert_not ScheduleItem.new(valid_attrs(kind: :talk, host: "Alice")).hosted?,
+               "talks have hosts (speakers) but aren't 'hosted meals'"
+  end
+
   test "rsvp_count counts plan_items" do
     item = ScheduleItem.create!(valid_attrs)
     assert_equal 0, item.rsvp_count

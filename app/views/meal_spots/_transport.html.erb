@@ -38,6 +38,9 @@
         Nobody yet
       <% end %>
     </p>
+    <% if transport.meet_up_spot.present? %>
+      <p class="text-sm text-gray">Meet at <%= transport.meet_up_spot %></p>
+    <% end %>
   </div>
 
   <% if user_on_this_transport && current_user_rsvp %>
