@@ -8,46 +8,75 @@
   </div>
 </div>
 
-<div class="table-scroll">
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Role</th>
-      <th>Tito</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td class="font-medium text-navy"><%= user.full_name %></td>
-        <td><%= user.email %></td>
-        <td>
-          <span class="badge badge-<%= user.role %>"><%= user.role.humanize %></span>
-        </td>
-        <td>
-          <% if user.admin_ticket_url %>
-            <%= link_to "View ticket \u2192", user.admin_ticket_url,
-                  target: "_blank", rel: "noopener noreferrer",
-                  class: "text-blue underline" %>
-          <% else %>
-            <span class="text-gray text-sm">—</span>
-          <% end %>
-        </td>
-        <td class="text-right">
-          <div class="flex gap-2 justify-end">
-            <%= link_to "View", admin_user_path(user), class: "btn btn-muted" %>
-            <%= link_to "Edit", edit_admin_user_path(user), class: "btn btn-muted" %>
-            <%= button_to "Delete", admin_user_path(user),
-                  method: :delete,
-                  data: { turbo_confirm: "Remove #{user.full_name}?" },
-                  class: "btn btn-red" %>
-          </div>
-        </td>
-      </tr>
+<%= form_with url: admin_users_path, method: :get, local: true, class: "mb-6 flex gap-2 flex-wrap" do %>
+  <%= text_field_tag :q, @query,
+        placeholder: "Search by name or email…",
+        class: "input flex-1" %>
+  <%= hidden_field_tag :sort, @sort %>
+  <%= submit_tag "Search", class: "btn btn-navy" %>
+  <% if @query.present? %>
+    <%= link_to "Clear", admin_users_path(sort: @sort), class: "btn btn-ghost" %>
+  <% end %>
+<% end %>
+
+<% if @users.empty? %>
+  <div class="card text-muted">
+    <% if @query.present? %>
+      No matches for "<%= @query %>".
+    <% else %>
+      No users yet.
     <% end %>
-  </tbody>
-</table>
-</div>
+  </div>
+<% else %>
+  <div class="table-scroll">
+  <table class="table">
+    <thead>
+      <tr>
+        <th><%= sort_link("Name", "name") %></th>
+        <th><%= sort_link("Email", "email") %></th>
+        <th><%= sort_link("Role", "role") %></th>
+        <th><%= sort_link("Last Login", "last_login") %></th>
+        <th>Tito</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td class="font-medium text-navy"><%= user.full_name %></td>
+          <td><%= user.email %></td>
+          <td>
+            <span class="badge badge-<%= user.role %>"><%= user.role.humanize %></span>
+          </td>
+          <td>
+            <% if user.last_sign_in_at %>
+              <%= user.last_sign_in_at.strftime("%b %-d · %-l:%M %p") %>
+            <% else %>
+              <span class="text-muted">Never</span>
+            <% end %>
+          </td>
+          <td>
+            <% if user.admin_ticket_url %>
+              <%= link_to "View ticket →", user.admin_ticket_url,
+                    target: "_blank", rel: "noopener noreferrer",
+                    class: "text-blue underline" %>
+            <% else %>
+              <span class="text-gray text-sm">—</span>
+            <% end %>
+          </td>
+          <td class="text-right">
+            <div class="flex gap-2 justify-end">
+              <%= link_to "View", admin_user_path(user), class: "btn btn-muted" %>
+              <%= link_to "Edit", edit_admin_user_path(user), class: "btn btn-muted" %>
+              <%= button_to "Delete", admin_user_path(user),
+                    method: :delete,
+                    data: { turbo_confirm: "Remove #{user.full_name}?" },
+                    class: "btn btn-red" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </div>
+<% end %>
