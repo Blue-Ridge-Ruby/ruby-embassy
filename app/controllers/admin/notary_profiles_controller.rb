@@ -6,7 +6,7 @@ class Admin::NotaryProfilesController < AdminController
   end
 
   def new
-    @notary = NotaryProfile.new(status: "active")
+    @notary = NotaryProfile.new(status: "active", external_id: NotaryProfile.next_external_id)
   end
 
   def create
