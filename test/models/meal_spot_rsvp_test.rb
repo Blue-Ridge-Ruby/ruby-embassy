@@ -66,4 +66,24 @@ class MealSpotRsvpTest < ActiveSupport::TestCase
     rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one))
     assert_nil rsvp.contact_method
   end
+
+  test "new RSVP inherits contact_method from user's last RSVP when blank" do
+    other_meal = ScheduleItem.create!(day: "fri", title: "Lunch 2", kind: :meal, is_public: true)
+    other_spot = other_meal.meal_spots.create!(name: "Anywhere", created_by: users(:volunteer_one))
+    other_transport = other_spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    other_transport.rsvps.create!(user: users(:volunteer_one), contact_method: "555-existing")
+
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one))
+    assert_equal "555-existing", rsvp.contact_method
+  end
+
+  test "new RSVP keeps explicit contact_method when given" do
+    other_meal = ScheduleItem.create!(day: "fri", title: "Lunch 2", kind: :meal, is_public: true)
+    other_spot = other_meal.meal_spots.create!(name: "Anywhere", created_by: users(:volunteer_one))
+    other_transport = other_spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    other_transport.rsvps.create!(user: users(:volunteer_one), contact_method: "555-OLD")
+
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one), contact_method: "555-NEW")
+    assert_equal "555-NEW", rsvp.contact_method
+  end
 end

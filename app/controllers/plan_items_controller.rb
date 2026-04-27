@@ -19,6 +19,9 @@ class PlanItemsController < ApplicationController
 
   def update
     @plan_item.update(plan_item_params)
+    if @plan_item.contact_method.present? && @plan_item.saved_change_to_contact_method?
+      current_user.propagate_contact_to_blank_rsvps!(@plan_item.contact_method)
+    end
     respond_to do |format|
       format.turbo_stream {
         # Emit replacements for both the /plan and /schedule frames; whichever

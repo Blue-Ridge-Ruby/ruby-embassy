@@ -28,6 +28,9 @@ class MealSpotRsvpsController < ApplicationController
   def update
     rsvp = current_user.meal_spot_rsvps.find_by!(id: params[:id])
     rsvp.update!(contact_method: contact_method_param)
+    if rsvp.contact_method.present? && rsvp.saved_change_to_contact_method?
+      current_user.propagate_contact_to_blank_rsvps!(rsvp.contact_method)
+    end
     redirect_to schedule_item_meal_spots_path(@meal), notice: "Contact saved."
   rescue ActiveRecord::RecordInvalid => e
     redirect_to schedule_item_meal_spots_path(@meal),

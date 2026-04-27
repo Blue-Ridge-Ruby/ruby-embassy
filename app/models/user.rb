@@ -74,6 +74,19 @@ class User < ApplicationRecord
     candidates.max_by(&:first)&.last
   end
 
+  # Backfill `value` into every meal RSVP and plan_item the user has where
+  # contact_method is blank. RSVPs already carrying an explicit contact are
+  # left alone — only empties get filled. Skips invalid blank values.
+  def propagate_contact_to_blank_rsvps!(value)
+    value = value.to_s.strip
+    return if value.blank?
+    now = Time.current
+    meal_spot_rsvps.where(contact_method: [ nil, "" ])
+                   .update_all(contact_method: value, updated_at: now)
+    plan_items.where(contact_method: [ nil, "" ])
+              .update_all(contact_method: value, updated_at: now)
+  end
+
   private
 
   # When a user gets linked to a Tito ticket, snapshot the current event's

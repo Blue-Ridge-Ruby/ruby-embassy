@@ -65,6 +65,25 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Discord: alice#0001", plan.reload.contact_method
   end
 
+  test "PATCH propagates contact_method to other blank RSVPs" do
+    user = users(:attendee_one)
+    sign_in_as user
+    plan = user.plan_items.create!(schedule_item: @item)
+    plan.update_columns(contact_method: nil)
+
+    blank_other = ScheduleItem.create!(day: "fri", title: "Hike", kind: :activity, is_public: true)
+    blank_pi = user.plan_items.create!(schedule_item: blank_other)
+    blank_pi.update_columns(contact_method: nil)
+
+    set_other = ScheduleItem.create!(day: "fri", title: "Bike", kind: :activity, is_public: true)
+    set_pi = user.plan_items.create!(schedule_item: set_other, contact_method: "preset")
+
+    patch plan_item_path(plan), params: { plan_item: { contact_method: "Discord: alice" } }
+
+    assert_equal "Discord: alice", blank_pi.reload.contact_method
+    assert_equal "preset",         set_pi.reload.contact_method
+  end
+
   test "turbo_stream PATCH response replaces both plan_item AND schedule_item frames" do
     sign_in_as users(:attendee_one)
     plan = users(:attendee_one).plan_items.create!(schedule_item: @item)

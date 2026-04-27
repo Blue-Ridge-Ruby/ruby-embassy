@@ -110,4 +110,24 @@ class MealSpotRsvpsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @driving_b.id, rsvp.meal_spot_transport_id
     assert_equal "555-1234", rsvp.contact_method
   end
+
+  test "PATCH update propagates contact_method to other blank RSVPs" do
+    user = users(:volunteer_one)
+    sign_in_as user
+    rsvp = @walking_a.rsvps.create!(user: user)
+    rsvp.update_columns(contact_method: nil)
+
+    other_activity = ScheduleItem.create!(day: "sat", title: "Hike", kind: :activity, is_public: true)
+    other_pi = user.plan_items.create!(schedule_item: other_activity)
+    other_pi.update_columns(contact_method: nil)
+
+    set_activity = ScheduleItem.create!(day: "sat", title: "Bike", kind: :activity, is_public: true)
+    set_pi = user.plan_items.create!(schedule_item: set_activity, contact_method: "explicit")
+
+    patch schedule_item_meal_spot_rsvp_path(@meal, @spot_a, rsvp),
+          params: { meal_spot_rsvp: { contact_method: "@vic on Slack" } }
+
+    assert_equal "@vic on Slack", other_pi.reload.contact_method
+    assert_equal "explicit",      set_pi.reload.contact_method
+  end
 end
