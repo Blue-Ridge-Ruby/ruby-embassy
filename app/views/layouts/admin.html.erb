@@ -24,17 +24,19 @@
         <div class="flex items-center justify-between gap-4">
           <%= link_to "Ruby Embassy Admin", admin_root_path, class: "font-semibold" %>
 
-          <div class="hidden lg:flex items-center gap-x-6 ml-auto">
-            <%= link_to "Admin Dashboard", admin_root_path %>
-            <%= link_to "Attendees", admin_users_path %>
-            <span class="nav-disabled" aria-disabled="true">
-              Volunteers
-              <span class="nav-soon">Soon</span>
-            </span>
-            <%= link_to "Schedule", admin_schedule_items_path %>
-            <%= link_to "Embassy Applications", admin_embassy_applications_path %>
-            <%= link_to "User Dashboard", dashboard_path, class: "ml-2" %>
-            <%= button_to "Sign out", session_path, method: :delete, class: "admin-nav-btn" %>
+          <div class="hidden lg:block ml-auto">
+            <div class="flex items-center gap-x-6">
+              <%= link_to "Admin Dashboard", admin_root_path %>
+              <%= link_to "Attendees", admin_users_path %>
+              <span class="nav-disabled" aria-disabled="true">
+                Volunteers
+                <span class="nav-soon">Soon</span>
+              </span>
+              <%= link_to "Schedule", admin_schedule_items_path %>
+              <%= link_to "Embassy Applications", admin_embassy_applications_path %>
+              <%= link_to "User Dashboard", dashboard_path, class: "ml-2" %>
+              <%= button_to "Sign out", session_path, method: :delete, class: "admin-nav-btn" %>
+            </div>
           </div>
 
           <div class="flex lg:hidden">
