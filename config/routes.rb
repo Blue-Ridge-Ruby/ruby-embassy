@@ -17,7 +17,12 @@ Rails.application.routes.draw do
     resources :users do
       post :sync, on: :collection
     end
-    resources :schedule_items
+    resources :schedule_items do
+      resources :lightning_talk_signups, only: %i[index create update destroy] do
+        collection { patch :reorder }
+      end
+    end
+    resources :lightning_talks, only: %i[index]
     resources :volunteers, only: %i[index show]
     resources :volunteer_slots, only: %i[index show]
     resources :volunteer_signups, only: %i[create destroy]
@@ -46,6 +51,7 @@ Rails.application.routes.draw do
 
   resources :plan_items, only: %i[create update destroy]
   resources :schedule_items, only: %i[new create edit update] do
+    resource :lightning_talk_signup, only: %i[create edit update]
     resources :meal_spots, only: %i[index new create edit update] do
       resources :rsvps, only: %i[create destroy], controller: "meal_spot_rsvps"
     end

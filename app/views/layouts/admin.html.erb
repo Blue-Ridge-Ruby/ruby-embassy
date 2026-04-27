@@ -22,10 +22,10 @@
     <div data-controller="toggle" data-toggle-toggle-class="hidden">
       <nav class="admin-nav">
         <%= link_to "Ruby Embassy Admin", admin_root_path, class: "font-semibold" %>
-        <%= link_to "Admin Dashboard", admin_root_path %>
         <%= link_to "Attendees", admin_users_path %>
         <%= link_to "Volunteers", admin_volunteers_path %>
         <%= link_to "Schedule", admin_schedule_items_path %>
+        <%= link_to "Lightning Talks", admin_lightning_talks_path %>
         <%= link_to "Embassy Applications", admin_embassy_applications_path %>
         <span class="ml-auto flex items-center gap-4">
           <%= link_to "Back to User Dashboard", dashboard_path %>
@@ -41,10 +41,10 @@
       </nav>
 
       <div data-toggle-target="toggleable" class="admin-nav__drawer hidden">
-        <%= link_to "Admin Dashboard", admin_root_path %>
         <%= link_to "Attendees", admin_users_path %>
         <%= link_to "Volunteers", admin_volunteers_path %>
         <%= link_to "Schedule", admin_schedule_items_path %>
+        <%= link_to "Lightning Talks", admin_lightning_talks_path %>
         <%= link_to "Embassy Applications", admin_embassy_applications_path %>
         <%= link_to "Back to User Dashboard", dashboard_path %>
         <div>

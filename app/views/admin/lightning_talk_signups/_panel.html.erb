@@ -1,0 +1,40 @@
+<%
+  signups            = schedule_item.lightning_talk_signups.includes(:user)
+  available_speakers = User.where.not(id: signups.pluck(:user_id)).order(:first_name, :last_name, :email)
+%>
+
+<section class="mt-8">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold text-navy">Speakers</h2>
+    <%= link_to "Export PDF",
+                admin_schedule_item_lightning_talk_signups_path(schedule_item, format: :pdf),
+                class: "btn btn-muted" %>
+  </div>
+
+  <p class="text-gray text-sm mb-4">
+    <%= signups.count %> of <%= LightningTalkSignup::MAX_SPEAKERS %> slots filled.
+    Each slot is currently <%= ((LightningTalkSignup::BLOCK_DURATION_MINUTES.to_f / [signups.count, 1].max).round(1)) %> minutes.
+    Drag rows to reorder.
+  </p>
+
+  <% if signups.any? %>
+    <%= render "admin/lightning_talk_signups/speakers_list", signups: signups, schedule_item: schedule_item %>
+  <% else %>
+    <p class="text-gray italic mb-4">No speakers signed up yet.</p>
+  <% end %>
+
+  <% if signups.count < LightningTalkSignup::MAX_SPEAKERS %>
+    <div class="card card-compact mt-4">
+      <h3 class="font-medium text-navy mb-2">Add a speaker</h3>
+      <%= form_with url: admin_schedule_item_lightning_talk_signups_path(schedule_item), method: :post do %>
+        <%= label_tag :user_id, "User", class: "label" %>
+        <div class="flex gap-2">
+          <%= select_tag :user_id,
+                         options_from_collection_for_select(available_speakers, :id, :full_name),
+                         class: "select flex-1", required: true, prompt: "— pick a user —" %>
+          <%= button_tag "Add", type: :submit, class: "btn btn-red" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</section>

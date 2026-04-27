@@ -1,0 +1,17 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<h1 class="text-2xl font-bold text-navy mb-6">Lightning Talks</h1>
+
+<% if @schedule_item %>
+  <p class="text-gray text-sm mb-4">
+    <%= ScheduleItem::DAY_META.dig(@schedule_item.day, :label) || @schedule_item.day %>
+    · <%= @schedule_item.time_label %> · <%= @schedule_item.title %>
+  </p>
+
+  <%= render "admin/lightning_talk_signups/panel", schedule_item: @schedule_item %>
+<% else %>
+  <p class="text-gray">
+    No lightning talk block scheduled yet. Add one from
+    <%= link_to "Schedule", admin_schedule_items_path, class: "text-blue underline" %>.
+  </p>
+<% end %>

@@ -1,3 +1,6 @@
+<% if item.lightning? %>
+  <%= render "schedule/lightning_session_item", item: item %>
+<% else %>
 <%
   kind_label = kind_display_label(item.kind)
   flexible_classes = item.flexible? ? "schedule-item--flexible" : ""
@@ -138,4 +141,5 @@
       <% end %>
     </div>
   </article>
+<% end %>
 <% end %>

@@ -11,6 +11,7 @@ class PlanController < ApplicationController
                                      .sort_by { |pi| [ ScheduleItem::DAY_META.keys.index(pi.schedule_item.day) || 99, pi.schedule_item.sort_time.to_i ] }
                                      .group_by { |pi| pi.schedule_item.day }
 
+    @speaking_ids = current_user.lightning_talk_signups.pluck(:schedule_item_id).to_set
     # @travel = MOCK_TRAVEL
   end
 end
