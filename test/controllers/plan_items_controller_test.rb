@@ -239,4 +239,49 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
       delete plan_item_path(plan)
     end
   end
+
+  # ----- Meal RSVP locks plan_item ---------------------------------------
+
+  test "DELETE on a meal plan_item with an active spot RSVP does NOT destroy" do
+    sign_in_as users(:attendee_one)
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", title: "Open Lunch",
+                                  kind: :meal, is_public: true)
+    spot = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: users(:attendee_one))
+    transport = spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    transport.rsvps.create!(user: users(:attendee_one)) # auto-creates the PlanItem
+    plan = users(:attendee_one).plan_items.find_by!(schedule_item: meal)
+
+    assert_no_difference -> { PlanItem.count } do
+      assert_no_difference -> { MealSpotRsvp.count } do
+        delete plan_item_path(plan)
+      end
+    end
+    assert_redirected_to plan_path
+    assert_match(/Leave your spot/i, flash[:alert])
+  end
+
+  test "DELETE on a meal plan_item with an active spot RSVP returns 403 turbo_stream" do
+    sign_in_as users(:attendee_one)
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", title: "Open Lunch",
+                                  kind: :meal, is_public: true)
+    spot = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: users(:attendee_one))
+    transport = spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    transport.rsvps.create!(user: users(:attendee_one))
+    plan = users(:attendee_one).plan_items.find_by!(schedule_item: meal)
+
+    delete plan_item_path(plan), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    assert_response :forbidden
+    assert_match %r{<turbo-stream action="replace" target="plan_item_#{plan.id}">}, response.body
+  end
+
+  test "DELETE on a meal plan_item without an RSVP DOES destroy" do
+    sign_in_as users(:attendee_one)
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", title: "Open Lunch",
+                                  kind: :meal, is_public: true)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: meal)
+
+    assert_difference -> { PlanItem.count }, -1 do
+      delete plan_item_path(plan)
+    end
+  end
 end

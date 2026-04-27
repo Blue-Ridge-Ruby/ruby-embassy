@@ -65,13 +65,7 @@
       <% end %>
 
       <% if item.meal? %>
-        <% spot_count = item.meal_spots.where("is_public = TRUE OR created_by_id = ?", current_user.id).count %>
-        <p class="schedule-item__description">
-          <%= link_to (spot_count.zero? ? "Plan a spot →" : "View #{spot_count} #{'spot'.pluralize(spot_count)} →"),
-                      schedule_item_meal_spots_path(item),
-                      class: "text-blue underline",
-                      data:  { turbo_frame: "_top" } %>
-        </p>
+        <%= render "schedule/meal_rides_summary", item: item %>
       <% end %>
 
       <div class="schedule-item__badges">

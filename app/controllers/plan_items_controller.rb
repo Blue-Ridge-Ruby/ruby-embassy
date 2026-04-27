@@ -77,6 +77,22 @@ class PlanItemsController < ApplicationController
       end
     end
 
+    if schedule_item.meal? && current_user.meal_spot_rsvps.exists?(schedule_item_id: schedule_item.id)
+      message = "Leave your spot for this meal first, then you can remove it from your plan."
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = message
+          render turbo_stream: turbo_stream.replace(
+            helpers.dom_id(@plan_item),
+            partial: "plan/plan_item",
+            locals: { plan_item: @plan_item }
+          ), status: :forbidden
+        end
+        format.html { redirect_to plan_path, alert: message }
+      end
+      return
+    end
+
     @plan_item.destroy
 
     respond_to do |format|

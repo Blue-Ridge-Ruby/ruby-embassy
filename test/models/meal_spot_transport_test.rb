@@ -52,6 +52,14 @@ class MealSpotTransportTest < ActiveSupport::TestCase
     assert_not transport.started_by?(nil)
   end
 
+  test "meet_up_spot is optional and round-trips" do
+    transport = @spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    assert_nil transport.reload.meet_up_spot, "default is nil"
+
+    transport.update!(meet_up_spot: "hotel lobby")
+    assert_equal "hotel lobby", transport.reload.meet_up_spot
+  end
+
   test "passenger_count and full? track car capacity" do
     transport = @spot.transports.create!(mode: :driving, departs_at: 1.hour.from_now, seats_offered: 2)
     transport.rsvps.create!(user: users(:attendee_one)) # driver

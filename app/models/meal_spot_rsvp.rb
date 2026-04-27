@@ -16,6 +16,26 @@ class MealSpotRsvp < ApplicationRecord
   after_create  :ensure_parent_plan_item
   after_destroy :transfer_spot_ownership
 
+  # The user can't leave or switch this RSVP if:
+  #   - they're the driver of a driving transport (offering a ride creates a
+  #     commitment — others may RSVP at any time), OR
+  #   - they organized a walking group AND others have joined (rug-pull guard).
+  # Solo walkers and passengers can always leave their own RSVP.
+  def locked_in?
+    transport = meal_spot_transport
+    return false unless transport.started_by?(user)
+    transport.driving? || transport.rsvps.where.not(user_id: user_id).exists?
+  end
+
+  def lock_reason
+    return nil unless locked_in?
+    if meal_spot_transport.driving?
+      "You offered to host this ride. Others may RSVP, so you can't switch away."
+    else
+      "You started this transport group and others have joined. Switch to another spot or join a different way to leave."
+    end
+  end
+
   private
 
   # Denormalize so the (user_id, schedule_item_id) unique index can enforce

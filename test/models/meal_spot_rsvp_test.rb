@@ -86,4 +86,40 @@ class MealSpotRsvpTest < ActiveSupport::TestCase
     rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one), contact_method: "555-NEW")
     assert_equal "555-NEW", rsvp.contact_method
   end
+
+  # ----- locked_in? -------------------------------------------------------
+
+  test "locked_in? is true for the driver of a driving transport, even solo" do
+    drive = @spot_a.transports.create!(mode: :driving, departs_at: 1.hour.from_now, seats_offered: 3)
+    rsvp = drive.rsvps.create!(user: users(:attendee_one)) # solo driver
+    assert rsvp.locked_in?, "solo driver is locked in by their offer to host"
+    assert_match(/host this ride/i, rsvp.lock_reason)
+  end
+
+  test "locked_in? is true for the driver even with passengers" do
+    drive = @spot_a.transports.create!(mode: :driving, departs_at: 1.hour.from_now, seats_offered: 3)
+    driver_rsvp = drive.rsvps.create!(user: users(:attendee_one))
+    drive.rsvps.create!(user: users(:volunteer_one)) # passenger
+    assert driver_rsvp.locked_in?
+  end
+
+  test "locked_in? is false for a passenger of a driving transport" do
+    drive = @spot_a.transports.create!(mode: :driving, departs_at: 1.hour.from_now, seats_offered: 3)
+    drive.rsvps.create!(user: users(:attendee_one)) # driver
+    passenger_rsvp = drive.rsvps.create!(user: users(:volunteer_one))
+    assert_not passenger_rsvp.locked_in?, "passengers can leave freely"
+    assert_nil passenger_rsvp.lock_reason
+  end
+
+  test "locked_in? is false for a solo walking organizer" do
+    rsvp = @walking_a.rsvps.create!(user: users(:attendee_one)) # solo walker
+    assert_not rsvp.locked_in?, "solo walking has no rug-pull risk"
+  end
+
+  test "locked_in? is true for a walking organizer with others (rug-pull)" do
+    organizer_rsvp = @walking_a.rsvps.create!(user: users(:attendee_one))
+    @walking_a.rsvps.create!(user: users(:volunteer_one))
+    assert organizer_rsvp.locked_in?
+    assert_match(/started this transport group/, organizer_rsvp.lock_reason)
+  end
 end

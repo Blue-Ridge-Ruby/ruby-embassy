@@ -151,4 +151,51 @@ class MealSpotsControllerTest < ActionDispatch::IntegrationTest
     get edit_schedule_item_meal_spot_path(@meal, spot)
     assert_response :success
   end
+
+  # ----- Hosted meals -----------------------------------------------------
+
+  def hosted_meal
+    @hosted_meal ||= ScheduleItem.create!(day: "thu", title: "Welcome dinner", kind: :meal,
+                                           is_public: true, host: "Alice",
+                                           location: "Pleasant Garden Inn",
+                                           map_url: "https://maps.app.goo.gl/x")
+  end
+
+  test "index on a hosted meal auto-creates the canonical spot on first visit" do
+    sign_in_as users(:attendee_one)
+    assert_equal 0, hosted_meal.meal_spots.count
+
+    get schedule_item_meal_spots_path(hosted_meal)
+    assert_response :success
+    assert_equal 1, hosted_meal.meal_spots.count
+    assert_nil hosted_meal.meal_spots.first.created_by_id
+  end
+
+  test "index on a hosted meal hides the 'Suggest a spot' UI" do
+    sign_in_as users(:attendee_one)
+    get schedule_item_meal_spots_path(hosted_meal)
+    assert_response :success
+    assert_no_match(/Suggest a spot/, response.body)
+    assert_no_match(/Suggest another spot/, response.body)
+    assert_match(/Add a way to get there/, response.body)
+  end
+
+  test "GET new on a hosted meal redirects with a hosted-meal flash" do
+    sign_in_as users(:attendee_one)
+    get new_schedule_item_meal_spot_path(hosted_meal)
+    assert_redirected_to schedule_item_meal_spots_path(hosted_meal)
+    assert_match(/hosted at/, flash[:alert])
+  end
+
+  test "POST create on a hosted meal is blocked" do
+    sign_in_as users(:attendee_one)
+    assert_no_difference -> { MealSpot.where.not(created_by_id: nil).count } do
+      post schedule_item_meal_spots_path(hosted_meal), params: {
+        meal_spot: { name: "Some other place" },
+        transport: { mode: "walking", departs_at: 1.hour.from_now }
+      }
+    end
+    assert_redirected_to schedule_item_meal_spots_path(hosted_meal)
+    assert_match(/hosted at/, flash[:alert])
+  end
 end
