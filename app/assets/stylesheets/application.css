@@ -2389,6 +2389,49 @@ hr {
 
 .embassy-ceremony__back { display: flex; gap: 0.75rem; justify-content: center; }
 
+/* Organizer note ------------------------------------------------------- */
+
+.organizer-note {
+  margin-top: 1.25rem;
+  padding: 1.5rem 1.75rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.organizer-note__heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #6B4220;
+  margin: 0;
+}
+
+.organizer-note p {
+  margin: 0;
+  color: #525C66;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.organizer-note__list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #525C66;
+  font-size: 0.9375rem;
+}
+
+.organizer-note__list li { line-height: 1.55; }
+
+.organizer-note__signoff {
+  font-style: italic;
+}
+
 /* Expired state -------------------------------------------------------- */
 
 .embassy-expired {
@@ -2975,6 +3018,7 @@ hr {
   .embassy-ceremony__download,
   .embassy-ceremony__etiquette,
   .embassy-ceremony__back,
+  .organizer-note,
   .embassy-ceremony__preview > h2,
   .embassy-ceremony__preview > p,
   .flex.items-center.justify-between,  /* admin page h1 + actions row */
