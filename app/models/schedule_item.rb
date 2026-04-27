@@ -58,6 +58,10 @@ class ScheduleItem < ApplicationRecord
   scope :by_kind, ->(kind) {
     kind.present? && kinds.key?(kind.to_s) ? where(kind: kind) : all
   }
+  # Junk-safe: returns all rows when day is blank or unknown.
+  scope :by_day, ->(day) {
+    day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
+  }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
 
   # Creators always get auto-added to their own plan — whether the item is

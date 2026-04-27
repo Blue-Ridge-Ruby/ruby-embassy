@@ -6,6 +6,7 @@
 </div>
 
 <%= render "shared/kind_filter", base_path: admin_schedule_items_path, selected_kind: @selected_kind %>
+<%= render "shared/day_filter",  base_path: admin_schedule_items_path, selected_day:  @selected_day %>
 
 <% if @schedule_items.empty? %>
   <p class="text-gray py-8">

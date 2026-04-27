@@ -4,7 +4,8 @@ module Admin
 
     def index
       @selected_kind  = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : nil
-      @schedule_items = ScheduleItem.by_kind(@selected_kind).ordered
+      @selected_day   = ScheduleItem::DAY_META.key?(params[:day].to_s) ? params[:day] : nil
+      @schedule_items = ScheduleItem.by_kind(@selected_kind).by_day(@selected_day).ordered
     end
 
     def new
