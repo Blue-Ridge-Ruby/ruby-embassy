@@ -1,16 +1,34 @@
 module Admin
   class UsersController < AdminController
     SORTS = {
-      "name"       => "users.last_name ASC, users.first_name ASC",
-      "email"      => "users.email ASC",
-      "role"       => "users.role ASC",
-      "last_login" => "users.last_sign_in_at DESC NULLS LAST"
+      "name"      => "users.last_name ASC, users.first_name ASC",
+      "role"      => "users.role ASC",
+      "last_seen" => "users.last_seen_at DESC NULLS LAST"
     }.freeze
 
     def index
       @sort  = SORTS.key?(params[:sort]) ? params[:sort] : "name"
       @query = params[:q].to_s.strip
       @users = filtered_users.reorder(Arel.sql(SORTS[@sort]))
+
+      user_ids = @users.map(&:id)
+
+      @rsvp_counts = PlanItem.joins(:schedule_item)
+                             .where(user_id: user_ids)
+                             .merge(ScheduleItem.where.not(kind: [ :talk, :reception, :volunteer ]))
+                             .group(:user_id)
+                             .count
+
+      @volunteer_counts = PlanItem.joins(:schedule_item)
+                                  .where(user_id: user_ids)
+                                  .merge(ScheduleItem.volunteer)
+                                  .group(:user_id)
+                                  .count
+
+      @hosting_counts = ScheduleItem.public_items
+                                    .where.not(host: [ nil, "" ])
+                                    .group(:host)
+                                    .count
     end
 
     def show
