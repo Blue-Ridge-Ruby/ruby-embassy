@@ -158,6 +158,15 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_equal "Sunday", ScheduleItem::DAY_META["sun"][:label]
   end
 
+  test "upcoming_day_keys returns conference days on or after the given date" do
+    assert_equal %w[wed thu fri sat sun], ScheduleItem.upcoming_day_keys(Date.new(2026, 4, 27))
+    assert_equal %w[wed thu fri sat sun], ScheduleItem.upcoming_day_keys(Date.new(2026, 4, 29))
+    assert_equal %w[thu fri sat sun],     ScheduleItem.upcoming_day_keys(Date.new(2026, 4, 30))
+    assert_equal %w[fri sat sun],         ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 1))
+    assert_equal %w[sun],                 ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 3))
+    assert_equal [],                      ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 4))
+  end
+
   test "after_create auto-plans private items for creator" do
     assert_difference -> { PlanItem.count }, 1 do
       ScheduleItem.create!(valid_attrs(
