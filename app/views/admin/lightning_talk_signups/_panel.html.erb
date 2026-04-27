@@ -26,14 +26,14 @@
   <% if signups.count < LightningTalkSignup::MAX_SPEAKERS %>
     <div class="card card-compact mt-4">
       <h3 class="font-medium text-navy mb-2">Add a speaker</h3>
-      <%= form_with url: admin_schedule_item_lightning_talk_signups_path(schedule_item), method: :post, class: "flex gap-2 items-end" do %>
-        <div class="flex-1">
-          <%= label_tag :user_id, "User", class: "label" %>
+      <%= form_with url: admin_schedule_item_lightning_talk_signups_path(schedule_item), method: :post do %>
+        <%= label_tag :user_id, "User", class: "label" %>
+        <div class="flex gap-2">
           <%= select_tag :user_id,
                          options_from_collection_for_select(available_speakers, :id, :full_name),
-                         class: "select", required: true, prompt: "— pick a user —" %>
+                         class: "select flex-1", required: true, prompt: "— pick a user —" %>
+          <%= button_tag "Add", type: :submit, class: "btn btn-red" %>
         </div>
-        <%= button_tag "Add", type: :submit, class: "btn btn-red" %>
       <% end %>
     </div>
   <% end %>
