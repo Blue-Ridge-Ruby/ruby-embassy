@@ -57,6 +57,46 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Sit near the front", plan.reload.notes
   end
 
+  test "PATCH updates contact_method on own plan_item" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan), params: { plan_item: { contact_method: "Discord: alice#0001" } }
+    assert_equal "Discord: alice#0001", plan.reload.contact_method
+  end
+
+  test "PATCH propagates contact_method to other blank RSVPs" do
+    user = users(:attendee_one)
+    sign_in_as user
+    plan = user.plan_items.create!(schedule_item: @item)
+    plan.update_columns(contact_method: nil)
+
+    blank_other = ScheduleItem.create!(day: "fri", title: "Hike", kind: :activity, is_public: true)
+    blank_pi = user.plan_items.create!(schedule_item: blank_other)
+    blank_pi.update_columns(contact_method: nil)
+
+    set_other = ScheduleItem.create!(day: "fri", title: "Bike", kind: :activity, is_public: true)
+    set_pi = user.plan_items.create!(schedule_item: set_other, contact_method: "preset")
+
+    patch plan_item_path(plan), params: { plan_item: { contact_method: "Discord: alice" } }
+
+    assert_equal "Discord: alice", blank_pi.reload.contact_method
+    assert_equal "preset",         set_pi.reload.contact_method
+  end
+
+  test "turbo_stream PATCH response replaces both plan_item AND schedule_item frames" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan),
+          params:  { plan_item: { contact_method: "555-1234" } },
+          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_match %r{<turbo-stream action="replace" target="plan_item_#{plan.id}">}, response.body
+    assert_match %r{<turbo-stream action="replace" target="schedule_item_#{@item.id}">}, response.body
+  end
+
   test "PATCH on another user's plan_item returns 404" do
     sign_in_as users(:attendee_one)
     other_plan = users(:volunteer_one).plan_items.create!(schedule_item: @item)

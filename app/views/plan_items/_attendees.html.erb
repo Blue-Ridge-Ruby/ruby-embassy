@@ -1,0 +1,30 @@
+<%
+  rsvps             = schedule_item.plan_items.includes(:user).to_a
+  user_plan_item    = rsvps.find { |pi| pi.user_id == current_user.id }
+  contacts_visible  = user_plan_item.present? || schedule_item.created_by_id == current_user.id
+%>
+<% if rsvps.any? %>
+  <div class="plan-item__attendees" style="margin-top: 0.75rem; border-top: 1px solid #e5e7eb; padding-top: 0.75rem;">
+    <h4 class="text-sm" style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 0.5rem;">
+      Going (<%= rsvps.length %>)
+    </h4>
+    <ul style="list-style: none; padding-left: 0;">
+      <% rsvps.each do |pi| %>
+        <% is_self = pi.user_id == current_user.id %>
+        <li style="margin-bottom: 0.25rem;">
+          <span class="text-navy">
+            <%= meal_spot_attendee_name(pi.user) %><%= " (you)" if is_self %>
+          </span>
+          <% if is_self %>
+            <% if pi.contact_method.present? %>
+              <span class="text-sm text-gray">· <%= pi.contact_method %></span>
+            <% end %>
+            <%= render "plan_items/contact_form", plan_item: pi %>
+          <% elsif contacts_visible && pi.contact_method.present? %>
+            <span class="text-sm text-gray">· <%= pi.contact_method %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

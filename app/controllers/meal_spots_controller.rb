@@ -28,8 +28,9 @@ class MealSpotsController < ApplicationController
       @meal_spot.save!
       @transport.meal_spot = @meal_spot
       @transport.save!
+      prior_contact = MealSpotRsvp.where(user: current_user, schedule_item: @meal).pick(:contact_method)
       remove_existing_rsvp_for_meal!
-      @transport.rsvps.create!(user: current_user)
+      @transport.rsvps.create!(user: current_user, contact_method: prior_contact)
     end
 
     redirect_to schedule_item_meal_spots_path(@meal),

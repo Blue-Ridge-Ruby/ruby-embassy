@@ -1,0 +1,23 @@
+<%
+  prefill = rsvp.contact_method.presence || current_user.last_rsvp_contact_method
+%>
+<details style="margin-top: 0.25rem;">
+  <summary class="text-sm text-blue" style="cursor: pointer;">
+    <%= rsvp.contact_method.present? ? "Edit how to reach you" : "+ How to reach you" %>
+  </summary>
+  <%= form_with url: schedule_item_meal_spot_rsvp_path(meal, spot, rsvp),
+                method: :patch,
+                local:  true,
+                class:  "card-compact",
+                style:  "margin-top: 0.5rem; background: #fff; padding: 0.75rem;" do %>
+    <%= label_tag "meal_spot_rsvp[contact_method]", "How to reach you (optional)", class: "label" %>
+    <%= text_field_tag "meal_spot_rsvp[contact_method]", prefill,
+                        placeholder: "text 555-1234, @kat on Slack, Discord: kat#1234",
+                        class: "input",
+                        style: "max-width: 24rem; margin-top: 0.25rem;" %>
+    <p class="text-sm text-gray" style="margin-top: 0.25rem;">
+      Visible to the host and others in this group.
+    </p>
+    <%= submit_tag "Save", class: "btn btn-navy", style: "margin-top: 0.5rem;" %>
+  <% end %>
+</details>

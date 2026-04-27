@@ -57,6 +57,36 @@ class MealSpotRsvpTest < ActiveSupport::TestCase
     assert second.valid?
   end
 
+  test "contact_method is optional and persists when given" do
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one), contact_method: "@vic on Slack")
+    assert_equal "@vic on Slack", rsvp.reload.contact_method
+  end
+
+  test "contact_method may be blank" do
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one))
+    assert_nil rsvp.contact_method
+  end
+
+  test "new RSVP inherits contact_method from user's last RSVP when blank" do
+    other_meal = ScheduleItem.create!(day: "fri", title: "Lunch 2", kind: :meal, is_public: true)
+    other_spot = other_meal.meal_spots.create!(name: "Anywhere", created_by: users(:volunteer_one))
+    other_transport = other_spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    other_transport.rsvps.create!(user: users(:volunteer_one), contact_method: "555-existing")
+
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one))
+    assert_equal "555-existing", rsvp.contact_method
+  end
+
+  test "new RSVP keeps explicit contact_method when given" do
+    other_meal = ScheduleItem.create!(day: "fri", title: "Lunch 2", kind: :meal, is_public: true)
+    other_spot = other_meal.meal_spots.create!(name: "Anywhere", created_by: users(:volunteer_one))
+    other_transport = other_spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    other_transport.rsvps.create!(user: users(:volunteer_one), contact_method: "555-OLD")
+
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one), contact_method: "555-NEW")
+    assert_equal "555-NEW", rsvp.contact_method
+  end
+
   # ----- locked_in? -------------------------------------------------------
 
   test "locked_in? is true for the driver of a driving transport, even solo" do
