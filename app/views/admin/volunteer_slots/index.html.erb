@@ -50,7 +50,7 @@
             <td class="text-right">
               <div class="flex gap-2 justify-end">
                 <%= link_to "View", admin_volunteer_slot_path(slot), class: "btn btn-muted" %>
-                <%= link_to "Edit", edit_admin_schedule_item_path(slot), class: "btn btn-muted" %>
+                <%= link_to "Edit", edit_admin_schedule_item_path(slot, return_to: admin_volunteer_slots_path), class: "btn btn-muted" %>
               </div>
             </td>
           </tr>

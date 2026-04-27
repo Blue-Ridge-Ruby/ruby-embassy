@@ -8,10 +8,19 @@
   </div>
 <% end %>
 
+<%
+  raw_return_to = params[:return_to].to_s
+  return_to = (raw_return_to.start_with?("/") && !raw_return_to.start_with?("//")) ? raw_return_to : nil
+%>
+
 <div class="card card-compact">
   <%= form_with model: [ :admin, schedule_item ],
                 class: "space-y-4",
                 data: { controller: "embassy-settings" } do |f| %>
+    <% if return_to %>
+      <%= hidden_field_tag :return_to, return_to %>
+    <% end %>
+
     <div>
       <%= f.label :title, class: "label" %>
       <%= f.text_field :title, required: true, class: "input" %>
@@ -157,7 +166,7 @@
 
     <div class="flex gap-3 pt-4">
       <%= f.submit class: "btn btn-navy" %>
-      <%= link_to "Cancel", admin_schedule_items_path, class: "btn btn-muted" %>
+      <%= link_to "Cancel", return_to || admin_schedule_items_path, class: "btn btn-muted" %>
     </div>
   <% end %>
 </div>
