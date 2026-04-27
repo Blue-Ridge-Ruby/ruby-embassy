@@ -1,14 +1,16 @@
 module EmbassyQuestionsHelper
   MODE_LABELS = {
-    "new_passport" => "New passport",
-    "stamping"     => "Stamping",
-    "both"         => "New passport or Stamping"
+    "new_passport"    => "New passport",
+    "stamping"        => "Stamping",
+    "passport_pickup" => "Passport pickup",
+    "both"            => "New passport or Stamping"
   }.freeze
 
   MODE_SHORT = {
-    "new_passport" => "New passport",
-    "stamping"     => "Stamping",
-    "both"         => "New or Stamp"
+    "new_passport"    => "New passport",
+    "stamping"        => "Stamping",
+    "passport_pickup" => "Pickup",
+    "both"            => "New or Stamp"
   }.freeze
 
   EMBASSY_ETIQUETTE = [

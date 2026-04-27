@@ -50,6 +50,21 @@ class PlanItemsController < ApplicationController
 
     schedule_item    = @plan_item.schedule_item
     plan_item_dom_id = helpers.dom_id(@plan_item)
+
+    if schedule_item.embassy?
+      booking = current_user.embassy_bookings.find_by(schedule_item: schedule_item)
+      if booking&.passport_pickup?
+        respond_to do |format|
+          format.turbo_stream { head :forbidden }
+          format.html {
+            redirect_back fallback_location: plan_path,
+                          alert: "Passport pickup appointments are scheduled by an Embassy Attaché and can't be cancelled here."
+          }
+        end
+        return
+      end
+    end
+
     @plan_item.destroy
 
     respond_to do |format|

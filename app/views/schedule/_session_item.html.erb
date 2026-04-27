@@ -86,10 +86,13 @@
 
     <div class="schedule-item__action">
       <% if item.embassy? %>
+        <% self_service_available = item.offers_new_passport? || item.offers_stamping? %>
         <% if planned && existing_plan %>
           <%= link_to button_label, plan_path(anchor: dom_id(existing_plan)),
                       class: "add-btn add-btn--added",
                       data: { turbo_frame: "_top" } %>
+        <% elsif !self_service_available %>
+          <button class="add-btn add-btn--disabled" disabled>By appointment</button>
         <% elsif item.full? %>
           <button class="add-btn add-btn--disabled" disabled>Full</button>
         <% else %>
@@ -98,12 +101,12 @@
                       class: "add-btn",
                       data: { turbo_frame: "_top" } %>
         <% end %>
-        <% if item.embassy_capacity %>
+        <% if item.total_capacity.positive? %>
           <p class="embassy-capacity">
             <% if item.full? %>
-              <%= item.embassy_capacity %> of <%= item.embassy_capacity %> · full
+              <%= item.total_capacity %> of <%= item.total_capacity %> · full
             <% else %>
-              <%= item.seats_taken %> of <%= item.embassy_capacity %> seats
+              <%= item.seats_taken %> of <%= item.total_capacity %> seats
             <% end %>
           </p>
         <% end %>

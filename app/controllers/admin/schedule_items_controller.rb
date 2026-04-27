@@ -49,11 +49,21 @@ module Admin
       attrs = params.require(:schedule_item).permit(
         :day, :time_label, :sort_time, :title, :host,
         :location, :map_url, :description, :kind, :flexible, :is_public, :audience,
-        :embassy_mode, :embassy_capacity, :volunteer_capacity
+        :offers_new_passport, :offers_stamping, :offers_passport_pickup,
+        :new_passport_capacity, :stamping_capacity, :passport_pickup_capacity,
+        :volunteer_capacity
       )
-      unless attrs[:kind] == "embassy"
-        attrs[:embassy_mode] = nil
-        attrs[:embassy_capacity] = nil
+      if attrs[:kind] == "embassy"
+        ScheduleItem::EMBASSY_MODES.each do |mode|
+          attrs[:"#{mode}_capacity"] = nil unless ActiveModel::Type::Boolean.new.cast(attrs[:"offers_#{mode}"])
+        end
+      else
+        attrs[:offers_new_passport]      = false
+        attrs[:offers_stamping]          = false
+        attrs[:offers_passport_pickup]   = false
+        attrs[:new_passport_capacity]    = nil
+        attrs[:stamping_capacity]        = nil
+        attrs[:passport_pickup_capacity] = nil
       end
       attrs[:volunteer_capacity] = nil unless attrs[:kind] == "volunteer"
       attrs

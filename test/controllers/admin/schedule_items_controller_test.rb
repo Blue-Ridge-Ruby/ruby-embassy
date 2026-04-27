@@ -44,7 +44,12 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
 
   test "admin can create an item of kind: embassy" do
     sign_in_as users(:jeremy)
-    post admin_schedule_items_path, params: valid_form_params(kind: "embassy", title: "Registration")
+    post admin_schedule_items_path, params: valid_form_params(
+      kind: "embassy",
+      title: "Registration",
+      offers_new_passport: "1",
+      new_passport_capacity: 8
+    )
     assert_equal "embassy", ScheduleItem.find_by(title: "Registration").kind
   end
 
