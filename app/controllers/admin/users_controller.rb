@@ -1,15 +1,16 @@
 module Admin
   class UsersController < AdminController
-    SORTS = {
-      "name"      => "users.last_name ASC, users.first_name ASC",
-      "role"      => "users.role ASC",
-      "last_seen" => "users.last_seen_at DESC NULLS LAST"
+    SORTABLE_COLUMNS = {
+      "name"      => "users.last_name, users.first_name",
+      "role"      => "users.role",
+      "last_seen" => "users.last_seen_at"
     }.freeze
+    DEFAULT_ORDER = "users.last_name ASC, users.first_name ASC"
 
     def index
-      @sort  = SORTS.key?(params[:sort]) ? params[:sort] : "name"
+      order_clause = apply_sort(SORTABLE_COLUMNS) || DEFAULT_ORDER
       @query = params[:q].to_s.strip
-      @users = filtered_users.reorder(Arel.sql(SORTS[@sort]))
+      @users = filtered_users.reorder(Arel.sql(order_clause))
 
       user_ids = @users.map(&:id)
 

@@ -1,13 +1,27 @@
 module ApplicationHelper
-  # Renders a column header that links to the same page with ?sort=<key> applied.
-  # Preserves any existing ?q= search term. The active sort gets a small arrow.
+  # Renders a column header that cycles through three sort states on click:
+  # inactive → asc → desc → inactive (back to the page's default order).
+  # Preserves any existing ?q= search term. Active column shows ▲ for asc, ▼ for desc.
   def sort_link(label, key)
-    active = @sort.to_s == key.to_s
-    text   = active ? "#{label} ▾" : label
-    params = { sort: key }
-    params[:q] = @query if @query.present?
-    href = "#{request.path}?#{params.to_query}"
-    link_to text, href, class: active ? "sort-active" : nil
+    key    = key.to_s
+    active = @sort.to_s == key
+
+    next_sort, next_dir, arrow =
+      if !active
+        [ key, "asc", "" ]
+      elsif @dir.to_s == "asc"
+        [ key, "desc", " ▲" ]
+      else
+        [ nil, nil, " ▼" ]
+      end
+
+    params = {}
+    params[:sort] = next_sort if next_sort
+    params[:dir]  = next_dir  if next_dir
+    params[:q]    = @query    if @query.present?
+
+    href = params.empty? ? request.path : "#{request.path}?#{params.to_query}"
+    link_to "#{label}#{arrow}", href, class: active ? "sort-active" : nil
   end
 
   # Renders a schedule item's location as a link to its map URL when one is
