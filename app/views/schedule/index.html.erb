@@ -15,7 +15,7 @@
     <nav class="kind-filter" aria-label="Show only events not in your plan">
       <%= link_to (@show_unplanned ? "✨ Showing new events ✓" : "✨ See new events"),
             schedule_path(request.query_parameters.merge(unplanned: @show_unplanned ? nil : "1").compact),
-            class: "kind-filter__btn #{'kind-filter__btn--active' if @show_unplanned}" %>
+            class: "kind-filter__btn kind-filter__btn--new-events #{'kind-filter__btn--active' if @show_unplanned}" %>
     </nav>
 
     <% if @items_by_day.empty? %>
