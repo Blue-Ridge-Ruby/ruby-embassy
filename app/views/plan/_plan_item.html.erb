@@ -143,7 +143,10 @@
         <% end %>
       </div>
 
-      <% unless presenting %>
+      <%
+        meal_locked = item.meal? && current_user.meal_spot_rsvps.exists?(schedule_item_id: item.id)
+      %>
+      <% unless presenting || meal_locked %>
         <%= button_to "×",
                       plan_item_path(plan_item),
                       method: :delete,

@@ -1,7 +1,16 @@
 module Admin
   class UsersController < AdminController
+    SORTS = {
+      "name"       => "users.last_name ASC, users.first_name ASC",
+      "email"      => "users.email ASC",
+      "role"       => "users.role ASC",
+      "last_login" => "users.last_sign_in_at DESC NULLS LAST"
+    }.freeze
+
     def index
-      @users = User.order(:last_name, :first_name)
+      @sort  = SORTS.key?(params[:sort]) ? params[:sort] : "name"
+      @query = params[:q].to_s.strip
+      @users = filtered_users.reorder(Arel.sql(SORTS[@sort]))
     end
 
     def show
@@ -99,6 +108,17 @@ module Admin
     end
 
     private
+
+    def filtered_users
+      scope = User.all
+      return scope if @query.blank?
+
+      term = "%#{@query}%"
+      scope.where(
+        "first_name ILIKE :t OR last_name ILIKE :t OR email ILIKE :t",
+        t: term
+      )
+    end
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :role)

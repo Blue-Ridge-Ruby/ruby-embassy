@@ -1,52 +1,55 @@
 <%
-  user_at_this_spot = current_spot_id == spot.id
+  hosted               = local_assigns.fetch(:hosted, false)
+  user_at_this_spot    = current_spot_id == spot.id
   user_rsvpd_elsewhere = current_user_rsvp.present? && !user_at_this_spot
 %>
 
 <article class="card card-compact">
-  <div class="flex items-start" style="justify-content: space-between; gap: 1rem;">
-    <div style="flex: 1;">
-      <h2 class="text-xl font-medium text-navy" style="margin-bottom: 0.25rem;">
-        <% if spot.map_url.present? %>
-          <%= link_to spot.name, spot.map_url,
-                      target: "_blank",
-                      rel:    "noopener noreferrer",
-                      class:  "text-navy" %>
-        <% else %>
-          <%= spot.name %>
-        <% end %>
-      </h2>
-      <p class="text-sm text-gray">
-        <%= spot.rsvp_count %> going · suggested by <%= meal_spot_attendee_name(spot.created_by) %>
-        <% unless spot.is_public %>
-          · <span class="item-badge item-badge--private">Private</span>
-        <% end %>
-      </p>
+  <% unless hosted %>
+    <div class="flex items-start" style="justify-content: space-between; gap: 1rem;">
+      <div style="flex: 1;">
+        <h2 class="text-xl font-medium text-navy" style="margin-bottom: 0.25rem;">
+          <% if spot.map_url.present? %>
+            <%= link_to spot.name, spot.map_url,
+                        target: "_blank",
+                        rel:    "noopener noreferrer",
+                        class:  "text-navy" %>
+          <% else %>
+            <%= spot.name %>
+          <% end %>
+        </h2>
+        <p class="text-sm text-gray">
+          <%= spot.rsvp_count %> going · suggested by <%= meal_spot_attendee_name(spot.created_by) %>
+          <% unless spot.is_public %>
+            · <span class="item-badge item-badge--private">Private</span>
+          <% end %>
+        </p>
+      </div>
+
+      <% if spot.editable_by?(current_user) %>
+        <%= link_to "Edit",
+                    edit_schedule_item_meal_spot_path(meal, spot),
+                    class: "btn btn-ghost" %>
+      <% end %>
     </div>
 
-    <% if spot.editable_by?(current_user) %>
-      <%= link_to "Edit",
-                  edit_schedule_item_meal_spot_path(meal, spot),
-                  class: "btn btn-ghost" %>
+    <% if spot.meet_up_spot.present? || spot.contact_info.present? %>
+      <dl class="text-sm" style="margin-top: 1rem; display: grid; grid-template-columns: max-content 1fr; gap: 0.5rem 1rem;">
+        <% if spot.meet_up_spot.present? %>
+          <dt class="text-gray">Meet at</dt>
+          <dd class="text-navy"><%= spot.meet_up_spot %></dd>
+        <% end %>
+        <% if spot.contact_info.present? %>
+          <dt class="text-gray">Contact</dt>
+          <dd class="text-navy"><%= simple_format(spot.contact_info, {}, wrapper_tag: "span") %></dd>
+        <% end %>
+      </dl>
     <% end %>
-  </div>
-
-  <% if spot.meet_up_spot.present? || spot.contact_info.present? %>
-    <dl class="text-sm" style="margin-top: 1rem; display: grid; grid-template-columns: max-content 1fr; gap: 0.5rem 1rem;">
-      <% if spot.meet_up_spot.present? %>
-        <dt class="text-gray">Meet at</dt>
-        <dd class="text-navy"><%= spot.meet_up_spot %></dd>
-      <% end %>
-      <% if spot.contact_info.present? %>
-        <dt class="text-gray">Contact</dt>
-        <dd class="text-navy"><%= simple_format(spot.contact_info, {}, wrapper_tag: "span") %></dd>
-      <% end %>
-    </dl>
   <% end %>
 
-  <div style="margin-top: 1.5rem;">
+  <div style="<%= hosted ? '' : 'margin-top: 1.5rem;' %>">
     <h3 class="text-sm" style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 0.75rem;">
-      How we're getting there
+      <%= hosted ? "Ways to get there" : "How we're getting there" %>
     </h3>
 
     <div class="space-y-3">
@@ -61,13 +64,13 @@
       <% end %>
     </div>
 
-    <% if spot.is_public %>
+    <% if spot.is_public && !current_user_rsvp&.locked_in? %>
       <details style="margin-top: 1rem;">
         <summary class="text-sm text-blue" style="cursor: pointer;">
-          + Add a different way to get there
+          <%= hosted ? "+ Add a way to get there" : "+ Add a different way to get there" %>
         </summary>
         <div class="card-compact" style="margin-top: 0.75rem; background: #f9fafb;">
-          <%= form_with url: schedule_item_meal_spot_rsvps_path(meal, spot), method: :post, class: "space-y-3" do |f| %>
+          <%= form_with url: schedule_item_meal_spot_rsvps_path(meal, spot), method: :post, class: "space-y-4" do |f| %>
             <fieldset class="transport-fields">
               <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end;">
                 <div>
@@ -95,6 +98,11 @@
                 <%= datetime_field_tag :departs_at,
                                         default_departure(meal)&.strftime("%Y-%m-%dT%H:%M"),
                                         class: "input" %>
+              </div>
+
+              <div style="margin-top: 1rem; max-width: 18rem;">
+                <%= label_tag :meet_up_spot, "Meet at (optional)", class: "label" %>
+                <%= text_field_tag :meet_up_spot, nil, class: "input", placeholder: "e.g., hotel lobby" %>
               </div>
             </fieldset>
             <%= f.submit "Add and join", class: "btn btn-navy" %>

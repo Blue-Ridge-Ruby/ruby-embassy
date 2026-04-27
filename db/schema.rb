@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_27_053814) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_135507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -86,6 +86,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_053814) do
     t.datetime "created_at", null: false
     t.datetime "departs_at", null: false
     t.bigint "meal_spot_id", null: false
+    t.string "meet_up_spot"
     t.integer "mode", null: false
     t.integer "seats_offered"
     t.datetime "updated_at", null: false
@@ -96,7 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_053814) do
   create_table "meal_spots", force: :cascade do |t|
     t.string "contact_info"
     t.datetime "created_at", null: false
-    t.bigint "created_by_id", null: false
+    t.bigint "created_by_id"
     t.boolean "is_public", default: true, null: false
     t.string "map_url"
     t.string "meet_up_spot"
@@ -187,6 +188,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_053814) do
     t.string "email", null: false
     t.string "first_name"
     t.string "last_name"
+    t.datetime "last_sign_in_at"
     t.integer "role", default: 0, null: false
     t.string "tito_account_slug"
     t.string "tito_event_slug"
