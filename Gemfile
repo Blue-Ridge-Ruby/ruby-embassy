@@ -44,9 +44,6 @@ gem "image_processing", "~> 1.2"
 # Tito API client for event registration lookup
 gem "tito_ruby"
 
-# CSV is no longer a default gem in Ruby 3.4+; needed for admin CSV exports.
-gem "csv"
-
 # Postmark for transactional email in production
 gem "postmark-rails"
 

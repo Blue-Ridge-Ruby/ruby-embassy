@@ -1,35 +1,37 @@
-require "csv"
-
 module Admin
   class LightningTalkSignupsController < AdminController
     before_action :load_schedule_item
     before_action :set_signup, only: %i[update destroy]
 
     def index
-      @signups = @schedule_item.lightning_talk_signups.includes(:user)
       respond_to do |format|
-        format.html
-        format.csv { send_data signups_csv(@signups), filename: csv_filename, type: "text/csv" }
+        format.html { redirect_to admin_lightning_talks_path }
+        format.pdf {
+          send_data LightningTalksPdf.new(@schedule_item).render,
+                    filename: pdf_filename,
+                    type: "application/pdf",
+                    disposition: "attachment"
+        }
       end
     end
 
     def create
       user = User.find(params[:user_id])
       LightningTalkSignup.claim_next_slot!(user: user, schedule_item: @schedule_item)
-      redirect_to admin_schedule_item_lightning_talk_signups_path(@schedule_item),
-                  notice: "Speaker added."
+      redirect_back fallback_location: admin_lightning_talks_path,
+                    notice: "Speaker added."
     rescue LightningTalkSignup::SlotsFull
-      redirect_to admin_schedule_item_lightning_talk_signups_path(@schedule_item),
-                  alert: "All speaking slots are full."
+      redirect_back fallback_location: admin_lightning_talks_path,
+                    alert: "All speaking slots are full."
     end
 
     def update
       if @signup.update(signup_params)
-        redirect_to admin_schedule_item_lightning_talk_signups_path(@schedule_item),
-                    notice: "Talk details updated."
+        redirect_back fallback_location: admin_lightning_talks_path,
+                      notice: "Talk details updated."
       else
-        redirect_to admin_schedule_item_lightning_talk_signups_path(@schedule_item),
-                    alert: @signup.errors.full_messages.to_sentence
+        redirect_back fallback_location: admin_lightning_talks_path,
+                      alert: @signup.errors.full_messages.to_sentence
       end
     end
 
@@ -42,8 +44,8 @@ module Admin
                       .order(:position)
                       .each { |s| s.update_columns(position: s.position - 1) }
       end
-      redirect_to admin_schedule_item_lightning_talk_signups_path(@schedule_item),
-                  notice: "Speaker removed."
+      redirect_back fallback_location: admin_lightning_talks_path,
+                    notice: "Speaker removed."
     end
 
     def reorder
@@ -73,26 +75,8 @@ module Admin
       params.require(:lightning_talk_signup).permit(:talk_title, :talk_description, :slides_url)
     end
 
-    def signups_csv(signups)
-      CSV.generate do |csv|
-        csv << %w[position slot_time first_name last_name email talk_title talk_description slides_url]
-        signups.each do |s|
-          csv << [
-            s.position,
-            s.slot_start_label,
-            s.user.first_name,
-            s.user.last_name,
-            s.user.email,
-            s.talk_title,
-            s.talk_description,
-            s.slides_url
-          ]
-        end
-      end
-    end
-
-    def csv_filename
-      "lightning-talks-#{@schedule_item.day}-#{@schedule_item.id}.csv"
+    def pdf_filename
+      "lightning-talks-#{@schedule_item.day}-#{@schedule_item.id}.pdf"
     end
   end
 end

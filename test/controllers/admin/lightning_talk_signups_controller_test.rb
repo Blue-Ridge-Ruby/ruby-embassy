@@ -15,12 +15,10 @@ class Admin::LightningTalkSignupsControllerTest < ActionDispatch::IntegrationTes
     assert_response :not_found
   end
 
-  test "admin sees the speakers index page" do
+  test "admin HTML index redirects to top-level Lightning Talks page" do
     sign_in_as @admin
-    LightningTalkSignup.claim_next_slot!(user: users(:attendee_one), schedule_item: @item)
     get admin_schedule_item_lightning_talk_signups_path(@item)
-    assert_response :success
-    assert_match users(:attendee_one).full_name, @response.body
+    assert_redirected_to admin_lightning_talks_path
   end
 
   test "admin can add a speaker" do
@@ -68,13 +66,12 @@ class Admin::LightningTalkSignupsControllerTest < ActionDispatch::IntegrationTes
     assert_equal 3, s2.reload.position
   end
 
-  test "CSV export returns csv content type" do
+  test "PDF export returns pdf content type" do
     sign_in_as @admin
     LightningTalkSignup.claim_next_slot!(user: users(:attendee_one), schedule_item: @item)
-    get admin_schedule_item_lightning_talk_signups_path(@item, format: :csv)
+    get admin_schedule_item_lightning_talk_signups_path(@item, format: :pdf)
     assert_response :success
-    assert_match "text/csv", @response.content_type
-    assert_match "position,slot_time,first_name", @response.body
-    assert_match users(:attendee_one).email, @response.body
+    assert_match "application/pdf", @response.content_type
+    assert @response.body.start_with?("%PDF-"), "expected PDF signature"
   end
 end
