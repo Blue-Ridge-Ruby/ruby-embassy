@@ -4,6 +4,8 @@ class ScheduleItem < ApplicationRecord
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
   has_many :attendees, through: :plan_items, source: :user
+  has_many :lightning_talk_signups, -> { ordered }, dependent: :destroy
+  has_many :speakers, through: :lightning_talk_signups, source: :user
   has_many :embassy_bookings, dependent: :destroy
   has_many :meal_spots, dependent: :destroy
 
@@ -95,6 +97,10 @@ class ScheduleItem < ApplicationRecord
 
   def active_embassy_modes
     EMBASSY_MODES.select { |m| offers?(m) }
+  end
+
+  def lightning_slots_full?
+    lightning? && lightning_talk_signups.count >= LightningTalkSignup::MAX_SPEAKERS
   end
 
   def seats_taken

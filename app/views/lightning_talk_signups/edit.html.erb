@@ -1,0 +1,51 @@
+<% content_for(:title, "Edit my lightning talk · Ruby Embassy") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Edit my lightning talk
+    </h1>
+
+    <p class="text-lg leading-relaxed text-gray text-center max-w-xl mx-auto mb-8">
+      All fields are optional. If you fill them in, they'll show next to your name on the public schedule.
+    </p>
+
+    <% if @signup.errors.any? %>
+      <div class="alert alert-error mb-4">
+        <ul class="list-disc">
+          <% @signup.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="card card-compact">
+      <%= form_with model: @signup,
+                    url: schedule_item_lightning_talk_signup_path(@schedule_item),
+                    method: :patch,
+                    data: { turbo: false },
+                    class: "space-y-4" do |f| %>
+        <div>
+          <%= f.label :talk_title, "Talk title", class: "label" %>
+          <%= f.text_field :talk_title, class: "input", placeholder: "e.g., Why I love Sidekiq" %>
+        </div>
+
+        <div>
+          <%= f.label :talk_description, "One-line description", class: "label" %>
+          <%= f.text_area :talk_description, rows: 3, class: "input", placeholder: "Quick pitch — what attendees will learn" %>
+        </div>
+
+        <div>
+          <%= f.label :slides_url, "Slides URL", class: "label" %>
+          <%= f.url_field :slides_url, class: "input", placeholder: "https://..." %>
+        </div>
+
+        <div class="flex gap-3 pt-4">
+          <%= f.submit "Save", class: "btn btn-red" %>
+          <%= link_to "Cancel", schedule_path(anchor: dom_id(@schedule_item)), class: "btn btn-muted" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

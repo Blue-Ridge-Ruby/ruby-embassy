@@ -1,0 +1,2 @@
+module LightningTalkSignupsHelper
+end

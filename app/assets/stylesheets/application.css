@@ -621,6 +621,14 @@ hr {
   color: #1F6B45;
 }
 
+.item-badge--presenting {
+  background-color: #FEF9C3;
+  color: #8A6500;
+  border: 1px solid #E0C97A;
+  padding: 0.0625rem 0.4375rem;
+  font-weight: 600;
+}
+
 .item-badge--private {
   background-color: transparent;
   color: #525C66;
@@ -3052,6 +3060,136 @@ hr {
   }
   .pdf-page--notary { page-break-before: always; }
 }
+
+
+/* ---------- Lightning talk slots --------------------------- */
+
+.lightning-slots {
+  margin-top: 0.75rem;
+  border-top: 1px dashed #e6e8eb;
+  padding-top: 0.5rem;
+}
+
+.lightning-slots__summary {
+  font-size: 0.875rem;
+  color: #525C66;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.375rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lightning-slots__summary::-webkit-details-marker { display: none; }
+
+.lightning-slots__count { color: #525C66; }
+
+.lightning-slots__toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #C41C1C;
+  font-weight: 500;
+}
+
+.lightning-slots__chevron {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #C41C1C;
+  transition: transform 0.15s ease;
+}
+
+.lightning-slots[open] .lightning-slots__chevron {
+  transform: rotate(90deg);
+}
+
+.lightning-slots__toggle-label { text-decoration: underline; }
+.lightning-slots__toggle-label--open { display: none; }
+.lightning-slots[open] .lightning-slots__toggle-label--closed { display: none; }
+.lightning-slots[open] .lightning-slots__toggle-label--open { display: inline; }
+
+.lightning-slots__list {
+  list-style: none;
+  padding: 0.5rem 0 0 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.lightning-slot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  background-color: #FAFAF6;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.lightning-slot--open { color: #8a8f96; font-style: italic; }
+
+.lightning-slot__position { font-weight: 600; min-width: 1.75rem; color: #525C66; }
+.lightning-slot__time     { color: #1F6B45; font-variant-numeric: tabular-nums; min-width: 4.5rem; }
+.lightning-slot__speaker  { font-weight: 500; color: #1f242a; }
+.lightning-slot__talk-title { font-style: italic; color: #1f242a; }
+.lightning-slot__talk-description { color: #525C66; flex-basis: 100%; padding-left: 6.5rem; }
+.lightning-slot__slides   { color: #C41C1C; text-decoration: underline; }
+.lightning-slot__edit     { color: #C41C1C; font-size: 0.8125rem; margin-left: auto; }
+.lightning-slot__open-label { color: #8a8f96; }
+
+.schedule-item__action--lightning {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.375rem;
+  min-width: 130px;
+}
+
+.schedule-item__action--lightning > form,
+.schedule-item__action--lightning > .add-btn,
+.schedule-item__action--lightning > form > .add-btn {
+  width: 100%;
+}
+
+/* ---------- Admin speakers list (drag-to-reorder) ---------- */
+
+.speakers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.speakers-list__item {
+  display: grid;
+  grid-template-columns: auto 2.5rem 5rem 1fr 2fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background-color: #FAFAF6;
+  border: 1px solid #e6e8eb;
+  border-radius: 0.375rem;
+  cursor: grab;
+}
+
+.speakers-list__item.is-dragging { opacity: 0.4; }
+.speakers-list__handle   { color: #c8cdd1; cursor: grab; user-select: none; }
+.speakers-list__position { font-weight: 600; color: #525C66; }
+.speakers-list__time     { color: #1F6B45; font-variant-numeric: tabular-nums; }
+.speakers-list__name     { font-weight: 500; color: #1f242a; }
+.speakers-list__title    { color: #525C66; font-size: 0.9375rem; }
+
+.btn-small { padding: 0.25rem 0.625rem; font-size: 0.8125rem; }
 
 /* ---------- Meal-spot transport form: hide passenger seats unless driving --- */
 /* Uses :has() to react to the radio's checked state — no JS needed. */

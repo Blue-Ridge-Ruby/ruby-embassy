@@ -1,6 +1,7 @@
 <%
-  item   = plan_item.schedule_item
-  custom = item.created_by_id == current_user.id
+  item       = plan_item.schedule_item
+  custom     = item.created_by_id == current_user.id
+  presenting = item.lightning? && @speaking_ids&.include?(item.id)
   custom_class = custom ? "plan-item--custom" : ""
 %>
 
@@ -77,7 +78,7 @@
         </div>
       </div>
 
-      <% unless state == "pickup" %>
+      <% unless %w[pickup submitted].include?(state) %>
         <%= button_to "×",
                       plan_item_path(plan_item),
                       method: :delete,
@@ -121,22 +122,35 @@
           <span class="item-badge item-badge--<%= item.is_public? ? "public" : "private" %>">
             <%= item.is_public? ? "Public" : "Private" %>
           </span>
+          <% if presenting %>
+            <span class="item-badge item-badge--presenting">Presenting</span>
+          <% end %>
           <% if custom %>
             <span class="item-badge item-badge--custom">Custom</span>
           <% end %>
         </div>
+
+        <% if presenting %>
+          <p class="plan-item__notes">
+            <%= link_to "Edit my lightning talk",
+                        edit_schedule_item_lightning_talk_signup_path(item),
+                        data: { turbo_frame: "_top" } %>
+          </p>
+        <% end %>
 
         <% if plan_item.notes.present? %>
           <p class="plan-item__notes"><%= plan_item.notes %></p>
         <% end %>
       </div>
 
-      <%= button_to "×",
-                    plan_item_path(plan_item),
-                    method: :delete,
-                    class: "plan-item__remove",
-                    aria: { label: "Remove from plan" },
-                    data: { turbo_confirm: "Remove '#{item.title}' from your plan?" } %>
+      <% unless presenting %>
+        <%= button_to "×",
+                      plan_item_path(plan_item),
+                      method: :delete,
+                      class: "plan-item__remove",
+                      aria: { label: "Remove from plan" },
+                      data: { turbo_confirm: "Remove '#{item.title}' from your plan?" } %>
+      <% end %>
     </article>
   <% end %>
 <% end %>

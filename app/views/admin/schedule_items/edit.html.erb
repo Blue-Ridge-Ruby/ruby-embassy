@@ -1,3 +1,7 @@
 <h1 class="text-2xl font-bold text-navy mb-6">Edit schedule item</h1>
 
 <%= render "form", schedule_item: @schedule_item %>
+
+<% if @schedule_item.lightning? && @schedule_item.persisted? %>
+  <%= render "admin/lightning_talk_signups/panel", schedule_item: @schedule_item %>
+<% end %>

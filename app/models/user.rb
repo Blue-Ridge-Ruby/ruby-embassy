@@ -3,6 +3,8 @@ class User < ApplicationRecord
 
   has_many :plan_items, dependent: :destroy
   has_many :planned_schedule_items, through: :plan_items, source: :schedule_item
+  has_many :lightning_talk_signups, dependent: :destroy
+  has_many :speaking_at, through: :lightning_talk_signups, source: :schedule_item
   has_many :embassy_bookings, dependent: :destroy
   has_many :embassy_applications, through: :embassy_bookings
   has_many :meal_spot_rsvps, dependent: :destroy
@@ -53,6 +55,10 @@ class User < ApplicationRecord
 
   def full_name
     [ first_name, last_name ].compact.join(" ").presence || email
+  end
+
+  def speaking_at?(schedule_item)
+    lightning_talk_signups.exists?(schedule_item_id: schedule_item.id)
   end
 
   private

@@ -122,4 +122,81 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     # /schedule uses this to revert the button to "+ Add to plan" / "+ RSVP".
     assert_match %r{<turbo-stream action="replace" target="schedule_item_#{@item.id}">}, response.body
   end
+
+  test "DELETE on plan_item with submitted embassy application does NOT destroy" do
+    sign_in_as users(:attendee_one)
+    embassy_item = ScheduleItem.create!(
+      slug: "embassy-block", day: "sat", title: "Embassy Block",
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
+    )
+    plan        = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
+    booking     = EmbassyBooking.create!(
+      user: users(:attendee_one), schedule_item: embassy_item, plan_item: plan,
+      mode: "new_passport", state: "confirmed"
+    )
+    EmbassyApplication.create!(embassy_booking: booking, state: "submitted")
+
+    assert_no_difference -> { PlanItem.count } do
+      assert_no_difference -> { EmbassyBooking.count } do
+        assert_no_difference -> { EmbassyApplication.count } do
+          delete plan_item_path(plan)
+        end
+      end
+    end
+    assert_redirected_to plan_path
+    assert_match(/can't be cancelled/i, flash[:alert])
+  end
+
+  test "DELETE on plan_item with submitted embassy application returns 403 turbo_stream" do
+    sign_in_as users(:attendee_one)
+    embassy_item = ScheduleItem.create!(
+      slug: "embassy-block", day: "sat", title: "Embassy Block",
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
+    )
+    plan    = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
+    booking = EmbassyBooking.create!(
+      user: users(:attendee_one), schedule_item: embassy_item, plan_item: plan,
+      mode: "new_passport", state: "confirmed"
+    )
+    EmbassyApplication.create!(embassy_booking: booking, state: "submitted")
+
+    delete plan_item_path(plan), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    assert_response :forbidden
+    assert_match %r{<turbo-stream action="replace" target="plan_item_#{plan.id}">}, response.body
+  end
+
+  test "DELETE on plan_item with draft embassy application DOES destroy" do
+    sign_in_as users(:attendee_one)
+    embassy_item = ScheduleItem.create!(
+      slug: "embassy-block", day: "sat", title: "Embassy Block",
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
+    )
+    plan    = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
+    booking = EmbassyBooking.create!(
+      user: users(:attendee_one), schedule_item: embassy_item, plan_item: plan,
+      mode: "new_passport", state: "confirmed"
+    )
+    EmbassyApplication.create!(embassy_booking: booking, state: "draft")
+
+    assert_difference -> { PlanItem.count }, -1 do
+      delete plan_item_path(plan)
+    end
+  end
+
+  test "DELETE on stamping embassy booking (no application) DOES destroy" do
+    sign_in_as users(:attendee_one)
+    embassy_item = ScheduleItem.create!(
+      slug: "embassy-stamp", day: "sat", title: "Embassy Stamping",
+      kind: :embassy, is_public: true, offers_stamping: true, stamping_capacity: 10
+    )
+    plan = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
+    EmbassyBooking.create!(
+      user: users(:attendee_one), schedule_item: embassy_item, plan_item: plan,
+      mode: "stamping", state: "confirmed"
+    )
+
+    assert_difference -> { PlanItem.count }, -1 do
+      delete plan_item_path(plan)
+    end
+  end
 end
