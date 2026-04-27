@@ -39,8 +39,8 @@
 
     <div class="schedule-item__content">
       <% if item.talk? && item.host.present? %>
-        <h3 class="schedule-item__title"><%= item.host %></h3>
-        <p class="schedule-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
+        <h3 class="schedule-item__title"><%= item.title %></h3>
+        <p class="schedule-item__host"><%= speaker_link(item) %></p>
       <% else %>
         <h3 class="schedule-item__title"><%= item.title %></h3>
         <% if item.host.present? %>

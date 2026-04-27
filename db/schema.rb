@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_063932) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_025532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -106,6 +106,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_063932) do
     t.string "embassy_mode"
     t.boolean "flexible", default: false, null: false
     t.string "host"
+    t.string "host_url"
     t.boolean "is_public", default: false, null: false
     t.integer "kind", null: false
     t.string "location"

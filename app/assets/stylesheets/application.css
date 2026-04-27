@@ -506,6 +506,23 @@ hr {
   line-height: 1.4;
 }
 
+.schedule-item__host {
+  font-size: 1rem;
+  color: #404040;
+  line-height: 1.4;
+}
+
+.schedule-item__host a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.schedule-item__host a:hover {
+  color: #C41C1C;
+}
+
 .schedule-item__location {
   font-size: 0.875rem;
   color: #7a8189;
