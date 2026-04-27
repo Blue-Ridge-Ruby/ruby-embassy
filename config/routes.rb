@@ -17,7 +17,11 @@ Rails.application.routes.draw do
     resources :users do
       post :sync, on: :collection
     end
-    resources :schedule_items
+    resources :schedule_items do
+      resources :lightning_talk_signups, only: %i[index create update destroy] do
+        collection { patch :reorder }
+      end
+    end
     resources :embassy_questions
     resources :embassy_applications, only: %i[index show]
     resource  :embassy_blank_pdfs, only: %i[new create]
@@ -33,7 +37,9 @@ Rails.application.routes.draw do
   get "plan", to: "plan#index"
 
   resources :plan_items, only: %i[create update destroy]
-  resources :schedule_items, only: %i[new create edit update]
+  resources :schedule_items, only: %i[new create edit update] do
+    resource :lightning_talk_signup, only: %i[create edit update]
+  end
 
   # Embassy booking + application — attendee-facing mockup
   resources :embassy_bookings, only: %i[new create]

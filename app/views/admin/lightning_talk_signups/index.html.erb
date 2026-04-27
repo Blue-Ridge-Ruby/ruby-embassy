@@ -1,0 +1,18 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-navy">Lightning Talk Speakers</h1>
+    <p class="text-gray text-sm">
+      <%= link_to @schedule_item.title, edit_admin_schedule_item_path(@schedule_item) %>
+      ·
+      <%= ScheduleItem::DAY_META.dig(@schedule_item.day, :label) || @schedule_item.day %>,
+      <%= @schedule_item.time_label %>
+    </p>
+  </div>
+  <%= link_to "Export CSV",
+              admin_schedule_item_lightning_talk_signups_path(@schedule_item, format: :csv),
+              class: "btn btn-muted" %>
+</div>
+
+<%= render "panel", schedule_item: @schedule_item %>

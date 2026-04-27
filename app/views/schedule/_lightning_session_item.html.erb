@@ -1,0 +1,105 @@
+<%
+  signups        = item.lightning_talk_signups.includes(:user).to_a
+  signup_count   = signups.length
+  filled_by_pos  = signups.index_by(&:position)
+  full           = item.lightning_slots_full?
+  user_signup    = signups.find { |s| s.user_id == current_user.id }
+  has_plan_item  = current_user.plan_items.exists?(schedule_item_id: item.id)
+%>
+
+<%= turbo_frame_tag dom_id(item) do %>
+  <article class="schedule-item">
+    <div class="schedule-item__time">
+      <%= item.time_label %>
+    </div>
+
+    <div class="schedule-item__content">
+      <h3 class="schedule-item__title"><%= item.title %></h3>
+
+      <% if item.location.present? %>
+        <p class="schedule-item__location"><%= item.location %></p>
+      <% end %>
+
+      <% if item.description.present? %>
+        <p class="schedule-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
+      <% end %>
+
+      <div class="schedule-item__badges">
+        <span class="item-badge item-badge--lightning">Lightning</span>
+      </div>
+
+      <details class="lightning-slots" <%= "open" if user_signup %>>
+        <summary class="lightning-slots__summary">
+          <%= signup_count %> of <%= LightningTalkSignup::MAX_SPEAKERS %> speaking slots filled
+          <span class="lightning-slots__hint">— click to see lineup</span>
+        </summary>
+
+        <ol class="lightning-slots__list">
+          <% (1..LightningTalkSignup::MAX_SPEAKERS).each do |position| %>
+            <% signup = filled_by_pos[position] %>
+            <li class="lightning-slot <%= signup ? 'lightning-slot--filled' : 'lightning-slot--open' %>">
+              <span class="lightning-slot__position"><%= position %>.</span>
+
+              <% if signup %>
+                <span class="lightning-slot__time"><%= signup.slot_start_label %></span>
+                <span class="lightning-slot__speaker"><%= signup.user.full_name %></span>
+                <% if signup.talk_title.present? %>
+                  <span class="lightning-slot__talk-title">&ldquo;<%= signup.talk_title %>&rdquo;</span>
+                <% end %>
+                <% if signup.talk_description.present? %>
+                  <span class="lightning-slot__talk-description"><%= signup.talk_description %></span>
+                <% end %>
+                <% if signup.slides_url.present? %>
+                  <%= link_to "Slides", signup.slides_url, class: "lightning-slot__slides", target: "_blank", rel: "noopener" %>
+                <% end %>
+                <% if signup.user_id == current_user.id %>
+                  <%= link_to "Edit my lightning talk",
+                              edit_schedule_item_lightning_talk_signup_path(item),
+                              class: "lightning-slot__edit",
+                              data: { turbo_frame: "_top" } %>
+                <% end %>
+              <% else %>
+                <span class="lightning-slot__open-label">Open slot</span>
+              <% end %>
+            </li>
+          <% end %>
+        </ol>
+      </details>
+    </div>
+
+    <div class="schedule-item__action schedule-item__action--lightning">
+      <% if user_signup %>
+        <span class="add-btn add-btn--added" aria-pressed="true">✓ Presenting</span>
+      <% elsif full %>
+        <button class="add-btn add-btn--disabled" disabled>Full</button>
+      <% else %>
+        <%= button_to "Speak",
+                      schedule_item_lightning_talk_signup_path(item),
+                      method: :post,
+                      class: "add-btn",
+                      data: { turbo_frame: dom_id(item) },
+                      aria: { pressed: false } %>
+      <% end %>
+
+      <% unless user_signup %>
+        <% if has_plan_item %>
+          <% existing_plan = current_user.plan_items.find_by(schedule_item: item) %>
+          <%= button_to "✓ Added to Plan",
+                        plan_item_path(existing_plan),
+                        method: :delete,
+                        class: "add-btn add-btn--added",
+                        data: { turbo_frame: dom_id(item) },
+                        aria: { pressed: true } %>
+        <% else %>
+          <%= button_to "+ Add to Plan",
+                        plan_items_path,
+                        method: :post,
+                        params: { schedule_item_id: item.id },
+                        class: "add-btn",
+                        data: { turbo_frame: dom_id(item) },
+                        aria: { pressed: false } %>
+        <% end %>
+      <% end %>
+    </div>
+  </article>
+<% end %>

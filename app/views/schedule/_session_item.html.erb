@@ -1,3 +1,6 @@
+<% if item.lightning? %>
+  <%= render "schedule/lightning_session_item", item: item %>
+<% else %>
 <%
   kind_label = {
     "talk"      => "Talk",
@@ -115,4 +118,5 @@
       <% end %>
     </div>
   </article>
+<% end %>
 <% end %>

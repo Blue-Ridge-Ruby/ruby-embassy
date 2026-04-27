@@ -2,6 +2,8 @@ class ScheduleItem < ApplicationRecord
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
   has_many :attendees, through: :plan_items, source: :user
+  has_many :lightning_talk_signups, -> { ordered }, dependent: :destroy
+  has_many :speakers, through: :lightning_talk_signups, source: :user
 
   enum :kind, { talk: 0, lightning: 1, embassy: 2, activity: 3 }
 
@@ -40,6 +42,10 @@ class ScheduleItem < ApplicationRecord
 
   def rsvp_count
     plan_items.count
+  end
+
+  def lightning_slots_full?
+    lightning? && lightning_talk_signups.count >= LightningTalkSignup::MAX_SPEAKERS
   end
 
   def editable_by?(user)
