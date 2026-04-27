@@ -47,7 +47,9 @@ module Admin
                               ]
                             }
       @embassy_plan_items = all_plan_items.select { |pi| pi.schedule_item.embassy? }
-      @other_plan_items   = all_plan_items - @embassy_plan_items
+      @other_plan_items = all_plan_items.reject do |pi|
+        pi.schedule_item.embassy? || ScheduleItem::DEFAULT_PLAN_KINDS.include?(pi.schedule_item.kind)
+      end
 
       # "Hosting" = any schedule_item whose host string matches this user's
       # full_name. Catches both admin-dropdown assignments and user-created

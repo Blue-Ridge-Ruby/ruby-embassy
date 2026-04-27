@@ -19,8 +19,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     alice = users(:attendee_one)
     item = ScheduleItem.create!(
       day: "fri",
-      title: "Alice planned talk",
-      kind: :talk,
+      title: "Alice planned activity",
+      kind: :activity,
       is_public: true,
       time_label: "10:00 AM",
       sort_time: 1000
@@ -29,7 +29,33 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     sign_in_as users(:jeremy)
     get admin_user_path(alice)
-    assert_match "Alice planned talk", response.body
+    assert_match "Alice planned activity", response.body
+  end
+
+  test "admin show page hides talks and receptions from the plan section" do
+    alice = users(:attendee_one)
+    talk = ScheduleItem.create!(
+      day: "fri", title: "Default Talk", kind: :talk,
+      is_public: true, time_label: "10:00 AM", sort_time: 1000
+    )
+    reception = ScheduleItem.create!(
+      day: "fri", title: "Default Reception", kind: :reception,
+      is_public: true, time_label: "6:00 PM", sort_time: 1800
+    )
+    activity = ScheduleItem.create!(
+      day: "sat", title: "Optional Activity", kind: :activity,
+      is_public: true, time_label: "2:00 PM", sort_time: 1400
+    )
+    alice.plan_items.create!(schedule_item: talk)
+    alice.plan_items.create!(schedule_item: reception)
+    alice.plan_items.create!(schedule_item: activity)
+
+    sign_in_as users(:jeremy)
+    get admin_user_path(alice)
+    assert_response :success
+    assert_match "Optional Activity", response.body
+    assert_no_match(/Default Talk/, response.body)
+    assert_no_match(/Default Reception/, response.body)
   end
 
   test "admin users index links to each user's show page" do
