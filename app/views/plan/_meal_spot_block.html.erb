@@ -3,7 +3,7 @@
                           .includes(meal_spot_transport: :meal_spot)
                           .find_by(schedule_item: item)
   visible_spots = item.meal_spots.where("is_public = TRUE OR created_by_id = ?", current_user.id)
-  spot_count = visible_spots.count
+  transport_count = MealSpotTransport.where(meal_spot_id: visible_spots.select(:id)).count
 %>
 
 <% if user_rsvp %>
@@ -45,12 +45,12 @@
 <% else %>
   <p style="margin-top: 0.375rem;">
     <%
-      label = if item.hosted?
+      label = if item.hosted? && transport_count.zero?
                 "Add a way to get there →"
-              elsif spot_count.zero?
-                "Plan a spot →"
+              elsif transport_count.zero?
+                "Get or host a ride →"
               else
-                "View #{spot_count} #{'spot'.pluralize(spot_count)} →"
+                "View #{transport_count} #{'ride'.pluralize(transport_count)} →"
               end
     %>
     <%= link_to label,

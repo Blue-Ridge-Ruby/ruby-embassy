@@ -11,6 +11,12 @@ class MealSpotRsvpsController < ApplicationController
   # then create the new one. The (user_id, schedule_item_id) unique index
   # is the safety net; this controller is the happy path.
   def create
+    existing_rsvp = MealSpotRsvp.find_by(user: current_user, schedule_item: @meal)
+    if existing_rsvp&.locked_in?
+      return redirect_to schedule_item_meal_spots_path(@meal),
+                         alert: existing_rsvp.lock_reason
+    end
+
     MealSpotRsvp.transaction do
       MealSpotRsvp.where(user: current_user, schedule_item: @meal).destroy_all
       transport = resolve_transport!
@@ -24,9 +30,9 @@ class MealSpotRsvpsController < ApplicationController
 
   def destroy
     rsvp = MealSpotRsvp.find_by!(id: params[:id], user: current_user)
-    if rsvp.meal_spot_transport.started_by?(current_user)
+    if rsvp.locked_in?
       return redirect_to schedule_item_meal_spots_path(@meal),
-                         alert: "You started this transport group. Switch to another spot or join a different way to leave."
+                         alert: rsvp.lock_reason
     end
     rsvp.destroy
     redirect_to schedule_item_meal_spots_path(@meal), notice: "Removed your RSVP."
@@ -43,9 +49,15 @@ class MealSpotRsvpsController < ApplicationController
     @meal_spot = @meal.meal_spots.find(params[:meal_spot_id])
   end
 
+  # If the user submits the "add a different way" form for a mode that
+  # already exists at this spot, treat it as a switch into the existing
+  # transport rather than failing with a uniqueness error. Same outcome
+  # the user wants either way: be on the walking (or driving) transport.
   def resolve_transport!
     if params[:transport_id].present?
       @meal_spot.transports.find(params[:transport_id])
+    elsif (existing = @meal_spot.transports.find_by(mode: params[:mode]))
+      existing
     else
       @meal_spot.transports.create!(
         mode:          params[:mode],

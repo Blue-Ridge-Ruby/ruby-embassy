@@ -64,13 +64,13 @@
       <% end %>
     </div>
 
-    <% if spot.is_public %>
+    <% if spot.is_public && !current_user_rsvp&.locked_in? %>
       <details style="margin-top: 1rem;">
         <summary class="text-sm text-blue" style="cursor: pointer;">
           <%= hosted ? "+ Add a way to get there" : "+ Add a different way to get there" %>
         </summary>
         <div class="card-compact" style="margin-top: 0.75rem; background: #f9fafb;">
-          <%= form_with url: schedule_item_meal_spot_rsvps_path(meal, spot), method: :post, class: "space-y-3" do |f| %>
+          <%= form_with url: schedule_item_meal_spot_rsvps_path(meal, spot), method: :post, class: "space-y-4" do |f| %>
             <fieldset class="transport-fields">
               <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end;">
                 <div>

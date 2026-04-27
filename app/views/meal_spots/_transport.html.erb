@@ -44,9 +44,9 @@
   </div>
 
   <% if user_on_this_transport && current_user_rsvp %>
-    <% if transport.started_by?(current_user) %>
+    <% if current_user_rsvp.locked_in? %>
       <button class="add-btn add-btn--added" disabled aria-pressed="true"
-              title="You started this group, so you can't remove yourself. Switch to another spot or join a different way to leave.">
+              title="<%= current_user_rsvp.lock_reason %>">
         <%= button_label %>
       </button>
     <% else %>
@@ -55,6 +55,8 @@
                     method: :delete,
                     class: "add-btn add-btn--added" %>
     <% end %>
+  <% elsif current_user_rsvp&.locked_in? %>
+    <%# User is locked to their current transport — no switch affordance %>
   <% elsif transport.full? %>
     <button class="add-btn add-btn--disabled" disabled><%= button_label %></button>
   <% else %>
