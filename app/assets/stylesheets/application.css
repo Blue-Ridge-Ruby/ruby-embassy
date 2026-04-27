@@ -424,6 +424,29 @@ hr {
   color: #ffffff;
 }
 
+.kind-filter__btn--new-events {
+  color: #962820;
+  border-color: #cc4e46;
+}
+
+.kind-filter__btn--new-events:hover {
+  background-color: #fdecea;
+  border-color: #962820;
+  color: #962820;
+}
+
+.kind-filter__btn--new-events.kind-filter__btn--active {
+  background-color: #962820;
+  border-color: #962820;
+  color: #ffffff;
+}
+
+.kind-filter__btn--new-events.kind-filter__btn--active:hover {
+  background-color: #cc4e46;
+  border-color: #cc4e46;
+  color: #ffffff;
+}
+
 
 /* ---------- Schedule day sections (blueridgeruby.com style) -- */
 

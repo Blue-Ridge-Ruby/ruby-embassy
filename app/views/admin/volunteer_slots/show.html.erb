@@ -26,10 +26,8 @@
   </span>
 </div>
 
-<%= render "admin/volunteers/tabs" %>
-
 <div class="flex justify-end mb-6">
-  <%= link_to "Edit slot", edit_admin_schedule_item_path(@slot), class: "btn btn-muted" %>
+  <%= link_to "Edit slot", edit_admin_schedule_item_path(@slot, return_to: admin_volunteer_slot_path(@slot)), class: "btn btn-muted" %>
 </div>
 
 <h2 class="text-lg font-semibold text-navy mb-4">

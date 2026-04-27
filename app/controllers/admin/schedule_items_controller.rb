@@ -24,13 +24,14 @@ module Admin
     end
 
     def new
-      @schedule_item = ScheduleItem.new(day: "fri", kind: :talk, is_public: true, flexible: false)
+      requested_kind = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : :talk
+      @schedule_item = ScheduleItem.new(day: "fri", kind: requested_kind, is_public: true, flexible: false)
     end
 
     def create
       @schedule_item = ScheduleItem.new(schedule_item_params)
       if @schedule_item.save
-        redirect_to admin_schedule_items_path, notice: "Schedule item created."
+        redirect_to safe_return_to || admin_schedule_items_path, notice: "Schedule item created."
       else
         render :new, status: :unprocessable_content
       end
@@ -41,7 +42,7 @@ module Admin
 
     def update
       if @schedule_item.update(schedule_item_params)
-        redirect_to admin_schedule_items_path, notice: "Schedule item updated."
+        redirect_to safe_return_to || admin_schedule_items_path, notice: "Schedule item updated."
       else
         render :edit, status: :unprocessable_content
       end
@@ -56,6 +57,11 @@ module Admin
 
     def set_schedule_item
       @schedule_item = ScheduleItem.find(params[:id])
+    end
+
+    def safe_return_to
+      raw = params[:return_to].to_s
+      raw if raw.start_with?("/") && !raw.start_with?("//")
     end
 
     # Admins can freely set :kind, unlike user-facing controller.

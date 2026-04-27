@@ -2,7 +2,7 @@ class Admin::VolunteerSlotsController < AdminController
   before_action :set_slot, only: %i[show]
 
   def index
-    @slots = ScheduleItem.volunteer.ordered
+    @slots = ScheduleItem.volunteer.ordered.includes(plan_items: :user)
   end
 
   def show

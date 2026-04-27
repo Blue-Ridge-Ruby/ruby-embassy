@@ -12,8 +12,29 @@ class MealSpotRsvp < ApplicationRecord
   validate :car_must_have_seat_left, on: :create
 
   before_validation :inherit_schedule_item_from_transport
+  before_validation :inherit_user_contact_method, on: :create
   after_create  :ensure_parent_plan_item
   after_destroy :transfer_spot_ownership
+
+  # The user can't leave or switch this RSVP if:
+  #   - they're the driver of a driving transport (offering a ride creates a
+  #     commitment — others may RSVP at any time), OR
+  #   - they organized a walking group AND others have joined (rug-pull guard).
+  # Solo walkers and passengers can always leave their own RSVP.
+  def locked_in?
+    transport = meal_spot_transport
+    return false unless transport.started_by?(user)
+    transport.driving? || transport.rsvps.where.not(user_id: user_id).exists?
+  end
+
+  def lock_reason
+    return nil unless locked_in?
+    if meal_spot_transport.driving?
+      "You offered to host this ride. Others may RSVP, so you can't switch away."
+    else
+      "You started this transport group and others have joined. Switch to another spot or join a different way to leave."
+    end
+  end
 
   private
 
@@ -22,6 +43,13 @@ class MealSpotRsvp < ApplicationRecord
   def inherit_schedule_item_from_transport
     return if schedule_item_id.present?
     self.schedule_item_id = meal_spot_transport&.meal_spot&.schedule_item_id
+  end
+
+  # New RSVPs auto-pick up whatever contact the user last published. Saves
+  # them from having to re-type it on every new spot/activity they join.
+  def inherit_user_contact_method
+    return if contact_method.present?
+    self.contact_method = user&.last_rsvp_contact_method
   end
 
   # Decision B from the interview: joining a spot also marks you "going"

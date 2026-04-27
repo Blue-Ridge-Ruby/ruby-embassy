@@ -1,7 +1,9 @@
 <%
   user_on_this_transport = current_user_rsvp&.meal_spot_transport_id == transport.id
   user_has_other_rsvp    = current_user_rsvp.present? && !user_on_this_transport
-  attendees = transport.rsvps.map { |r| meal_spot_attendee_name(r.user) }
+  rsvps                  = transport.rsvps.includes(:user).to_a
+  contacts_visible       = spot.created_by_id == current_user.id ||
+                           rsvps.any? { |r| r.user_id == current_user.id }
   depart_label = transport.departs_at.strftime("%-l:%M %p")
   mode_label   = transport.mode_label.downcase
 
@@ -17,7 +19,7 @@
     end
 %>
 
-<div class="flex items-center" style="justify-content: space-between; gap: 1rem; padding: 0.75rem; background: #f9fafb; border-radius: 8px;">
+<div class="flex items-start" style="justify-content: space-between; gap: 1rem; padding: 0.75rem; background: #f9fafb; border-radius: 8px;">
   <div style="flex: 1;">
     <p class="text-navy" style="font-weight: 500;">
       <%= transport.mode_label %> · leaves <%= depart_label %>
@@ -31,19 +33,28 @@
         </span>
       <% end %>
     </p>
-    <p class="text-sm text-gray">
-      <% if attendees.any? %>
-        <%= attendees.to_sentence %>
-      <% else %>
-        Nobody yet
-      <% end %>
-    </p>
+    <% if rsvps.any? %>
+      <ul style="margin-top: 0.25rem; list-style: none; padding-left: 0;">
+        <% rsvps.each do |rsvp| %>
+          <%= render "meal_spot_rsvps/attendee_row",
+                     rsvp:             rsvp,
+                     meal:             meal,
+                     spot:             spot,
+                     contacts_visible: contacts_visible %>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-sm text-gray">Nobody yet</p>
+    <% end %>
+    <% if transport.meet_up_spot.present? %>
+      <p class="text-sm text-gray">Meet at <%= transport.meet_up_spot %></p>
+    <% end %>
   </div>
 
   <% if user_on_this_transport && current_user_rsvp %>
-    <% if transport.started_by?(current_user) %>
+    <% if current_user_rsvp.locked_in? %>
       <button class="add-btn add-btn--added" disabled aria-pressed="true"
-              title="You started this group, so you can't remove yourself. Switch to another spot or join a different way to leave.">
+              title="<%= current_user_rsvp.lock_reason %>">
         <%= button_label %>
       </button>
     <% else %>
@@ -52,6 +63,8 @@
                     method: :delete,
                     class: "add-btn add-btn--added" %>
     <% end %>
+  <% elsif current_user_rsvp&.locked_in? %>
+    <%# User is locked to their current transport — no switch affordance %>
   <% elsif transport.full? %>
     <button class="add-btn add-btn--disabled" disabled><%= button_label %></button>
   <% else %>

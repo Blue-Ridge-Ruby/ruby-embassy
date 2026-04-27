@@ -57,6 +57,46 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Sit near the front", plan.reload.notes
   end
 
+  test "PATCH updates contact_method on own plan_item" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan), params: { plan_item: { contact_method: "Discord: alice#0001" } }
+    assert_equal "Discord: alice#0001", plan.reload.contact_method
+  end
+
+  test "PATCH propagates contact_method to other blank RSVPs" do
+    user = users(:attendee_one)
+    sign_in_as user
+    plan = user.plan_items.create!(schedule_item: @item)
+    plan.update_columns(contact_method: nil)
+
+    blank_other = ScheduleItem.create!(day: "fri", title: "Hike", kind: :activity, is_public: true)
+    blank_pi = user.plan_items.create!(schedule_item: blank_other)
+    blank_pi.update_columns(contact_method: nil)
+
+    set_other = ScheduleItem.create!(day: "fri", title: "Bike", kind: :activity, is_public: true)
+    set_pi = user.plan_items.create!(schedule_item: set_other, contact_method: "preset")
+
+    patch plan_item_path(plan), params: { plan_item: { contact_method: "Discord: alice" } }
+
+    assert_equal "Discord: alice", blank_pi.reload.contact_method
+    assert_equal "preset",         set_pi.reload.contact_method
+  end
+
+  test "turbo_stream PATCH response replaces both plan_item AND schedule_item frames" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan),
+          params:  { plan_item: { contact_method: "555-1234" } },
+          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_match %r{<turbo-stream action="replace" target="plan_item_#{plan.id}">}, response.body
+    assert_match %r{<turbo-stream action="replace" target="schedule_item_#{@item.id}">}, response.body
+  end
+
   test "PATCH on another user's plan_item returns 404" do
     sign_in_as users(:attendee_one)
     other_plan = users(:volunteer_one).plan_items.create!(schedule_item: @item)
@@ -194,6 +234,51 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
       user: users(:attendee_one), schedule_item: embassy_item, plan_item: plan,
       mode: "stamping", state: "confirmed"
     )
+
+    assert_difference -> { PlanItem.count }, -1 do
+      delete plan_item_path(plan)
+    end
+  end
+
+  # ----- Meal RSVP locks plan_item ---------------------------------------
+
+  test "DELETE on a meal plan_item with an active spot RSVP does NOT destroy" do
+    sign_in_as users(:attendee_one)
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", title: "Open Lunch",
+                                  kind: :meal, is_public: true)
+    spot = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: users(:attendee_one))
+    transport = spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    transport.rsvps.create!(user: users(:attendee_one)) # auto-creates the PlanItem
+    plan = users(:attendee_one).plan_items.find_by!(schedule_item: meal)
+
+    assert_no_difference -> { PlanItem.count } do
+      assert_no_difference -> { MealSpotRsvp.count } do
+        delete plan_item_path(plan)
+      end
+    end
+    assert_redirected_to plan_path
+    assert_match(/Leave your spot/i, flash[:alert])
+  end
+
+  test "DELETE on a meal plan_item with an active spot RSVP returns 403 turbo_stream" do
+    sign_in_as users(:attendee_one)
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", title: "Open Lunch",
+                                  kind: :meal, is_public: true)
+    spot = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: users(:attendee_one))
+    transport = spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    transport.rsvps.create!(user: users(:attendee_one))
+    plan = users(:attendee_one).plan_items.find_by!(schedule_item: meal)
+
+    delete plan_item_path(plan), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    assert_response :forbidden
+    assert_match %r{<turbo-stream action="replace" target="plan_item_#{plan.id}">}, response.body
+  end
+
+  test "DELETE on a meal plan_item without an RSVP DOES destroy" do
+    sign_in_as users(:attendee_one)
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", title: "Open Lunch",
+                                  kind: :meal, is_public: true)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: meal)
 
     assert_difference -> { PlanItem.count }, -1 do
       delete plan_item_path(plan)

@@ -144,4 +144,143 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
     get schedule_path
     assert_match "Volunteer Briefing", response.body
   end
+
+  test "schedule shows 'See new events' toggle by default" do
+    sign_in_as users(:attendee_one)
+    get schedule_path
+
+    assert_match "See new events", response.body
+    assert_no_match "Showing new events", response.body
+  end
+
+  test "?unplanned=1 hides items already on the user's plan" do
+    alice = users(:attendee_one)
+    alice.plan_items.create!(schedule_item: @talk)
+
+    sign_in_as alice
+    get schedule_path(unplanned: 1)
+
+    assert_response :success
+    assert_match "Showing new events", response.body
+    assert_no_match "A Talk About Tests", response.body
+    assert_match "Group Bike Ride", response.body, "non-planned items should still appear"
+  end
+
+  test "?unplanned=1 preserves kind filter via query params" do
+    alice = users(:attendee_one)
+    alice.plan_items.create!(schedule_item: @talk)
+
+    sign_in_as alice
+    get schedule_path(unplanned: 1, kind: "activity")
+
+    assert_response :success
+    assert_no_match "A Talk About Tests", response.body
+    assert_match "Group Bike Ride", response.body
+  end
+
+  test "activity attendee names show on /schedule to non-RSVPers (no contacts)" do
+    users(:volunteer_one).plan_items.create!(
+      schedule_item: @activity, contact_method: "@vic on Slack"
+    )
+    sign_in_as users(:jeremy) # admin, but has not RSVP'd to this activity
+    get schedule_path
+
+    assert_match "Going (1)",    response.body
+    assert_match "Vic",          response.body
+    assert_no_match "@vic on Slack", response.body
+  end
+
+  test "RSVPers see other attendees' contacts on /schedule" do
+    users(:volunteer_one).plan_items.create!(
+      schedule_item: @activity, contact_method: "@vic on Slack"
+    )
+    users(:attendee_one).plan_items.create!(schedule_item: @activity)
+    sign_in_as users(:attendee_one)
+    get schedule_path
+
+    assert_match "@vic on Slack", response.body
+    assert_match "How to reach you", response.body, "current user sees their own contact form"
+  end
+
+  # ----- Meal rides summary on /schedule ---------------------------------
+
+  test "meal cards on /schedule show 'Suggest a spot' for non-hosted meals with no rides" do
+    ScheduleItem.create!(slug: "thu-lunch", day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                          title: "Open Lunch", kind: :meal, is_public: true)
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_match "Open Lunch", response.body
+    assert_match "Suggest a spot", response.body
+    assert_no_match(/Get or host a ride/, response.body, "ride wording is reserved for hosted meals")
+  end
+
+  test "meal cards on /schedule list spots and compact transport info when rides exist" do
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                 title: "Open Lunch", kind: :meal, is_public: true)
+    spot = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: users(:attendee_one),
+                                    map_url: "https://maps.app.goo.gl/x")
+    transport = spot.transports.create!(mode: :walking, departs_at: Time.zone.local(2026, 4, 30, 12, 15))
+    transport.rsvps.create!(user: users(:attendee_one))
+
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_match "Hattie Hot Chicken", response.body, "spot name shows"
+    assert_match "https://maps.app.goo.gl/x", response.body, "map link shows"
+    assert_match "Walking", response.body
+    assert_match "12:15 PM", response.body
+    assert_match "1 going", response.body
+    assert_match "Click to see more info or RSVP", response.body
+    assert_no_match(/Suggest a spot/, response.body, "empty-state CTA is suppressed when rides exist")
+  end
+
+  test "meal cards on /schedule hide private spots from non-creators" do
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                 title: "Open Lunch", kind: :meal, is_public: true)
+    private_spot = meal.meal_spots.create!(name: "Solo bowl", created_by: users(:attendee_one), is_public: false)
+    private_spot.transports.create!(mode: :walking, departs_at: Time.zone.local(2026, 4, 30, 12, 0))
+
+    sign_in_as users(:volunteer_one)
+    get schedule_path
+    assert_no_match(/Solo bowl/, response.body, "private spot is hidden on /schedule")
+    assert_match "Suggest a spot", response.body, "falls through to empty state"
+  end
+
+  test "meal cards on /schedule hide private spots even for the creator" do
+    meal = ScheduleItem.create!(slug: "thu-lunch", day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                 title: "Open Lunch", kind: :meal, is_public: true)
+    private_spot = meal.meal_spots.create!(name: "Solo bowl", created_by: users(:attendee_one), is_public: false)
+    private_spot.transports.create!(mode: :walking, departs_at: Time.zone.local(2026, 4, 30, 12, 0))
+
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_no_match(/Solo bowl/, response.body, "schedule page never shows private spots, even to creator")
+  end
+
+  test "hosted meal with canonical spot but no transports shows 'No rides yet' placeholder" do
+    hosted = ScheduleItem.create!(slug: "thu-dinner", day: "thu", time_label: "6:00 PM", sort_time: 1800,
+                                   title: "Welcome dinner", kind: :meal, is_public: true,
+                                   host: "Alice", location: "Pleasant Garden Inn")
+    MealSpot.canonical_for_hosted!(hosted)
+
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_match "No rides yet", response.body
+    assert_match "Get or host a ride", response.body
+  end
+
+  test "hosted meal hides the canonical spot's name (already shown as the meal's location)" do
+    hosted = ScheduleItem.create!(slug: "thu-dinner", day: "thu", time_label: "6:00 PM", sort_time: 1800,
+                                   title: "Welcome dinner", kind: :meal, is_public: true,
+                                   host: "Alice", location: "Pleasant Garden Inn")
+    canonical = MealSpot.canonical_for_hosted!(hosted)
+    transport = canonical.transports.create!(mode: :walking, departs_at: Time.zone.local(2026, 4, 30, 18, 0))
+    transport.rsvps.create!(user: users(:attendee_one))
+
+    sign_in_as users(:attendee_one)
+    get schedule_path
+    assert_match "Walking", response.body
+    assert_match "6:00 PM", response.body
+    # Pleasant Garden Inn appears once (as the meal's location), not twice (not also as the spot title)
+    assert_equal 1, response.body.scan("Pleasant Garden Inn").size
+  end
 end

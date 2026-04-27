@@ -1,6 +1,10 @@
 class ScheduleItem < ApplicationRecord
   EMBASSY_MODES = %w[new_passport stamping passport_pickup].freeze
   HACK_DAY_SLUG = "sat-hackday"
+  DEFAULT_PLAN_KINDS = %w[talk reception].freeze
+  # One-off slugs that don't fit a default-plan kind but are still part of
+  # the main programming every attendee is auto-RSVPed to.
+  DEFAULT_PLAN_SLUGS = %w[thu-mystery].freeze
 
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
@@ -37,6 +41,19 @@ class ScheduleItem < ApplicationRecord
     "sun" => { label: "Sunday",    date: "May 3",    subtitle: "Departures" }
   }.freeze
 
+  CONFERENCE_DATES = {
+    "wed" => Date.new(2026, 4, 29),
+    "thu" => Date.new(2026, 4, 30),
+    "fri" => Date.new(2026, 5,  1),
+    "sat" => Date.new(2026, 5,  2),
+    "sun" => Date.new(2026, 5,  3)
+  }.freeze
+  private_constant :CONFERENCE_DATES
+
+  def self.upcoming_day_keys(today = Date.current)
+    CONFERENCE_DATES.select { |_, date| date >= today }.keys
+  end
+
   scope :public_items, -> { where(is_public: true) }
   # Public items filtered to what `user` is allowed to see. Admins and
   # volunteers see all public items; everyone else (attendees, signed-out)
@@ -68,6 +85,16 @@ class ScheduleItem < ApplicationRecord
     day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
   }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
+  # Items every attendee is auto-RSVPed to on signup (and via the backfill
+  # task). Restricted to public, audience: "everyone" so volunteer-only items
+  # are never auto-added to attendees' plans. Matches by kind OR by an
+  # explicit allowlist of slugs (for one-off items that don't fit a kind).
+  scope :default_plan, -> {
+    public_items.where(audience: "everyone")
+                .where("kind IN (?) OR slug IN (?)",
+                       kinds.values_at(*DEFAULT_PLAN_KINDS),
+                       DEFAULT_PLAN_SLUGS)
+  }
 
   # Creators always get auto-added to their own plan — whether the item is
   # private (only they see it) or public (others can RSVP). The rationale:
@@ -80,6 +107,18 @@ class ScheduleItem < ApplicationRecord
 
   def rsvp_count
     plan_items.count
+  end
+
+  def admin_rsvp_count
+    case kind
+    when "embassy"   then seats_taken
+    when "lightning" then lightning_talk_signups.count
+    else                  plan_items.count
+    end
+  end
+
+  def hosted?
+    meal? && host.present?
   end
 
   def seats_taken_for(mode)

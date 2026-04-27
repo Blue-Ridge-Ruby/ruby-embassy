@@ -85,7 +85,7 @@ class PlanTest < ActionDispatch::IntegrationTest
     assert_match "Notes about this session go here.", response.body
   end
 
-  test "/plan meal cards show 'Plan a spot' when the user has no spot RSVP" do
+  test "/plan meal cards show 'Get or host a ride' when no transports exist" do
     alice = users(:attendee_one)
     meal  = ScheduleItem.create!(day: "thu", time_label: "12:00 PM", sort_time: 1200,
                                   title: "Open Lunch", kind: :meal, is_public: true)
@@ -93,7 +93,49 @@ class PlanTest < ActionDispatch::IntegrationTest
 
     sign_in_as alice
     get plan_path
-    assert_match "Plan a spot", response.body
+    assert_match "Get or host a ride", response.body
+  end
+
+  test "/plan meal cards count transports, not spots — hosted meal with canonical spot but no transport" do
+    alice = users(:attendee_one)
+    hosted = ScheduleItem.create!(day: "thu", time_label: "6:00 PM", sort_time: 1800,
+                                   title: "Welcome dinner", kind: :meal, is_public: true,
+                                   host: "Alice", location: "Pleasant Garden Inn")
+    MealSpot.canonical_for_hosted!(hosted)
+    alice.plan_items.create!(schedule_item: hosted)
+
+    sign_in_as alice
+    get plan_path
+    assert_match "Add a way to get there", response.body
+    assert_no_match(/\d+ spot/, response.body, "must not display a spot count when no transports exist")
+  end
+
+  test "/plan hides the remove × button on a meal once the user has a spot RSVP" do
+    alice = users(:attendee_one)
+    meal  = ScheduleItem.create!(day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                  title: "Open Lunch", kind: :meal, is_public: true)
+    spot  = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: alice)
+    transport = spot.transports.create!(mode: :walking, departs_at: 1.hour.from_now)
+    transport.rsvps.create!(user: alice) # auto-creates the PlanItem
+
+    sign_in_as alice
+    get plan_path
+    assert_match "Open Lunch", response.body
+    assert_no_match(/aria-label="Remove from plan"/, response.body,
+                    "remove button is hidden once user is RSVP'd to a spot for this meal")
+  end
+
+  test "/plan still shows the remove × button on a meal when the user has no spot RSVP" do
+    alice = users(:attendee_one)
+    meal  = ScheduleItem.create!(day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                  title: "Open Lunch", kind: :meal, is_public: true)
+    alice.plan_items.create!(schedule_item: meal)
+
+    sign_in_as alice
+    get plan_path
+    assert_match "Open Lunch", response.body
+    assert_match(/aria-label="Remove from plan"/, response.body,
+                 "remove button is present when no spot RSVP exists")
   end
 
   test "/plan meal cards show the user's spot details when RSVPd" do
@@ -129,5 +171,21 @@ class PlanTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?][method=?]", plan_item_path(plan), "post" do
       assert_select "input[name=_method][value=delete]"
     end
+  end
+
+  test "/plan shows activity attendees, contact form for self, and contacts of co-RSVPers" do
+    alice = users(:attendee_one)
+    vic   = users(:volunteer_one)
+    alice.plan_items.create!(schedule_item: @activity)
+    vic.plan_items.create!(schedule_item: @activity, contact_method: "@vic on Slack")
+
+    sign_in_as alice
+    get plan_path
+
+    assert_match "Going (2)", response.body
+    assert_match "Alice", response.body
+    assert_match "Vic", response.body
+    assert_match "@vic on Slack", response.body, "alice (a co-RSVPer) should see vic's contact"
+    assert_match "How to reach you", response.body, "alice should see her own contact form"
   end
 end

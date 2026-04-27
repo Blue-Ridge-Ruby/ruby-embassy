@@ -115,6 +115,10 @@
           <%= render "plan/hack_day_block", item: item, plan_item: plan_item %>
         <% end %>
 
+        <% if item.activity? %>
+          <%= render "plan_items/attendees", schedule_item: item %>
+        <% end %>
+
         <% if item.description.present? %>
           <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
         <% end %>
@@ -147,7 +151,10 @@
         <% end %>
       </div>
 
-      <% unless presenting %>
+      <%
+        meal_locked = item.meal? && current_user.meal_spot_rsvps.exists?(schedule_item_id: item.id)
+      %>
+      <% unless presenting || meal_locked %>
         <%= button_to "×",
                       plan_item_path(plan_item),
                       method: :delete,

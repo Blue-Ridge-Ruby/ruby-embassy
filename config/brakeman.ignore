@@ -44,6 +44,26 @@
     {
       "warning_type": "Cross-Site Scripting",
       "warning_code": 4,
+      "fingerprint": "2c22f666bfc341d1ca35845661e7544b651646a9f0b4ce6ec496f84a7e3bc298",
+      "check_name": "LinkToHref",
+      "message": "Unsafe parameter value in `link_to` href",
+      "file": "app/views/admin/schedule_items/_form.html.erb",
+      "line": 169,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(\"Cancel\", ((params[:return_to].to_s or nil) or admin_schedule_items_path), :class => \"btn btn-muted\")",
+      "render_path": null,
+      "location": {
+        "type": "template",
+        "template": "admin/schedule_items/_form"
+      },
+      "user_input": "params[:return_to].to_s",
+      "confidence": "High",
+      "cwe_id": [79],
+      "note": "return_to is validated above the form: only same-origin paths pass (must start with '/' and not '//'), blocking external redirects, javascript:, data:, etc. The whole admin namespace is gated by require_admin!, so reaching this view already requires an authenticated admin. Static analysis can't trace through the start_with? check, but the runtime guard is sound."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
       "fingerprint": "161db39246637283f35ea9169e0c6782829b3c4547e934d74ad26dccd512dcfb",
       "check_name": "LinkToHref",
       "message": "Potentially unsafe model attribute in `link_to` href",

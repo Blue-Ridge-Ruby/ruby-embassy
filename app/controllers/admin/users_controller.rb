@@ -1,7 +1,38 @@
 module Admin
   class UsersController < AdminController
+    SORTABLE_COLUMNS = {
+      "name"      => "users.last_name, users.first_name",
+      "role"      => "users.role",
+      "last_seen" => "users.last_seen_at"
+    }.freeze
+    DEFAULT_ORDER = "users.last_name ASC, users.first_name ASC"
+    COMPUTED_SORTS = %w[rsvps volunteer_spots hosting].freeze
+
     def index
-      @users = User.order(:last_name, :first_name)
+      order_clause = apply_sort(SORTABLE_COLUMNS) || DEFAULT_ORDER
+      @query = params[:q].to_s.strip
+      @users = filtered_users.reorder(Arel.sql(order_clause)).to_a
+
+      user_ids = @users.map(&:id)
+
+      @rsvp_counts = PlanItem.joins(:schedule_item)
+                             .where(user_id: user_ids)
+                             .merge(ScheduleItem.where.not(kind: [ :talk, :reception, :volunteer ]))
+                             .group(:user_id)
+                             .count
+
+      @volunteer_counts = PlanItem.joins(:schedule_item)
+                                  .where(user_id: user_ids)
+                                  .merge(ScheduleItem.volunteer)
+                                  .group(:user_id)
+                                  .count
+
+      @hosting_counts = ScheduleItem.public_items
+                                    .where.not(host: [ nil, "" ])
+                                    .group(:host)
+                                    .count
+
+      apply_computed_sort
     end
 
     def show
@@ -99,6 +130,37 @@ module Admin
     end
 
     private
+
+    # Sorts @users in-memory by one of the computed count columns. apply_sort
+    # already cleared @sort/@dir because these keys aren't in SORTABLE_COLUMNS;
+    # we set them here so the view's sort_link can render the active arrow.
+    def apply_computed_sort
+      return unless COMPUTED_SORTS.include?(params[:sort]) &&
+                    %w[asc desc].include?(params[:dir])
+
+      @sort = params[:sort]
+      @dir  = params[:dir]
+      value_for =
+        case @sort
+        when "rsvps"           then ->(u) { @rsvp_counts[u.id] || 0 }
+        when "volunteer_spots" then ->(u) { @volunteer_counts[u.id] || 0 }
+        when "hosting"         then ->(u) { @hosting_counts[u.full_name] || 0 }
+        end
+
+      @users = @users.sort_by { |u| [ value_for.call(u), u.last_name.to_s, u.first_name.to_s ] }
+      @users.reverse! if @dir == "desc"
+    end
+
+    def filtered_users
+      scope = User.all
+      return scope if @query.blank?
+
+      term = "%#{@query}%"
+      scope.where(
+        "first_name ILIKE :t OR last_name ILIKE :t OR email ILIKE :t",
+        t: term
+      )
+    end
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :role)

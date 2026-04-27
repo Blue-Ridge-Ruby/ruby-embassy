@@ -18,9 +18,10 @@
         placeholder: "Search by name, email, or serial…",
         class: "input flex-1" %>
   <%= hidden_field_tag :sort, @sort %>
+  <%= hidden_field_tag :dir, @dir %>
   <%= submit_tag "Search", class: "btn btn-navy" %>
   <% if @query.present? %>
-    <%= link_to "Clear", admin_embassy_applications_path(sort: @sort), class: "btn btn-ghost" %>
+    <%= link_to "Clear", admin_embassy_applications_path(sort: @sort, dir: @dir), class: "btn btn-ghost" %>
   <% end %>
 <% end %>
 

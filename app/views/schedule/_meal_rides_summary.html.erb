@@ -1,0 +1,60 @@
+<%
+  visible_spots = item.meal_spots
+                      .where(is_public: true)
+                      .includes(transports: :rsvps)
+                      .order(:created_at)
+  spots_with_transports = visible_spots.select { |s| s.transports.any? }
+%>
+
+<% if spots_with_transports.empty? %>
+  <p class="schedule-item__description">
+    <% if item.hosted? && visible_spots.any? %>
+      No rides yet ·
+      <%= link_to "Get or host a ride →",
+                  schedule_item_meal_spots_path(item),
+                  class: "text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    <% elsif item.hosted? %>
+      <%= link_to "Get or host a ride →",
+                  schedule_item_meal_spots_path(item),
+                  class: "text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    <% else %>
+      <%= link_to "Suggest a spot →",
+                  schedule_item_meal_spots_path(item),
+                  class: "text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    <% end %>
+  </p>
+<% else %>
+  <div class="schedule-item__rides" style="margin-top: 0.5rem;">
+    <% spots_with_transports.each do |spot| %>
+      <div style="margin-top: 0.5rem;">
+        <% unless spot.canonical_for_hosted? %>
+          <p class="text-sm" style="font-weight: 500; color: #1F2937;">
+            <% if spot.map_url.present? %>
+              <%= link_to spot.name, spot.map_url,
+                          target: "_blank",
+                          rel:    "noopener noreferrer",
+                          class:  "text-blue underline" %>
+            <% else %>
+              <%= spot.name %>
+            <% end %>
+          </p>
+        <% end %>
+        <% spot.transports.each do |t| %>
+          <p class="text-sm" style="color: #525C66;">
+            <%= t.mode_label %> · <%= t.departs_at.strftime("%-l:%M %p") %>
+            · <%= t.rsvps.size %> going<%= t.driving? && t.full? ? " (full)" : "" %>
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <p class="schedule-item__description" style="margin-top: 0.5rem;">
+    <%= link_to "Click to see more info or RSVP →",
+                schedule_item_meal_spots_path(item),
+                class: "text-blue underline",
+                data: { turbo_frame: "_top" } %>
+  </p>
+<% end %>

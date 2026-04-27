@@ -57,6 +57,14 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_not ScheduleItem.new(valid_attrs(kind: :embassy)).talk?
   end
 
+  test "hosted? is true only for meals with a host present" do
+    assert ScheduleItem.new(valid_attrs(kind: :meal, host: "Alice")).hosted?
+    assert_not ScheduleItem.new(valid_attrs(kind: :meal, host: nil)).hosted?
+    assert_not ScheduleItem.new(valid_attrs(kind: :meal, host: "")).hosted?
+    assert_not ScheduleItem.new(valid_attrs(kind: :talk, host: "Alice")).hosted?,
+               "talks have hosts (speakers) but aren't 'hosted meals'"
+  end
+
   test "rsvp_count counts plan_items" do
     item = ScheduleItem.create!(valid_attrs)
     assert_equal 0, item.rsvp_count
@@ -156,6 +164,15 @@ class ScheduleItemTest < ActiveSupport::TestCase
   test "DAY_META includes Sunday" do
     assert ScheduleItem::DAY_META.key?("sun"), "Sunday should be a listed day"
     assert_equal "Sunday", ScheduleItem::DAY_META["sun"][:label]
+  end
+
+  test "upcoming_day_keys returns conference days on or after the given date" do
+    assert_equal %w[wed thu fri sat sun], ScheduleItem.upcoming_day_keys(Date.new(2026, 4, 27))
+    assert_equal %w[wed thu fri sat sun], ScheduleItem.upcoming_day_keys(Date.new(2026, 4, 29))
+    assert_equal %w[thu fri sat sun],     ScheduleItem.upcoming_day_keys(Date.new(2026, 4, 30))
+    assert_equal %w[fri sat sun],         ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 1))
+    assert_equal %w[sun],                 ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 3))
+    assert_equal [],                      ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 4))
   end
 
   test "after_create auto-plans private items for creator" do

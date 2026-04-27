@@ -21,6 +21,7 @@ class User < ApplicationRecord
            inverse_of: :created_by
 
   before_save :memorialize_tito_config
+  after_create :materialize_default_plan_items
 
   generates_token_for :login, expires_in: 30.days
 
@@ -65,6 +66,39 @@ class User < ApplicationRecord
 
   def speaking_at?(schedule_item)
     lightning_talk_signups.exists?(schedule_item_id: schedule_item.id)
+  end
+
+  # Idempotent: safe to call from after_create and from the backfill task.
+  def materialize_default_plan_items
+    ScheduleItem.default_plan.find_each do |item|
+      plan_items.find_or_create_by!(schedule_item: item)
+    end
+  end
+
+  # The most recent non-blank contact_method this user has used on any RSVP
+  # (meal or activity). Used to pre-fill new RSVP contact forms so they don't
+  # have to retype the same handle every time.
+  def last_rsvp_contact_method
+    candidates = [
+      meal_spot_rsvps.where.not(contact_method: [ nil, "" ])
+                     .order(updated_at: :desc).limit(1).pluck(:updated_at, :contact_method).first,
+      plan_items.where.not(contact_method: [ nil, "" ])
+                .order(updated_at: :desc).limit(1).pluck(:updated_at, :contact_method).first
+    ].compact
+    candidates.max_by(&:first)&.last
+  end
+
+  # Backfill `value` into every meal RSVP and plan_item the user has where
+  # contact_method is blank. RSVPs already carrying an explicit contact are
+  # left alone — only empties get filled. Skips invalid blank values.
+  def propagate_contact_to_blank_rsvps!(value)
+    value = value.to_s.strip
+    return if value.blank?
+    now = Time.current
+    meal_spot_rsvps.where(contact_method: [ nil, "" ])
+                   .update_all(contact_method: value, updated_at: now)
+    plan_items.where(contact_method: [ nil, "" ])
+              .update_all(contact_method: value, updated_at: now)
   end
 
   private

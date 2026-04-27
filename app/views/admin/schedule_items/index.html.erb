@@ -1,4 +1,4 @@
-<% content_for :container_width, "max-w-6xl" %>
+<% content_for :container_width, "max-w-7xl" %>
 
 <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
   <h1 class="text-2xl font-bold text-navy">Schedule Items</h1>
@@ -24,6 +24,7 @@
         <th>Kind</th>
         <th>Public?</th>
         <th>Host</th>
+        <th>RSVPs</th>
         <th></th>
       </tr>
     </thead>
@@ -55,13 +56,20 @@
             <% end %>
           </td>
           <td><%= item.host.presence || "—" %></td>
+          <td>
+            <% if item.volunteer? && item.volunteer_capacity %>
+              <%= item.volunteer_signup_count %> / <%= item.volunteer_capacity %>
+            <% else %>
+              <%= item.admin_rsvp_count %>
+            <% end %>
+          </td>
           <td class="text-right">
             <div class="flex gap-2 justify-end">
-              <%= link_to "Edit", edit_admin_schedule_item_path(item), class: "btn btn-muted" %>
+              <%= link_to "Edit", edit_admin_schedule_item_path(item), class: "btn btn-muted btn-small" %>
               <%= button_to "Delete", admin_schedule_item_path(item),
                     method: :delete,
                     data: { turbo_confirm: "Delete '#{item.title}'? RSVPs will also be removed." },
-                    class: "btn btn-red" %>
+                    class: "btn btn-red btn-small" %>
             </div>
           </td>
         </tr>

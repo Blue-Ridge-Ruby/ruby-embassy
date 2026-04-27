@@ -17,11 +17,12 @@
   <div class="stat-card">
     <div class="stat-card__label">RSVPs</div>
     <div class="stat-card__value"><%= @rsvps_count %></div>
-    <div class="stat-card__sub">across all items</div>
+    <div class="stat-card__sub">excluding talks, reception, volunteers</div>
   </div>
   <div class="stat-card">
-    <div class="stat-card__label">Schedule Items</div>
-    <div class="stat-card__value"><%= @schedule_items_count %></div>
+    <div class="stat-card__label">Volunteers Needed</div>
+    <div class="stat-card__value"><%= @volunteers_needed_count %></div>
+    <div class="stat-card__sub">empty slots, today onward</div>
   </div>
 </div>
 

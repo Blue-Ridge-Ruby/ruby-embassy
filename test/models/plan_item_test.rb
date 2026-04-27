@@ -53,4 +53,24 @@ class PlanItemTest < ActiveSupport::TestCase
     plan = PlanItem.new(user: users(:volunteer_one), schedule_item: slot)
     assert plan.valid?
   end
+
+  test "contact_method is optional and persists when given" do
+    item = build_schedule_item
+    plan = PlanItem.create!(
+      user: users(:attendee_one),
+      schedule_item: item,
+      contact_method: "text 555-0100"
+    )
+    assert_equal "text 555-0100", plan.reload.contact_method
+  end
+
+  test "new plan_item inherits contact_method from user's last RSVP when blank" do
+    user = users(:attendee_one)
+    earlier = build_schedule_item
+    user.plan_items.create!(schedule_item: earlier, contact_method: "Discord: alice#0001")
+
+    later = ScheduleItem.create!(day: "fri", title: "Other", kind: :activity, is_public: true)
+    plan = user.plan_items.create!(schedule_item: later)
+    assert_equal "Discord: alice#0001", plan.contact_method
+  end
 end

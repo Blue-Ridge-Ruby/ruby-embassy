@@ -1,0 +1,24 @@
+<%
+  prefill = plan_item.contact_method.presence || current_user.last_rsvp_contact_method
+%>
+<details style="margin-top: 0.25rem;">
+  <summary class="text-sm text-blue" style="cursor: pointer;">
+    <%= plan_item.contact_method.present? ? "Edit how to reach you" : "+ How to reach you" %>
+  </summary>
+  <%= form_with model: plan_item,
+                url:   plan_item_path(plan_item),
+                method: :patch,
+                class:  "card-compact",
+                style:  "margin-top: 0.5rem; background: #fff; padding: 0.75rem;" do |f| %>
+    <%= f.label :contact_method, "How to reach you (optional)", class: "label" %>
+    <%= f.text_field :contact_method,
+                     value: prefill,
+                     placeholder: "text 555-1234, @kat on Slack, Discord: kat#1234",
+                     class: "input",
+                     style: "max-width: 24rem; margin-top: 0.25rem;" %>
+    <p class="text-sm text-gray" style="margin-top: 0.25rem;">
+      Visible to the host and others who RSVP'd.
+    </p>
+    <%= f.submit "Save", class: "btn btn-navy", style: "margin-top: 0.5rem;" %>
+  <% end %>
+</details>

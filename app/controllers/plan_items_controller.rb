@@ -19,13 +19,25 @@ class PlanItemsController < ApplicationController
 
   def update
     @plan_item.update(plan_item_params)
+    if @plan_item.contact_method.present? && @plan_item.saved_change_to_contact_method?
+      current_user.propagate_contact_to_blank_rsvps!(@plan_item.contact_method)
+    end
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace(
-          helpers.dom_id(@plan_item),
-          partial: "plan/plan_item",
-          locals: { plan_item: @plan_item }
-        )
+        # Emit replacements for both the /plan and /schedule frames; whichever
+        # one the user submitted from re-renders, the other is a silent no-op.
+        render turbo_stream: [
+          turbo_stream.replace(
+            helpers.dom_id(@plan_item),
+            partial: "plan/plan_item",
+            locals: { plan_item: @plan_item }
+          ),
+          turbo_stream.replace(
+            helpers.dom_id(@plan_item.schedule_item),
+            partial: "schedule/session_item",
+            locals: { item: @plan_item.schedule_item, planned: true }
+          )
+        ]
       }
       format.html { redirect_to plan_path }
     end
@@ -65,6 +77,22 @@ class PlanItemsController < ApplicationController
       end
     end
 
+    if schedule_item.meal? && current_user.meal_spot_rsvps.exists?(schedule_item_id: schedule_item.id)
+      message = "Leave your spot for this meal first, then you can remove it from your plan."
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = message
+          render turbo_stream: turbo_stream.replace(
+            helpers.dom_id(@plan_item),
+            partial: "plan/plan_item",
+            locals: { plan_item: @plan_item }
+          ), status: :forbidden
+        end
+        format.html { redirect_to plan_path, alert: message }
+      end
+      return
+    end
+
     @plan_item.destroy
 
     respond_to do |format|
@@ -95,6 +123,6 @@ class PlanItemsController < ApplicationController
   end
 
   def plan_item_params
-    params.require(:plan_item).permit(:notes)
+    params.require(:plan_item).permit(:notes, :contact_method)
   end
 end
