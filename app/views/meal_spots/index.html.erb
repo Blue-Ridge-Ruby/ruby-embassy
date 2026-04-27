@@ -26,7 +26,18 @@
       <% end %>
     </p>
 
-    <% if @meal_spots.any? %>
+    <% if @meal.hosted? %>
+      <div class="space-y-6 mb-8">
+        <% @meal_spots.each do |spot| %>
+          <%= render "meal_spot",
+                     spot:             spot,
+                     meal:             @meal,
+                     current_spot_id:  current_spot_id,
+                     current_user_rsvp: @current_user_rsvp,
+                     hosted:           true %>
+        <% end %>
+      </div>
+    <% elsif @meal_spots.any? %>
       <div class="space-y-6 mb-8">
         <% @meal_spots.each do |spot| %>
           <%= render "meal_spot",

@@ -84,6 +84,10 @@ class ScheduleItem < ApplicationRecord
     end
   end
 
+  def hosted?
+    meal? && host.present?
+  end
+
   def seats_taken_for(mode)
     embassy_bookings.active.where(mode: mode).count
   end

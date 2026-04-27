@@ -38,6 +38,7 @@ class SessionsController < ApplicationController
 
       if user
         session[:user_id] = user.id
+        user.update_columns(last_sign_in_at: Time.current)
         redirect_to(session.delete(:return_to) || dashboard_path, notice: "Signed in.")
       else
         redirect_to new_session_path, alert: "Invalid or expired login link."
