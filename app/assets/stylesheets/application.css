@@ -2408,8 +2408,6 @@ hr {
 
 .plan-item__embassy-action {
   padding: 0.875rem 1.25rem 1rem;
-  border-top: 1px solid #eef1f4;
-  background: #fbfcfd;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
