@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   resources :schedule_items, only: %i[new create edit update] do
     resource :lightning_talk_signup, only: %i[create edit update]
     resources :meal_spots, only: %i[index new create edit update] do
-      resources :rsvps, only: %i[create destroy], controller: "meal_spot_rsvps"
+      resources :rsvps, only: %i[create update destroy], controller: "meal_spot_rsvps"
     end
   end
 

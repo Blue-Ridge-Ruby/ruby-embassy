@@ -95,6 +95,6 @@ class PlanItemsController < ApplicationController
   end
 
   def plan_item_params
-    params.require(:plan_item).permit(:notes)
+    params.require(:plan_item).permit(:notes, :contact_method)
   end
 end

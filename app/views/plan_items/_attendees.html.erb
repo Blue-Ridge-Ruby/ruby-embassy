@@ -1,0 +1,29 @@
+<%
+  schedule_item = plan_item.schedule_item
+  others = schedule_item.plan_items.includes(:user).where.not(id: plan_item.id).to_a
+  contacts_visible = can_see_activity_contact?(current_user, plan_item)
+%>
+<div class="plan-item__attendees" style="margin-top: 0.75rem; border-top: 1px solid #e5e7eb; padding-top: 0.75rem;">
+  <h4 class="text-sm" style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin-bottom: 0.5rem;">
+    Going (<%= others.length + 1 %>)
+  </h4>
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="margin-bottom: 0.25rem;">
+      <span class="text-navy">
+        <%= meal_spot_attendee_name(current_user) %> (you)
+      </span>
+      <% if plan_item.contact_method.present? %>
+        <span class="text-sm text-gray">· <%= plan_item.contact_method %></span>
+      <% end %>
+      <%= render "plan_items/contact_form", plan_item: plan_item %>
+    </li>
+    <% others.each do |other| %>
+      <li style="margin-bottom: 0.25rem;">
+        <span class="text-navy"><%= meal_spot_attendee_name(other.user) %></span>
+        <% if contacts_visible && other.contact_method.present? %>
+          <span class="text-sm text-gray">· <%= other.contact_method %></span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>

@@ -57,6 +57,14 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Sit near the front", plan.reload.notes
   end
 
+  test "PATCH updates contact_method on own plan_item" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan), params: { plan_item: { contact_method: "Discord: alice#0001" } }
+    assert_equal "Discord: alice#0001", plan.reload.contact_method
+  end
+
   test "PATCH on another user's plan_item returns 404" do
     sign_in_as users(:attendee_one)
     other_plan = users(:volunteer_one).plan_items.create!(schedule_item: @item)

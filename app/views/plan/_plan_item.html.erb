@@ -111,6 +111,10 @@
           <%= render "plan/meal_spot_block", item: item %>
         <% end %>
 
+        <% if item.activity? %>
+          <%= render "plan_items/attendees", plan_item: plan_item %>
+        <% end %>
+
         <% if item.description.present? %>
           <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
         <% end %>

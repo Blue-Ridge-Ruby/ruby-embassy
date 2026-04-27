@@ -12,14 +12,26 @@ class MealSpotRsvpsController < ApplicationController
   # is the safety net; this controller is the happy path.
   def create
     MealSpotRsvp.transaction do
+      # Carry forward contact_method when switching transports/spots so the
+      # user doesn't have to re-type it.
+      prior_contact = MealSpotRsvp.where(user: current_user, schedule_item: @meal).pick(:contact_method)
       MealSpotRsvp.where(user: current_user, schedule_item: @meal).destroy_all
       transport = resolve_transport!
-      transport.rsvps.create!(user: current_user)
+      transport.rsvps.create!(user: current_user, contact_method: prior_contact)
     end
     redirect_to schedule_item_meal_spots_path(@meal), notice: "You're in."
   rescue ActiveRecord::RecordInvalid => e
     redirect_to schedule_item_meal_spots_path(@meal),
                 alert: "Couldn't RSVP: #{e.message}"
+  end
+
+  def update
+    rsvp = current_user.meal_spot_rsvps.find_by!(id: params[:id])
+    rsvp.update!(contact_method: contact_method_param)
+    redirect_to schedule_item_meal_spots_path(@meal), notice: "Contact saved."
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to schedule_item_meal_spots_path(@meal),
+                alert: "Couldn't save contact: #{e.message}"
   end
 
   def destroy
@@ -53,5 +65,10 @@ class MealSpotRsvpsController < ApplicationController
         seats_offered: params[:seats_offered]
       )
     end
+  end
+
+  def contact_method_param
+    return nil unless params[:meal_spot_rsvp].is_a?(ActionController::Parameters)
+    params.require(:meal_spot_rsvp).permit(:contact_method)[:contact_method].presence
   end
 end

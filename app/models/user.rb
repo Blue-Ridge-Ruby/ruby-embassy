@@ -61,6 +61,19 @@ class User < ApplicationRecord
     lightning_talk_signups.exists?(schedule_item_id: schedule_item.id)
   end
 
+  # The most recent non-blank contact_method this user has used on any RSVP
+  # (meal or activity). Used to pre-fill new RSVP contact forms so they don't
+  # have to retype the same handle every time.
+  def last_rsvp_contact_method
+    candidates = [
+      meal_spot_rsvps.where.not(contact_method: [ nil, "" ])
+                     .order(updated_at: :desc).limit(1).pluck(:updated_at, :contact_method).first,
+      plan_items.where.not(contact_method: [ nil, "" ])
+                .order(updated_at: :desc).limit(1).pluck(:updated_at, :contact_method).first
+    ].compact
+    candidates.max_by(&:first)&.last
+  end
+
   private
 
   # When a user gets linked to a Tito ticket, snapshot the current event's

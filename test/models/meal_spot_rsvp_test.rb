@@ -56,4 +56,14 @@ class MealSpotRsvpTest < ActiveSupport::TestCase
     second = other_transport.rsvps.build(user: users(:attendee_one))
     assert second.valid?
   end
+
+  test "contact_method is optional and persists when given" do
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one), contact_method: "@vic on Slack")
+    assert_equal "@vic on Slack", rsvp.reload.contact_method
+  end
+
+  test "contact_method may be blank" do
+    rsvp = @walking_a.rsvps.create!(user: users(:volunteer_one))
+    assert_nil rsvp.contact_method
+  end
 end

@@ -53,4 +53,14 @@ class PlanItemTest < ActiveSupport::TestCase
     plan = PlanItem.new(user: users(:volunteer_one), schedule_item: slot)
     assert plan.valid?
   end
+
+  test "contact_method is optional and persists when given" do
+    item = build_schedule_item
+    plan = PlanItem.create!(
+      user: users(:attendee_one),
+      schedule_item: item,
+      contact_method: "text 555-0100"
+    )
+    assert_equal "text 555-0100", plan.reload.contact_method
+  end
 end
