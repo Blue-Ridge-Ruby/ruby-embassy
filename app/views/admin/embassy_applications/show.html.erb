@@ -1,12 +1,12 @@
 <% content_for :title, "Application #{@application.serial} — Embassy Admin" %>
 
-<div class="flex items-center justify-between mb-6">
+<div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
   <div>
     <h1 class="text-2xl font-bold text-navy">
       Application <span class="mono"><%= @application.serial %></span>
     </h1>
-    <p class="text-muted">
-      <%= @booking.user.full_name %> ·
+    <p class="text-muted mt-1">
+      <strong class="text-navy"><%= @booking.user.full_name %></strong> ·
       <%= ScheduleItem::DAY_META.dig(@schedule_item.day, :date) %> · <%= @schedule_item.time_label %> ·
       submitted <%= @application.submitted_at&.strftime("%b %-d · %-l:%M %p") %>
     </p>
@@ -19,52 +19,56 @@
   </div>
 </div>
 
-<div class="alert alert-notice mb-4">
-  <strong>Random pool draw:</strong>
-  <span class="mono"><%= @application.drawn_question_ids.join(", ") %></span>
-  (4 questions from the active Section 3 pool).
+<%# Interviewer cheat sheet — what the attaché needs at a glance. %>
+<div class="qa-meta-grid mb-6">
   <% if @notary %>
-    <br>
-    <strong>Notary assignment:</strong>
-    <span class="mono"><%= @notary.external_id %></span> ·
-    &ldquo;Someone who <%= @notary.description.sub(/^./, &:downcase) %>&rdquo;
-  <% end %>
-</div>
-
-<div class="card">
-  <h2 class="embassy-section-header mb-4">Submitted Answers</h2>
-  <% [1, 2, 3, 4, 5].each do |n| %>
-    <div class="embassy-admin-section mb-4">
-      <h3 class="embassy-section-subhead">
-        Section <%= n %> · <%= embassy_section_title(n) %>
-      </h3>
-      <dl class="embassy-admin-dl">
-        <% @sections[n].each do |question| %>
-          <% answer = @application.answer_for(question) %>
-          <dt><span class="mono"><%= question.external_id %></span> · <%= question.label %></dt>
-          <dd>
-            <% case question.field_type %>
-            <% when "checkbox_group" %>
-              <% values = Array(answer&.value_array) %>
-              <% if values.any? %>
-                <ul class="list-disc">
-                  <% values.each { |v| %><li><%= v %></li><% } %>
-                </ul>
-              <% else %>
-                <span class="text-muted">— None selected —</span>
-              <% end %>
-            <% when "checkbox" %>
-              <%= answer&.value_text == "true" ? "✓ Affirmed" : "— Not affirmed —" %>
-            <% else %>
-              <% if answer&.value_text.present? %>
-                <%= simple_format(answer.value_text) %>
-              <% else %>
-                <span class="text-muted">— Blank —</span>
-              <% end %>
-            <% end %>
-          </dd>
-        <% end %>
-      </dl>
+    <div class="qa-meta-card">
+      <p class="qa-meta-card__label">Notary assignment</p>
+      <p class="qa-meta-card__value">
+        <span class="mono"><%= @notary.external_id %></span> · Someone who
+        <%= @notary.description.sub(/^./, &:downcase) %>
+      </p>
+      <% if @notary.followup_prompt.present? %>
+        <p class="qa-meta-card__sub">
+          <strong>Notary's follow-up:</strong> <%= @notary.followup_prompt %>
+        </p>
+      <% end %>
     </div>
   <% end %>
+  <div class="qa-meta-card">
+    <p class="qa-meta-card__label">Section 3 random pool draw</p>
+    <p class="qa-meta-card__value mono"><%= @application.drawn_question_ids.join("  ·  ") %></p>
+    <p class="qa-meta-card__sub">4 questions drawn from the active Section 3 pool.</p>
+  </div>
 </div>
+
+<%# Jump-nav so the attaché can flip between sections during the interview. %>
+<nav class="qa-jump-nav mb-8" aria-label="Jump to section">
+  <% [ 1, 2, 3, 4, 5 ].each do |n| %>
+    <a href="#section-<%= n %>" class="qa-jump-nav__link">
+      <span class="qa-jump-nav__num"><%= n %></span>
+      <span class="qa-jump-nav__label"><%= embassy_section_title(n) %></span>
+    </a>
+  <% end %>
+</nav>
+
+<% [ 1, 2, 3, 4, 5 ].each do |n| %>
+  <section id="section-<%= n %>" class="qa-section">
+    <header class="qa-section__header">
+      <h2 class="embassy-section-header">
+        Section <%= n %> · <%= embassy_section_title(n) %>
+        <% if n == 3 %>
+          <span class="qa-randompool-badge">★ random pool</span>
+        <% end %>
+      </h2>
+      <p class="qa-section__instructions"><%= embassy_section_instructions(n) %></p>
+    </header>
+
+    <% @sections[n].each_with_index do |question, idx| %>
+      <%= render "question_row",
+                 application: @application,
+                 question: question,
+                 section_label: "#{n}.#{idx + 1}" %>
+    <% end %>
+  </section>
+<% end %>

@@ -1,0 +1,37 @@
+<%# Renders one question + answer in the admin/interview view.
+    Locals: application (EmbassyApplication), question (Question), section_label (e.g. "1.3") %>
+<% answer = application.answer_for(question) %>
+<article class="qa-question qa-question--<%= question.field_type %>">
+  <header class="qa-question__meta">
+    <span class="qa-question__num"><%= section_label %></span>
+    <span class="qa-question__id mono"><%= question.external_id %></span>
+  </header>
+
+  <p class="qa-question__label"><%= question.label %></p>
+
+  <div class="qa-question__answer">
+    <% case question.field_type %>
+    <% when "checkbox_group" %>
+      <% values = Array(answer&.value_array) %>
+      <% if values.any? %>
+        <div class="qa-pills">
+          <% values.each do |v| %><span class="qa-pill"><%= v %></span><% end %>
+        </div>
+      <% else %>
+        <p class="qa-answer-blank">— None selected —</p>
+      <% end %>
+    <% when "checkbox" %>
+      <% if answer&.value_text == "true" %>
+        <p class="qa-affirm">✓ Affirmed</p>
+      <% else %>
+        <p class="qa-decline">✗ Not affirmed</p>
+      <% end %>
+    <% else %>
+      <% if answer&.value_text.present? %>
+        <%= simple_format(answer.value_text, class: "qa-answer-text") %>
+      <% else %>
+        <p class="qa-answer-blank">— Blank —</p>
+      <% end %>
+    <% end %>
+  </div>
+</article>
