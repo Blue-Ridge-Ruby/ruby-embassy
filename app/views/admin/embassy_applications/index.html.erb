@@ -41,6 +41,7 @@
         <th><%= sort_link("Attendee", "name") %></th>
         <th><%= sort_link("Appointment", "appointment") %></th>
         <th>Submitted</th>
+        <th>Pickup</th>
         <th></th>
       </tr>
     </thead>
@@ -49,6 +50,7 @@
         <% booking = application.embassy_booking %>
         <% schedule_item = booking.schedule_item %>
         <% user = booking.user %>
+        <% pickup = @pickups_by_user_id[user.id] %>
         <tr>
           <td class="mono"><%= application.serial %></td>
           <td>
@@ -60,6 +62,14 @@
             · <%= schedule_item.time_label %>
           </td>
           <td><%= application.submitted_at&.strftime("%b %-d · %-l:%M %p") %></td>
+          <td>
+            <% if pickup %>
+              <%= ScheduleItem::DAY_META.dig(pickup.schedule_item.day, :label) %>
+              · <%= pickup.schedule_item.time_label %>
+            <% else %>
+              <span class="text-muted">—</span>
+            <% end %>
+          </td>
           <td class="text-right whitespace-nowrap">
             <%= link_to "View", admin_embassy_application_path(application),
                         class: "text-blue underline mr-3" %>

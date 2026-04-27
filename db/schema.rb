@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_053814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,6 +53,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
     t.index ["schedule_item_id"], name: "index_embassy_bookings_on_schedule_item_id"
     t.index ["user_id", "schedule_item_id"], name: "index_embassy_bookings_on_user_id_and_schedule_item_id", unique: true
     t.index ["user_id"], name: "index_embassy_bookings_on_user_id"
+  end
+
+  create_table "lightning_talk_signups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "position", null: false
+    t.bigint "schedule_item_id", null: false
+    t.string "slides_url"
+    t.text "talk_description"
+    t.string "talk_title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["schedule_item_id", "position"], name: "index_lightning_talk_signups_on_schedule_item_id_and_position", unique: true
+    t.index ["schedule_item_id"], name: "index_lightning_talk_signups_on_schedule_item_id"
+    t.index ["user_id", "schedule_item_id"], name: "index_lightning_talk_signups_on_user_id_and_schedule_item_id", unique: true
+    t.index ["user_id"], name: "index_lightning_talk_signups_on_user_id"
   end
 
   create_table "meal_spot_rsvps", force: :cascade do |t|
@@ -141,8 +156,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
     t.bigint "created_by_id"
     t.string "day", null: false
     t.text "description"
-    t.integer "embassy_capacity"
-    t.string "embassy_mode"
     t.boolean "flexible", default: false, null: false
     t.string "host"
     t.string "host_url"
@@ -150,8 +163,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
     t.integer "kind", null: false
     t.string "location"
     t.string "map_url"
+    t.integer "new_passport_capacity"
+    t.boolean "offers_new_passport", default: false, null: false
+    t.boolean "offers_passport_pickup", default: false, null: false
+    t.boolean "offers_stamping", default: false, null: false
+    t.integer "passport_pickup_capacity"
     t.string "slug"
     t.integer "sort_time"
+    t.integer "stamping_capacity"
     t.string "time_label"
     t.string "title", null: false
     t.datetime "updated_at", null: false
@@ -160,7 +179,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
     t.index ["created_by_id"], name: "index_schedule_items_on_created_by_id"
     t.index ["day", "sort_time"], name: "index_schedule_items_on_day_and_sort_time"
     t.index ["is_public"], name: "index_schedule_items_on_is_public"
-    t.index ["kind", "embassy_mode"], name: "index_schedule_items_on_kind_and_embassy_mode"
     t.index ["slug"], name: "index_schedule_items_on_slug", unique: true, where: "(slug IS NOT NULL)"
   end
 
@@ -185,6 +203,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
   add_foreign_key "embassy_bookings", "plan_items"
   add_foreign_key "embassy_bookings", "schedule_items"
   add_foreign_key "embassy_bookings", "users"
+  add_foreign_key "lightning_talk_signups", "schedule_items"
+  add_foreign_key "lightning_talk_signups", "users"
   add_foreign_key "meal_spot_rsvps", "meal_spot_transports"
   add_foreign_key "meal_spot_rsvps", "schedule_items"
   add_foreign_key "meal_spot_rsvps", "users"

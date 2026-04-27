@@ -66,6 +66,23 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal "injected", other_plan.reload.notes
   end
 
+  test "DELETE on a passport_pickup plan_item is refused (admin-only cancel)" do
+    pickup_block = ScheduleItem.create!(
+      day: "sat", title: "Pickup", kind: :embassy, is_public: true,
+      offers_passport_pickup: true, passport_pickup_capacity: 2,
+      time_label: "2:00 PM", sort_time: 1400
+    )
+    user      = users(:attendee_one)
+    plan_item = user.plan_items.create!(schedule_item: pickup_block)
+    EmbassyBooking.create!(user: user, schedule_item: pickup_block, plan_item: plan_item,
+                           mode: "passport_pickup", state: "confirmed")
+
+    sign_in_as user
+    assert_no_difference -> { PlanItem.count } do
+      delete plan_item_path(plan_item)
+    end
+  end
+
   test "attendee POST to a volunteers_only item returns 404 (visibility guard)" do
     hidden = ScheduleItem.create!(
       slug: "vol-only", day: "fri", title: "Vol-only briefing",
