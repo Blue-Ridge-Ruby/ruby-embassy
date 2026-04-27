@@ -21,11 +21,20 @@ class PlanItemsController < ApplicationController
     @plan_item.update(plan_item_params)
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace(
-          helpers.dom_id(@plan_item),
-          partial: "plan/plan_item",
-          locals: { plan_item: @plan_item }
-        )
+        # Emit replacements for both the /plan and /schedule frames; whichever
+        # one the user submitted from re-renders, the other is a silent no-op.
+        render turbo_stream: [
+          turbo_stream.replace(
+            helpers.dom_id(@plan_item),
+            partial: "plan/plan_item",
+            locals: { plan_item: @plan_item }
+          ),
+          turbo_stream.replace(
+            helpers.dom_id(@plan_item.schedule_item),
+            partial: "schedule/session_item",
+            locals: { item: @plan_item.schedule_item, planned: true }
+          )
+        ]
       }
       format.html { redirect_to plan_path }
     end

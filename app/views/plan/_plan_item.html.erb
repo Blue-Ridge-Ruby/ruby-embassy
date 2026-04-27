@@ -112,7 +112,7 @@
         <% end %>
 
         <% if item.activity? %>
-          <%= render "plan_items/attendees", plan_item: plan_item %>
+          <%= render "plan_items/attendees", schedule_item: item %>
         <% end %>
 
         <% if item.description.present? %>

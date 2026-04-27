@@ -65,6 +65,19 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Discord: alice#0001", plan.reload.contact_method
   end
 
+  test "turbo_stream PATCH response replaces both plan_item AND schedule_item frames" do
+    sign_in_as users(:attendee_one)
+    plan = users(:attendee_one).plan_items.create!(schedule_item: @item)
+
+    patch plan_item_path(plan),
+          params:  { plan_item: { contact_method: "555-1234" } },
+          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_match %r{<turbo-stream action="replace" target="plan_item_#{plan.id}">}, response.body
+    assert_match %r{<turbo-stream action="replace" target="schedule_item_#{@item.id}">}, response.body
+  end
+
   test "PATCH on another user's plan_item returns 404" do
     sign_in_as users(:attendee_one)
     other_plan = users(:volunteer_one).plan_items.create!(schedule_item: @item)

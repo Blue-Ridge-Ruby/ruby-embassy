@@ -130,4 +130,20 @@ class PlanTest < ActionDispatch::IntegrationTest
       assert_select "input[name=_method][value=delete]"
     end
   end
+
+  test "/plan shows activity attendees, contact form for self, and contacts of co-RSVPers" do
+    alice = users(:attendee_one)
+    vic   = users(:volunteer_one)
+    alice.plan_items.create!(schedule_item: @activity)
+    vic.plan_items.create!(schedule_item: @activity, contact_method: "@vic on Slack")
+
+    sign_in_as alice
+    get plan_path
+
+    assert_match "Going (2)", response.body
+    assert_match "Alice", response.body
+    assert_match "Vic", response.body
+    assert_match "@vic on Slack", response.body, "alice (a co-RSVPer) should see vic's contact"
+    assert_match "How to reach you", response.body, "alice should see her own contact form"
+  end
 end
