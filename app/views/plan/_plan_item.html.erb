@@ -69,12 +69,14 @@
         </div>
       </div>
 
-      <%= button_to "×",
-                    plan_item_path(plan_item),
-                    method: :delete,
-                    class: "plan-item__remove",
-                    aria: { label: "Cancel appointment" },
-                    data: { turbo_confirm: "Cancel your Embassy appointment?" } %>
+      <% unless state == "submitted" %>
+        <%= button_to "×",
+                      plan_item_path(plan_item),
+                      method: :delete,
+                      class: "plan-item__remove",
+                      aria: { label: "Cancel appointment" },
+                      data: { turbo_confirm: "Cancel your Embassy appointment?" } %>
+      <% end %>
     </article>
 
   <% else %>
