@@ -18,6 +18,7 @@
         <tr>
           <th>Slot</th>
           <th>Day &amp; time</th>
+          <th>Volunteers</th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -28,6 +29,9 @@
           <tr>
             <td>
               <div class="font-medium text-navy"><%= slot.title %></div>
+              <% if slot.host.presence %>
+                <div class="text-gray text-sm">Hosted by <%= slot.host %></div>
+              <% end %>
               <% if slot.description.present? %>
                 <div class="text-gray text-sm"><%= slot.description %></div>
               <% end %>
@@ -35,6 +39,15 @@
             <td>
               <%= ScheduleItem::DAY_META.dig(slot.day, :label) %><br>
               <span class="text-gray text-sm"><%= slot.time_label %></span>
+            </td>
+            <td>
+              <% if slot.plan_items.any? %>
+                <span class="text-sm text-navy">
+                  <%= slot.plan_items.map { |pi| pi.user.full_name }.join(", ") %>
+                </span>
+              <% else %>
+                <span class="text-gray text-sm">—</span>
+              <% end %>
             </td>
             <td>
               <span class="volunteer-capacity volunteer-capacity--<%= state %>" style="text-align: left;">
@@ -50,8 +63,8 @@
             </td>
             <td class="text-right">
               <div class="flex gap-2 justify-end">
-                <%= link_to "View", admin_volunteer_slot_path(slot), class: "btn btn-muted" %>
-                <%= link_to "Edit", edit_admin_schedule_item_path(slot, return_to: admin_volunteer_slots_path), class: "btn btn-muted" %>
+                <%= link_to "View", admin_volunteer_slot_path(slot), class: "btn btn-muted btn-small" %>
+                <%= link_to "Edit", edit_admin_schedule_item_path(slot, return_to: admin_volunteer_slots_path), class: "btn btn-muted btn-small" %>
               </div>
             </td>
           </tr>
