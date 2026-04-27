@@ -1,0 +1,32 @@
+<%# One row per question. Three columns: section label · question · answer.
+    Locals: application, question, section_label %>
+<% answer = application.answer_for(question) %>
+<div class="qa-row qa-row--<%= question.field_type %>">
+  <span class="qa-row__num"><%= section_label %></span>
+  <div class="qa-row__q"><%= question.label %></div>
+  <div class="qa-row__a">
+    <% case question.field_type %>
+    <% when "checkbox_group" %>
+      <% values = Array(answer&.value_array) %>
+      <% if values.any? %>
+        <span class="qa-pills">
+          <% values.each do |v| %><span class="qa-pill"><%= v %></span><% end %>
+        </span>
+      <% else %>
+        <span class="qa-blank">— none —</span>
+      <% end %>
+    <% when "checkbox" %>
+      <% if answer&.value_text == "true" %>
+        <span class="qa-affirm">✓ Affirmed</span>
+      <% else %>
+        <span class="qa-decline">✗ Not affirmed</span>
+      <% end %>
+    <% else %>
+      <% if answer&.value_text.present? %>
+        <%= simple_format(answer.value_text) %>
+      <% else %>
+        <span class="qa-blank">— blank —</span>
+      <% end %>
+    <% end %>
+  </div>
+</div>

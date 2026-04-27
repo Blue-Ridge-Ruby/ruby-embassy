@@ -9,7 +9,6 @@ class Admin::EmbassyQuestionsController < AdminController
       .order(:section, :position)
 
     @questions_by_section = @questions.group_by(&:section)
-    @notary_pool = NotaryProfile.order(:external_id)
   end
 
   def new

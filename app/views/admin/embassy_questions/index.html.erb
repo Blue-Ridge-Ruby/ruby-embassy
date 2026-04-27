@@ -1,12 +1,11 @@
 <% content_for :title, "Question Bank — Embassy Admin" %>
 
-<div class="flex items-center justify-between mb-6">
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
   <div>
     <h1 class="text-2xl font-bold text-navy">Question Bank</h1>
     <p class="text-muted">
       <%= @questions.count(&:active?) %> active questions ·
-      <%= @questions.count { |q| q.random_pool? && q.active? } %> in the random pool (draws <%= EmbassyApplicationDraw::POOL_SIZE %> per application) ·
-      <%= @notary_pool.size %> notary descriptions
+      <%= @questions.count { |q| q.random_pool? && q.active? } %> in the random pool (draws <%= EmbassyApplicationDraw::POOL_SIZE %> per application)
     </p>
   </div>
   <%= link_to "+ Add Question", new_admin_embassy_question_path, class: "btn btn-red" %>
@@ -40,6 +39,7 @@
       </div>
     </header>
 
+    <div class="table-scroll">
     <table class="table">
       <thead>
         <tr>
@@ -57,50 +57,9 @@
         <% end %>
       </tbody>
     </table>
+    </div>
   </section>
 <% end %>
-
-<%# ========== Notary Pool ========== %>
-<section class="embassy-bank-section">
-  <header class="embassy-bank-section__header">
-    <div>
-      <h2 class="embassy-bank-section__title">Notary Pool · PDF addendum</h2>
-      <p class="embassy-bank-section__hint">
-        The ice-breaker. One is drawn per printed application. Users locate someone
-        matching the description at the Embassy and have them sign.
-      </p>
-    </div>
-    <div>
-      <span class="badge-scope badge-scope--notary">
-        Notary pool · <%= @notary_pool.size %> descriptions · draws 1 per form
-      </span>
-    </div>
-  </header>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th style="width: 60px;">ID</th>
-        <th>Description (&ldquo;Someone who&hellip;&rdquo;)</th>
-        <th>Follow-up prompt</th>
-        <th style="width: 100px;">Usage</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @notary_pool.each do |n| %>
-        <tr>
-          <td class="mono"><%= n.external_id %></td>
-          <td><%= n.description %></td>
-          <td><%= n.followup_prompt %></td>
-          <td>
-            <span class="mono"><%= n.usage_count %></span>
-            <span class="text-muted text-sm">uses</span>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</section>
 
 <% archived = @questions.select(&:archived?) %>
 <% if archived.any? %>
@@ -113,6 +72,7 @@
         </p>
       </div>
     </header>
+    <div class="table-scroll">
     <table class="table">
       <thead>
         <tr>
@@ -130,5 +90,6 @@
         <% end %>
       </tbody>
     </table>
+    </div>
   </section>
 <% end %>

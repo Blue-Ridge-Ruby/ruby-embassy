@@ -19,6 +19,8 @@ class ScheduleItem < ApplicationRecord
   validates :kind,  presence: true
   validates :embassy_mode, inclusion: { in: EMBASSY_MODES }, allow_nil: true
   validates :embassy_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :volunteer_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :volunteer_capacity, presence: true, if: :volunteer?
 
   DAY_META = {
     "wed" => { label: "Wednesday", date: "April 29", subtitle: "Pre-Conference" },
@@ -54,6 +56,7 @@ class ScheduleItem < ApplicationRecord
   scope :by_kind, ->(kind) {
     kind.present? && kinds.key?(kind.to_s) ? where(kind: kind) : all
   }
+  scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
 
   # Creators always get auto-added to their own plan — whether the item is
   # private (only they see it) or public (others can RSVP). The rationale:
@@ -75,6 +78,34 @@ class ScheduleItem < ApplicationRecord
 
   def full?
     embassy_capacity.present? && seats_remaining.zero?
+  end
+
+  def volunteer_signup_count
+    plan_items.count
+  end
+
+  def volunteer_seats_remaining
+    return nil unless volunteer_capacity
+    [ volunteer_capacity - volunteer_signup_count, 0 ].max
+  end
+
+  def volunteer_empty?
+    volunteer? && volunteer_signup_count.zero?
+  end
+
+  def volunteer_full?
+    volunteer? && volunteer_capacity.present? && volunteer_seats_remaining.zero?
+  end
+
+  def volunteer_partial?
+    volunteer? && !volunteer_empty? && !volunteer_full?
+  end
+
+  def volunteer_state
+    return nil unless volunteer?
+    return :empty if volunteer_empty?
+    return :full  if volunteer_full?
+    :partial
   end
 
   def editable_by?(user)

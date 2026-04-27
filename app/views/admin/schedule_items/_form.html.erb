@@ -129,6 +129,24 @@
       </div>
     </div>
 
+    <div class="volunteer-form-extras"
+         data-embassy-settings-target="volunteerExtras"
+         <%= "hidden".html_safe unless schedule_item.kind == "volunteer" %>>
+      <h3 class="font-bold mb-2">Volunteer-only settings</h3>
+      <p class="text-muted text-sm mb-3">
+        These fields only apply when <strong>Kind = Volunteer</strong>. Set how
+        many people you need to fill this slot — once it hits capacity, signups
+        are blocked.
+      </p>
+
+      <div>
+        <%= f.label :volunteer_capacity, "Volunteers needed", class: "label" %>
+        <%= f.number_field :volunteer_capacity, min: 1, max: 50,
+              class: "input", style: "max-width: 160px;",
+              placeholder: "e.g., 3" %>
+      </div>
+    </div>
+
     <div class="flex gap-3 pt-4">
       <%= f.submit class: "btn btn-navy" %>
       <%= link_to "Cancel", admin_schedule_items_path, class: "btn btn-muted" %>

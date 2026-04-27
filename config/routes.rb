@@ -18,7 +18,11 @@ Rails.application.routes.draw do
       post :sync, on: :collection
     end
     resources :schedule_items
+    resources :volunteers, only: %i[index show]
+    resources :volunteer_slots, only: %i[index show]
+    resources :volunteer_signups, only: %i[create destroy]
     resources :embassy_questions
+    resources :notary_profiles
     resources :embassy_applications, only: %i[index show] do
       member do
         patch :mark_received

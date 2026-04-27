@@ -1,0 +1,75 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<div class="mb-4">
+  <%= link_to "← All volunteers", admin_volunteers_path, class: "text-blue underline" %>
+</div>
+
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+  <div>
+    <h1 class="text-2xl font-bold text-navy"><%= @volunteer.full_name %></h1>
+    <p class="text-gray"><%= @volunteer.email %></p>
+  </div>
+  <span class="badge badge-<%= @volunteer.role %>"><%= @volunteer.role.humanize %></span>
+</div>
+
+<%= render "admin/volunteers/tabs" %>
+
+<h2 class="text-lg font-semibold text-navy mb-4">
+  Volunteer slots
+  <span class="text-gray text-sm font-normal">(<%= @slots.size %>)</span>
+</h2>
+
+<% if @slots.any? %>
+  <ul class="space-y-2 mb-12">
+    <% @slots.each do |plan_item| %>
+      <% slot = plan_item.schedule_item %>
+      <li class="card card-compact flex items-center justify-between gap-4">
+        <div>
+          <div class="font-medium text-navy"><%= slot.title %></div>
+          <div class="text-gray text-sm">
+            <%= ScheduleItem::DAY_META.dig(slot.day, :label) %> &middot;
+            <%= slot.time_label %>
+            <% if slot.volunteer_capacity %>
+              &middot; <%= slot.volunteer_signup_count %> of <%= slot.volunteer_capacity %> filled
+            <% end %>
+          </div>
+        </div>
+        <%= button_to "Remove",
+              admin_volunteer_signup_path(plan_item),
+              method: :delete,
+              data: { turbo_confirm: "Remove #{@volunteer.full_name} from #{slot.title}?" },
+              class: "btn btn-muted" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-gray mb-12">Not signed up for any volunteer slots yet.</p>
+<% end %>
+
+<h2 class="text-lg font-semibold text-navy mb-4">Assign to a volunteer slot</h2>
+
+<% if @available_slots.any? %>
+  <div class="card card-compact">
+    <%= form_with url: admin_volunteer_signups_path, method: :post, class: "space-y-4" do |f| %>
+      <%= hidden_field_tag :user_id, @volunteer.id %>
+      <div>
+        <%= label_tag :schedule_item_id, "Volunteer slot", class: "label" %>
+        <%
+          slot_options = @available_slots.map do |s|
+            status = s.volunteer_full? ? "FULL" : "#{s.volunteer_signup_count} of #{s.volunteer_capacity}"
+            label = "#{s.title} — #{ScheduleItem::DAY_META.dig(s.day, :label)} #{s.time_label} (#{status})"
+            [ label, s.id ]
+          end
+        %>
+        <%= select_tag :schedule_item_id,
+              options_for_select(slot_options),
+              include_blank: "— Select a slot —", class: "select" %>
+      </div>
+      <div>
+        <%= f.submit "Assign", class: "btn btn-navy" %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-gray">No more volunteer slots available — they're already on every one.</p>
+<% end %>

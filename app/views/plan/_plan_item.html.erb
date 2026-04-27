@@ -125,7 +125,8 @@
                     plan_item_path(plan_item),
                     method: :delete,
                     class: "plan-item__remove",
-                    aria: { label: "Remove from plan" } %>
+                    aria: { label: "Remove from plan" },
+                    data: { turbo_confirm: "Remove '#{item.title}' from your plan?" } %>
     </article>
   <% end %>
 <% end %>

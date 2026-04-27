@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_27_031549) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_032216) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -155,6 +155,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_031549) do
     t.string "time_label"
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.integer "volunteer_capacity"
     t.index ["audience"], name: "index_schedule_items_on_audience"
     t.index ["created_by_id"], name: "index_schedule_items_on_created_by_id"
     t.index ["day", "sort_time"], name: "index_schedule_items_on_day_and_sort_time"

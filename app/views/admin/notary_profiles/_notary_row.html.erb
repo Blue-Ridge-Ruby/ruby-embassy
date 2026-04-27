@@ -1,0 +1,21 @@
+<%# locals: (notary:) -%>
+<tr>
+  <td class="mono"><%= notary.external_id %></td>
+  <td><%= notary.description %></td>
+  <td><%= notary.followup_prompt %></td>
+  <td>
+    <span class="mono"><%= notary.usage_count %></span>
+    <span class="text-muted text-sm">uses</span>
+  </td>
+  <td class="text-right">
+    <%= link_to "Edit", edit_admin_notary_profile_path(notary),
+                class: "text-blue underline" %>
+    <% if notary.active? %>
+      <%= button_to "Archive", admin_notary_profile_path(notary),
+                    method: :delete,
+                    data: { turbo_confirm: "Archive notary #{notary.external_id}? It will stop appearing on new applications." },
+                    class: "btn-ghost ml-2",
+                    style: "display:inline;color:#C41C1C;padding:0;box-shadow:none" %>
+    <% end %>
+  </td>
+</tr>
