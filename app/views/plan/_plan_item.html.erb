@@ -122,7 +122,9 @@
 
         <% if presenting %>
           <p class="plan-item__notes">
-            <%= link_to "Edit my lightning talk", edit_schedule_item_lightning_talk_signup_path(item) %>
+            <%= link_to "Edit my lightning talk",
+                        edit_schedule_item_lightning_talk_signup_path(item),
+                        data: { turbo_frame: "_top" } %>
           </p>
         <% end %>
 

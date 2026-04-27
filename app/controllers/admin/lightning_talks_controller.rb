@@ -1,7 +1,7 @@
 module Admin
   class LightningTalksController < AdminController
     def index
-      @lightning_items = ScheduleItem.lightning.ordered.includes(:lightning_talk_signups)
+      @schedule_item = ScheduleItem.lightning.ordered.first
     end
   end
 end

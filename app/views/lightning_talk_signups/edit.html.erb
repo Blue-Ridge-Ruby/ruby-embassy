@@ -24,6 +24,7 @@
       <%= form_with model: @signup,
                     url: schedule_item_lightning_talk_signup_path(@schedule_item),
                     method: :patch,
+                    data: { turbo: false },
                     class: "space-y-4" do |f| %>
         <div>
           <%= f.label :talk_title, "Talk title", class: "label" %>
