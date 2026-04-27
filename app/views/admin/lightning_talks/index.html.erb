@@ -1,0 +1,47 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<h1 class="text-2xl font-bold text-navy mb-6">Lightning Talks</h1>
+
+<% if @lightning_items.empty? %>
+  <p class="text-gray">
+    No lightning talk blocks scheduled yet. Add one from
+    <%= link_to "Schedule", admin_schedule_items_path, class: "text-blue underline" %>.
+  </p>
+<% else %>
+  <div class="table-scroll">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Time</th>
+          <th>Title</th>
+          <th>Speakers</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @lightning_items.each do |item| %>
+          <% count = item.lightning_talk_signups.size %>
+          <% max   = LightningTalkSignup::MAX_SPEAKERS %>
+          <tr>
+            <td><%= ScheduleItem::DAY_META.dig(item.day, :label) || item.day %></td>
+            <td><%= item.time_label %></td>
+            <td class="font-medium text-navy"><%= item.title %></td>
+            <td>
+              <span class="font-medium"><%= count %></span>
+              <span class="text-gray">/ <%= max %></span>
+              <% if count >= max %>
+                <span class="item-badge item-badge--lightning ml-2">Full</span>
+              <% end %>
+            </td>
+            <td class="text-right">
+              <%= link_to "Manage lineup",
+                          admin_schedule_item_lightning_talk_signups_path(item),
+                          class: "btn btn-muted" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

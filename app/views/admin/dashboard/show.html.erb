@@ -42,6 +42,11 @@
     <div class="action-card__description">Full CRUD over the conference agenda — all schedule items, by kind.</div>
   <% end %>
 
+  <%= link_to admin_lightning_talks_path, class: "action-card" do %>
+    <div class="action-card__title">Lightning Talks</div>
+    <div class="action-card__description">See speaker counts per block and manage the lineup — add, remove, reorder.</div>
+  <% end %>
+
   <%= link_to admin_embassy_applications_path, class: "action-card" do %>
     <div class="action-card__title">Embassy Applications</div>
     <div class="action-card__description">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>

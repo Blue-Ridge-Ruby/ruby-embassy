@@ -22,6 +22,7 @@ Rails.application.routes.draw do
         collection { patch :reorder }
       end
     end
+    resources :lightning_talks, only: %i[index]
     resources :volunteers, only: %i[index show]
     resources :volunteer_slots, only: %i[index show]
     resources :volunteer_signups, only: %i[create destroy]
