@@ -40,6 +40,86 @@
       "confidence": "Weak",
       "cwe_id": [79],
       "note": "admin_ticket_url is built by the User model as a hard-coded https://dashboard.tito.io/... string with a Tito-issued slug. The slug is alphanumeric/dashes from the Tito API; the scheme is fixed. /admin is behind require_admin! so only admins reach this view. Low risk."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "161db39246637283f35ea9169e0c6782829b3c4547e934d74ad26dccd512dcfb",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/hack_projects/show.html.erb",
+      "line": 36,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(\"Repository \\u2192\", ScheduleItem.find(params[:schedule_item_id]).hack_projects.find(params[:id]).repo_url, :target => \"_blank\", :rel => \"noopener\", :class => \"text-blue underline\")",
+      "render_path": [{"type":"controller","class":"HackProjectsController","method":"show","line":18,"file":"app/controllers/hack_projects_controller.rb","rendered":{"name":"hack_projects/show","file":"app/views/hack_projects/show.html.erb"}}],
+      "location": {
+        "type": "template",
+        "template": "hack_projects/show"
+      },
+      "user_input": "ScheduleItem.find(params[:schedule_item_id]).hack_projects.find(params[:id]).repo_url",
+      "confidence": "Weak",
+      "cwe_id": [79],
+      "note": "repo_url is validated at the HackProject model level against URI::DEFAULT_PARSER.make_regexp(%w[http https]) — only http/https schemes pass create/update. Same risk profile as the existing meal_spot.map_url link in app/views/meal_spots/_meal_spot.html.erb. target=_blank with rel=noopener is set."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "2a455bb70b7d88e40ce6f99fd55fadafac4e11f6be1b646bf79815adf9478636",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/hack_projects/show.html.erb",
+      "line": 40,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(\"Contributors guide \\u2192\", ScheduleItem.find(params[:schedule_item_id]).hack_projects.find(params[:id]).contributors_guide_url, :target => \"_blank\", :rel => \"noopener\", :class => \"text-blue underline\")",
+      "render_path": [{"type":"controller","class":"HackProjectsController","method":"show","line":18,"file":"app/controllers/hack_projects_controller.rb","rendered":{"name":"hack_projects/show","file":"app/views/hack_projects/show.html.erb"}}],
+      "location": {
+        "type": "template",
+        "template": "hack_projects/show"
+      },
+      "user_input": "ScheduleItem.find(params[:schedule_item_id]).hack_projects.find(params[:id]).contributors_guide_url",
+      "confidence": "Weak",
+      "cwe_id": [79],
+      "note": "contributors_guide_url is validated at the HackProject model level against URI::DEFAULT_PARSER.make_regexp(%w[http https]) — only http/https schemes pass create/update. target=_blank with rel=noopener is set."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "62eae5c8b6534a3cba3b0422fba36f4c026c34d814942ae11925405260aee7d7",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/admin/hack_projects/show.html.erb",
+      "line": 38,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(HackProject.find(params[:id]).repo_url, HackProject.find(params[:id]).repo_url, :target => \"_blank\", :rel => \"noopener\", :class => \"text-blue underline\")",
+      "render_path": [{"type":"controller","class":"Admin::HackProjectsController","method":"show","line":13,"file":"app/controllers/admin/hack_projects_controller.rb","rendered":{"name":"admin/hack_projects/show","file":"app/views/admin/hack_projects/show.html.erb"}}],
+      "location": {
+        "type": "template",
+        "template": "admin/hack_projects/show"
+      },
+      "user_input": "HackProject.find(params[:id]).repo_url",
+      "confidence": "Weak",
+      "cwe_id": [79],
+      "note": "Admin-only view (require_admin! before_action). repo_url is validated at the HackProject model level against URI::DEFAULT_PARSER.make_regexp(%w[http https])."
+    },
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "145f0c93f387fba0fd29a4d551433c2c786a01ce85c465a2270b263fec1a6e5a",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/admin/hack_projects/show.html.erb",
+      "line": 44,
+      "link": "https://brakemanscanner.org/docs/warning_types/link_to_href",
+      "code": "link_to(HackProject.find(params[:id]).contributors_guide_url, HackProject.find(params[:id]).contributors_guide_url, :target => \"_blank\", :rel => \"noopener\", :class => \"text-blue underline\")",
+      "render_path": [{"type":"controller","class":"Admin::HackProjectsController","method":"show","line":13,"file":"app/controllers/admin/hack_projects_controller.rb","rendered":{"name":"admin/hack_projects/show","file":"app/views/admin/hack_projects/show.html.erb"}}],
+      "location": {
+        "type": "template",
+        "template": "admin/hack_projects/show"
+      },
+      "user_input": "HackProject.find(params[:id]).contributors_guide_url",
+      "confidence": "Weak",
+      "cwe_id": [79],
+      "note": "Admin-only view (require_admin! before_action). contributors_guide_url is validated at the HackProject model level against URI::DEFAULT_PARSER.make_regexp(%w[http https])."
     }
   ],
   "brakeman_version": "8.0.4"

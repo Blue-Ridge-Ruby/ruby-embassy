@@ -3,6 +3,8 @@ class PlanItem < ApplicationRecord
   belongs_to :schedule_item
   has_one :embassy_booking, dependent: :destroy
 
+  enum :hack_role, { mentor: 0, mentee: 1 }, prefix: true
+
   validates :user_id, uniqueness: {
     scope: :schedule_item_id,
     message: "already has this item on their plan"

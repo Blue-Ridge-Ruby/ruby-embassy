@@ -1,0 +1,65 @@
+<%
+  signup_path = schedule_item_hack_project_hack_project_signup_path(@schedule_item, hack_project)
+  on_this_project = current_user_signup&.hack_project_id == hack_project.id
+  on_a_different_project = current_user_signup && !on_this_project
+%>
+
+<% if on_this_project %>
+  <div class="flex flex-wrap gap-2 items-center">
+    <span class="text-navy">
+      ✓ You're a <strong><%= current_user_signup.role %></strong> on this project
+    </span>
+
+    <% other_role = current_user_signup.mentor? ? "mentee" : "mentor" %>
+    <%= button_to "Switch to #{other_role}",
+                  signup_path,
+                  method: :patch,
+                  params: { hack_project_signup: { role: other_role } },
+                  class: "btn btn-muted",
+                  data: { turbo_frame: "_top" } %>
+
+    <%= button_to "Leave project",
+                  signup_path,
+                  method: :delete,
+                  class: "btn btn-muted",
+                  data: { turbo_frame: "_top",
+                          turbo_confirm: "Leave #{hack_project.title}? You'll stay RSVPed to Hack Day." } %>
+  </div>
+<% elsif on_a_different_project %>
+  <div class="flex flex-wrap gap-2 items-center">
+    <p class="text-sm text-gray">
+      You're already on
+      <%= link_to current_user_signup.hack_project.title,
+                  schedule_item_hack_project_path(@schedule_item, current_user_signup.hack_project),
+                  class: "text-blue underline" %>
+      as a <%= current_user_signup.role %>. Joining this project will move you here.
+    </p>
+    <%= button_to "Move here as mentor",
+                  signup_path,
+                  method: :post,
+                  params: { hack_project_signup: { role: "mentor" } },
+                  class: "btn btn-navy",
+                  data: { turbo_frame: "_top" } %>
+    <%= button_to "Move here as mentee",
+                  signup_path,
+                  method: :post,
+                  params: { hack_project_signup: { role: "mentee" } },
+                  class: "btn btn-navy",
+                  data: { turbo_frame: "_top" } %>
+  </div>
+<% else %>
+  <div class="flex flex-wrap gap-2">
+    <%= button_to "Join as mentor",
+                  signup_path,
+                  method: :post,
+                  params: { hack_project_signup: { role: "mentor" } },
+                  class: "btn btn-red",
+                  data: { turbo_frame: "_top" } %>
+    <%= button_to "Join as mentee",
+                  signup_path,
+                  method: :post,
+                  params: { hack_project_signup: { role: "mentee" } },
+                  class: "btn btn-red",
+                  data: { turbo_frame: "_top" } %>
+  </div>
+<% end %>

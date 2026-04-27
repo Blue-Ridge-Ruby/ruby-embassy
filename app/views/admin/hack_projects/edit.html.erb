@@ -1,0 +1,15 @@
+<% content_for :title, "Edit #{@hack_project.title} — Hack Day Admin" %>
+
+<p class="text-sm text-muted mb-2">
+  <%= link_to "← Back to Hack Day", admin_hack_projects_path, class: "text-blue underline" %>
+</p>
+
+<h1 class="text-2xl font-bold text-navy mb-6">
+  Edit project: <span class="text-red"><%= @hack_project.title %></span>
+</h1>
+
+<p class="text-muted text-sm mb-4">
+  Hosted by <strong><%= @hack_project.host.full_name %></strong> · host cannot be changed.
+</p>
+
+<%= render "form", hack_project: @hack_project %>

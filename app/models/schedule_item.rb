@@ -1,5 +1,6 @@
 class ScheduleItem < ApplicationRecord
   EMBASSY_MODES = %w[new_passport stamping passport_pickup].freeze
+  HACK_DAY_SLUG = "sat-hackday"
 
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
@@ -8,6 +9,7 @@ class ScheduleItem < ApplicationRecord
   has_many :speakers, through: :lightning_talk_signups, source: :user
   has_many :embassy_bookings, dependent: :destroy
   has_many :meal_spots, dependent: :destroy
+  has_many :hack_projects, dependent: :restrict_with_error
 
   enum :kind, {
     talk: 0, lightning: 1, embassy: 2, activity: 3,
@@ -71,6 +73,10 @@ class ScheduleItem < ApplicationRecord
   # private (only they see it) or public (others can RSVP). The rationale:
   # if you propose a group hike, you're obviously going to it.
   after_create :auto_plan_for_creator, if: -> { created_by_id.present? }
+
+  def hack_day?
+    slug == HACK_DAY_SLUG
+  end
 
   def rsvp_count
     plan_items.count
