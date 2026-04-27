@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       member do
         patch :mark_received
         patch :unmark_received
+        post  :schedule_pickup
       end
       collection do
         get :delivered
@@ -58,7 +59,7 @@ Rails.application.routes.draw do
   end
 
   # Embassy booking + application — attendee-facing mockup
-  resources :embassy_bookings, only: %i[new create]
+  resources :embassy_bookings, only: %i[new create show]
   resources :embassy_applications, only: %i[new create show edit update]
 
   # Branded error pages. Reached via config.exceptions_app = self.routes.

@@ -33,6 +33,53 @@
   </div>
 <% end %>
 
+<section class="qa-section">
+  <h2 class="qa-section__head">
+    <span class="qa-section__title">Passport pickup</span>
+  </h2>
+
+  <% if @pickup_booking %>
+    <p class="qa-section__lede">
+      <strong><%= @booking.user.full_name %></strong> is scheduled to pick up at
+      <strong><%= ScheduleItem::DAY_META.dig(@pickup_booking.schedule_item.day, :label) %>
+      · <%= @pickup_booking.schedule_item.time_label %></strong>
+      (<%= @pickup_booking.schedule_item.title %>).
+    </p>
+  <% elsif @pickup_blocks.empty? %>
+    <p class="qa-section__lede text-muted">
+      No embassy blocks are configured for passport pickup yet. Enable
+      "Passport pickup" on a schedule item to create pickup slots.
+    </p>
+  <% else %>
+    <p class="qa-section__lede">
+      Schedule a pickup appointment for <strong><%= @booking.user.full_name %></strong>:
+    </p>
+    <ul class="space-y-2">
+      <% @pickup_blocks.each do |block|
+           remaining = block.seats_remaining_for("passport_pickup")
+           full      = block.full_for?("passport_pickup")
+           label     = "#{ScheduleItem::DAY_META.dig(block.day, :label)} · #{block.time_label} – #{block.title}"
+      %>
+        <li class="flex items-center gap-3">
+          <% if full %>
+            <span class="btn btn-muted" aria-disabled="true">
+              <%= label %> · full
+            </span>
+          <% else %>
+            <%= button_to label,
+                          schedule_pickup_admin_embassy_application_path(@application.serial,
+                                                                          schedule_item_id: block.id),
+                          method: :post,
+                          class: "btn btn-navy",
+                          data: { turbo_confirm: "Schedule pickup for #{@booking.user.full_name} at #{label}?" } %>
+            <span class="text-muted text-sm"><%= remaining %> of <%= block.passport_pickup_capacity %> remaining</span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>
+
 <% [ 1, 2, 3, 4, 5 ].each do |n| %>
   <section class="qa-section <%= "qa-section--pool" if n == 3 %>">
     <h2 class="qa-section__head">

@@ -44,7 +44,12 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
 
   test "admin can create an item of kind: embassy" do
     sign_in_as users(:jeremy)
-    post admin_schedule_items_path, params: valid_form_params(kind: "embassy", title: "Registration")
+    post admin_schedule_items_path, params: valid_form_params(
+      kind: "embassy",
+      title: "Registration",
+      offers_new_passport: "1",
+      new_passport_capacity: 8
+    )
     assert_equal "embassy", ScheduleItem.find_by(title: "Registration").kind
   end
 
@@ -132,5 +137,62 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:jeremy)
     patch admin_schedule_item_path(item), params: valid_form_params(audience: "volunteers_only")
     assert_equal "volunteers_only", item.reload.audience
+  end
+
+  test "admin index remembers kind filter across param-less revisits" do
+    ScheduleItem.create!(day: "fri", title: "Filter-talk", kind: :talk, is_public: true)
+    ScheduleItem.create!(day: "fri", title: "Filter-meal", kind: :meal, is_public: true)
+    sign_in_as users(:jeremy)
+
+    get admin_schedule_items_path, params: { kind: "talk" }
+    assert_match "Filter-talk", response.body
+    assert_no_match "Filter-meal", response.body
+
+    get admin_schedule_items_path
+    assert_match "Filter-talk", response.body
+    assert_no_match "Filter-meal", response.body
+  end
+
+  test "admin index remembers day filter across param-less revisits" do
+    ScheduleItem.create!(day: "fri", title: "Friday-only", kind: :talk, is_public: true)
+    ScheduleItem.create!(day: "sat", title: "Saturday-only", kind: :talk, is_public: true)
+    sign_in_as users(:jeremy)
+
+    get admin_schedule_items_path, params: { day: "fri" }
+    assert_match "Friday-only", response.body
+    assert_no_match "Saturday-only", response.body
+
+    get admin_schedule_items_path
+    assert_match "Friday-only", response.body
+    assert_no_match "Saturday-only", response.body
+  end
+
+  test "admin index clears persisted kind filter when 'All' sends empty kind" do
+    ScheduleItem.create!(day: "fri", title: "Clear-talk", kind: :talk, is_public: true)
+    ScheduleItem.create!(day: "fri", title: "Clear-meal", kind: :meal, is_public: true)
+    sign_in_as users(:jeremy)
+
+    get admin_schedule_items_path, params: { kind: "talk" }
+    get admin_schedule_items_path, params: { kind: "" }
+    assert_match "Clear-talk", response.body
+    assert_match "Clear-meal", response.body
+
+    # And it stays cleared on the next param-less revisit.
+    get admin_schedule_items_path
+    assert_match "Clear-talk", response.body
+    assert_match "Clear-meal", response.body
+  end
+
+  test "admin filter survives edit→update→redirect" do
+    keep   = ScheduleItem.create!(day: "fri", title: "Survives-talk", kind: :talk, is_public: true)
+    other  = ScheduleItem.create!(day: "fri", title: "Hidden-meal",  kind: :meal, is_public: true)
+    sign_in_as users(:jeremy)
+
+    get admin_schedule_items_path, params: { kind: "talk" }
+    patch admin_schedule_item_path(keep), params: valid_form_params(kind: "talk", title: "Survives-talk-renamed")
+    follow_redirect!
+
+    assert_match "Survives-talk-renamed", response.body
+    assert_no_match other.title, response.body
   end
 end

@@ -1,5 +1,5 @@
 class ScheduleItem < ApplicationRecord
-  EMBASSY_MODES = %w[new_passport stamping both].freeze
+  EMBASSY_MODES = %w[new_passport stamping passport_pickup].freeze
 
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
@@ -19,10 +19,13 @@ class ScheduleItem < ApplicationRecord
   validates :title, presence: true
   validates :day,   presence: true
   validates :kind,  presence: true
-  validates :embassy_mode, inclusion: { in: EMBASSY_MODES }, allow_nil: true
-  validates :embassy_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :new_passport_capacity,    numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :stamping_capacity,        numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :passport_pickup_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :volunteer_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :volunteer_capacity, presence: true, if: :volunteer?
+  validate  :at_least_one_embassy_mode_selected, if: :embassy?
+  validate  :capacity_present_for_offered_modes, if: :embassy?
 
   DAY_META = {
     "wed" => { label: "Wednesday", date: "April 29", subtitle: "Pre-Conference" },
@@ -58,6 +61,10 @@ class ScheduleItem < ApplicationRecord
   scope :by_kind, ->(kind) {
     kind.present? && kinds.key?(kind.to_s) ? where(kind: kind) : all
   }
+  # Junk-safe: returns all rows when day is blank or unknown.
+  scope :by_day, ->(day) {
+    day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
+  }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
 
   # Creators always get auto-added to their own plan — whether the item is
@@ -69,21 +76,92 @@ class ScheduleItem < ApplicationRecord
     plan_items.count
   end
 
+  def seats_taken_for(mode)
+    embassy_bookings.active.where(mode: mode).count
+  end
+
+  def capacity_for(mode)
+    public_send("#{mode}_capacity")
+  end
+
+  def offers?(mode)
+    public_send("offers_#{mode}?")
+  end
+
+  def seats_remaining_for(mode)
+    cap = capacity_for(mode)
+    return nil unless cap
+    [ cap - seats_taken_for(mode), 0 ].max
+  end
+
+  def full_for?(mode)
+    cap = capacity_for(mode)
+    cap.present? && seats_remaining_for(mode).zero?
+  end
+
+  def active_embassy_modes
+    EMBASSY_MODES.select { |m| offers?(m) }
+  end
+
   def lightning_slots_full?
     lightning? && lightning_talk_signups.count >= LightningTalkSignup::MAX_SPEAKERS
+  end
+
+  def seats_taken_for(mode)
+    embassy_bookings.active.where(mode: mode).count
+  end
+
+  def capacity_for(mode)
+    public_send("#{mode}_capacity")
+  end
+
+  def offers?(mode)
+    public_send("offers_#{mode}?")
+  end
+
+  def seats_remaining_for(mode)
+    cap = capacity_for(mode)
+    return nil unless cap
+    [ cap - seats_taken_for(mode), 0 ].max
+  end
+
+  def full_for?(mode)
+    cap = capacity_for(mode)
+    cap.present? && seats_remaining_for(mode).zero?
+  end
+
+  def active_embassy_modes
+    EMBASSY_MODES.select { |m| offers?(m) }
   end
 
   def seats_taken
     embassy_bookings.active.count
   end
 
+  def total_capacity
+    EMBASSY_MODES.sum { |m| capacity_for(m) || 0 }
+  end
+
   def seats_remaining
-    return nil unless embassy_capacity
-    [ embassy_capacity - seats_taken, 0 ].max
+    return nil unless total_capacity.positive?
+    [ total_capacity - seats_taken, 0 ].max
   end
 
   def full?
-    embassy_capacity.present? && seats_remaining.zero?
+    return false unless embassy?
+    modes = active_embassy_modes
+    modes.any? && modes.all? { |m| full_for?(m) }
+  end
+
+  # Derived for compatibility with views that read embassy_mode directly.
+  # Pickup is intentionally excluded from "both" — callers needing pickup
+  # info should use offers_passport_pickup? directly.
+  def embassy_mode
+    return "both"            if offers_new_passport? && offers_stamping?
+    return "new_passport"    if offers_new_passport?
+    return "stamping"        if offers_stamping?
+    return "passport_pickup" if offers_passport_pickup?
+    nil
   end
 
   def volunteer_signup_count
@@ -123,5 +201,18 @@ class ScheduleItem < ApplicationRecord
 
   def auto_plan_for_creator
     plan_items.create!(user: created_by)
+  end
+
+  def at_least_one_embassy_mode_selected
+    return if active_embassy_modes.any?
+    errors.add(:base, "Embassy block must offer at least one mode (new passport, stamping, or pickup).")
+  end
+
+  def capacity_present_for_offered_modes
+    EMBASSY_MODES.each do |mode|
+      next unless offers?(mode)
+      next if capacity_for(mode).to_i.positive?
+      errors.add(:"#{mode}_capacity", "must be set when this mode is offered")
+    end
   end
 end

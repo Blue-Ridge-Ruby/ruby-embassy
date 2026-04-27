@@ -66,6 +66,23 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal "injected", other_plan.reload.notes
   end
 
+  test "DELETE on a passport_pickup plan_item is refused (admin-only cancel)" do
+    pickup_block = ScheduleItem.create!(
+      day: "sat", title: "Pickup", kind: :embassy, is_public: true,
+      offers_passport_pickup: true, passport_pickup_capacity: 2,
+      time_label: "2:00 PM", sort_time: 1400
+    )
+    user      = users(:attendee_one)
+    plan_item = user.plan_items.create!(schedule_item: pickup_block)
+    EmbassyBooking.create!(user: user, schedule_item: pickup_block, plan_item: plan_item,
+                           mode: "passport_pickup", state: "confirmed")
+
+    sign_in_as user
+    assert_no_difference -> { PlanItem.count } do
+      delete plan_item_path(plan_item)
+    end
+  end
+
   test "attendee POST to a volunteers_only item returns 404 (visibility guard)" do
     hidden = ScheduleItem.create!(
       slug: "vol-only", day: "fri", title: "Vol-only briefing",
@@ -110,7 +127,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-block", day: "sat", title: "Embassy Block",
-      kind: :embassy, is_public: true, embassy_mode: "new_passport", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
     )
     plan        = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     booking     = EmbassyBooking.create!(
@@ -134,7 +151,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-block", day: "sat", title: "Embassy Block",
-      kind: :embassy, is_public: true, embassy_mode: "new_passport", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
     )
     plan    = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     booking = EmbassyBooking.create!(
@@ -152,7 +169,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-block", day: "sat", title: "Embassy Block",
-      kind: :embassy, is_public: true, embassy_mode: "new_passport", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_new_passport: true, new_passport_capacity: 10
     )
     plan    = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     booking = EmbassyBooking.create!(
@@ -170,7 +187,7 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:attendee_one)
     embassy_item = ScheduleItem.create!(
       slug: "embassy-stamp", day: "sat", title: "Embassy Stamping",
-      kind: :embassy, is_public: true, embassy_mode: "stamping", embassy_capacity: 10
+      kind: :embassy, is_public: true, offers_stamping: true, stamping_capacity: 10
     )
     plan = users(:attendee_one).plan_items.create!(schedule_item: embassy_item)
     EmbassyBooking.create!(

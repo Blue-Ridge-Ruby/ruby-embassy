@@ -67,6 +67,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       title: "Alice embassy slot",
       kind: :embassy,
       is_public: true,
+      offers_new_passport: true,
+      new_passport_capacity: 4,
       time_label: "10:00 AM",
       sort_time: 1000,
       flexible: true
@@ -86,6 +88,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       title: "Only embassy item",
       kind: :embassy,
       is_public: true,
+      offers_new_passport: true,
+      new_passport_capacity: 4,
       time_label: "10:00 AM",
       sort_time: 1000
     )
