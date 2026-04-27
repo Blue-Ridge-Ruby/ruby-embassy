@@ -18,24 +18,7 @@
   </p>
 
   <% if signups.any? %>
-    <ol class="speakers-list"
-        data-controller="sortable"
-        data-sortable-url-value="<%= reorder_admin_schedule_item_lightning_talk_signups_path(schedule_item) %>">
-      <% signups.each do |signup| %>
-        <li class="speakers-list__item" data-id="<%= signup.id %>" draggable="true">
-          <span class="speakers-list__handle" aria-hidden="true">⋮⋮</span>
-          <span class="speakers-list__position"><%= signup.position %>.</span>
-          <span class="speakers-list__time"><%= signup.slot_start_label %></span>
-          <span class="speakers-list__name"><%= signup.user.full_name %></span>
-          <span class="speakers-list__title"><%= signup.talk_title.presence || "—" %></span>
-          <%= button_to "Remove",
-                        admin_schedule_item_lightning_talk_signup_path(schedule_item, signup),
-                        method: :delete,
-                        class: "btn btn-muted btn-small",
-                        data: { turbo_confirm: "Remove #{signup.user.full_name} from the lineup?" } %>
-        </li>
-      <% end %>
-    </ol>
+    <%= render "admin/lightning_talk_signups/speakers_list", signups: signups, schedule_item: schedule_item %>
   <% else %>
     <p class="text-gray italic mb-4">No speakers signed up yet.</p>
   <% end %>

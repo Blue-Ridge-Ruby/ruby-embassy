@@ -53,9 +53,11 @@ export default class extends Controller {
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-Token": csrf,
-        "Accept": "application/json"
+        "Accept": "text/vnd.turbo-stream.html"
       },
       body: JSON.stringify({ signup_ids: ids })
     })
+      .then(r => r.text())
+      .then(html => window.Turbo?.renderStreamMessage(html))
   }
 }

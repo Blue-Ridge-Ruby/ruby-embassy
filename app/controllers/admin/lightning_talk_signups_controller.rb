@@ -58,7 +58,18 @@ module Admin
           signups[id]&.update_columns(position: index + 1)
         end
       end
-      head :no_content
+
+      respond_to do |format|
+        format.json { head :no_content }
+        format.turbo_stream {
+          signups = @schedule_item.lightning_talk_signups.includes(:user).ordered
+          render turbo_stream: turbo_stream.replace(
+            "lightning-speakers-list",
+            partial: "admin/lightning_talk_signups/speakers_list",
+            locals: { signups: signups, schedule_item: @schedule_item }
+          )
+        }
+      end
     end
 
     private

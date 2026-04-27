@@ -66,6 +66,23 @@ class Admin::LightningTalkSignupsControllerTest < ActionDispatch::IntegrationTes
     assert_equal 3, s2.reload.position
   end
 
+  test "admin reorder via turbo_stream returns updated speakers list with new times" do
+    sign_in_as @admin
+    s1 = LightningTalkSignup.claim_next_slot!(user: users(:attendee_one), schedule_item: @item)
+    s2 = LightningTalkSignup.claim_next_slot!(user: users(:volunteer_one), schedule_item: @item)
+
+    patch reorder_admin_schedule_item_lightning_talk_signups_path(@item),
+          params: { signup_ids: [ s2.id, s1.id ] },
+          headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+    assert_response :success
+    assert_match "text/vnd.turbo-stream.html", @response.content_type
+    assert_match %r{<turbo-stream action="replace" target="lightning-speakers-list">}, @response.body
+    # Speaker that moved to position 1 now shows the start time (2:00 PM)
+    assert_match users(:volunteer_one).full_name, @response.body
+    assert_match "2:00 PM", @response.body
+  end
+
   test "PDF export returns pdf content type" do
     sign_in_as @admin
     LightningTalkSignup.claim_next_slot!(user: users(:attendee_one), schedule_item: @item)
