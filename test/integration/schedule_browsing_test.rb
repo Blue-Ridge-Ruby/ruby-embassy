@@ -29,7 +29,9 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
       sort_time: 900,
       title: "Welcome",
       kind: :embassy,
-      is_public: true
+      is_public: true,
+      offers_new_passport: true,
+      new_passport_capacity: 8
     )
     @private_item = ScheduleItem.create!(
       slug: "test-private",

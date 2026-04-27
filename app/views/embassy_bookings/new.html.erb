@@ -26,7 +26,7 @@
 
       <% if @capacity %>
         <dt>Seats available</dt>
-        <dd><%= @schedule_item.seats_remaining %> of <%= @capacity %></dd>
+        <dd><%= [ @capacity - @seats_taken, 0 ].max %> of <%= @capacity %></dd>
       <% end %>
     </dl>
   </section>
