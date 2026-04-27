@@ -1,14 +1,15 @@
 <% content_for :container_width, "max-w-6xl" %>
 
-<h1 class="text-2xl font-bold text-navy mb-6">Volunteers</h1>
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+  <h1 class="text-2xl font-bold text-navy">Volunteers</h1>
+  <%= link_to "Add slot", new_admin_schedule_item_path(kind: "volunteer", return_to: admin_volunteer_slots_path), class: "btn btn-red" %>
+</div>
 
 <%= render "admin/volunteers/tabs" %>
 
 <% if @slots.empty? %>
   <p class="text-gray">
-    No volunteer slots yet. Create one from
-    <%= link_to "Schedule", admin_schedule_items_path, class: "text-blue underline" %>
-    (set Kind to Volunteer).
+    No volunteer slots yet. Click <strong>Add slot</strong> above to create the first one.
   </p>
 <% else %>
   <div class="table-scroll">
