@@ -56,7 +56,13 @@
             <% end %>
           </td>
           <td><%= item.host.presence || "—" %></td>
-          <td><%= item.admin_rsvp_count %></td>
+          <td>
+            <% if item.volunteer? && item.volunteer_capacity %>
+              <%= item.volunteer_signup_count %> / <%= item.volunteer_capacity %>
+            <% else %>
+              <%= item.admin_rsvp_count %>
+            <% end %>
+          </td>
           <td class="text-right">
             <div class="flex gap-2 justify-end">
               <%= link_to "Edit", edit_admin_schedule_item_path(item), class: "btn btn-muted btn-small" %>
