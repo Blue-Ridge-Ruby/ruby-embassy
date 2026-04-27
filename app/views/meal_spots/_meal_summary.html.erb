@@ -1,0 +1,24 @@
+<% day_meta = ScheduleItem::DAY_META[meal.day] %>
+
+<div class="card card-compact" style="margin-bottom: 1.5rem;">
+  <div class="flex items-start" style="justify-content: space-between; gap: 1rem;">
+    <div style="flex: 1;">
+      <p class="text-sm" style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280;">
+        <%= day_meta[:label] %> · <%= day_meta[:date] %>
+      </p>
+      <h2 class="text-xl font-medium text-navy" style="margin-top: 0.25rem;">
+        <%= meal.title %>
+      </h2>
+      <% if meal.time_label.present? || meal.location.present? %>
+        <p class="text-sm text-gray" style="margin-top: 0.25rem;">
+          <%= meal.time_label %>
+          <% if meal.time_label.present? && meal.location.present? %> · <% end %>
+          <% if meal.location.present? %>
+            <%= location_or_map_link(meal) %>
+          <% end %>
+        </p>
+      <% end %>
+    </div>
+    <span class="item-badge item-badge--meal">Meal</span>
+  </div>
+</div>

@@ -2640,3 +2640,11 @@ hr {
   .pdf-page--notary { page-break-before: always; }
 }
 
+/* ---------- Meal-spot transport form: hide passenger seats unless driving --- */
+/* Uses :has() to react to the radio's checked state — no JS needed. */
+.transport-fields .seats-field {
+  display: none;
+}
+.transport-fields:has(input[type="radio"][value="driving"]:checked) .seats-field {
+  display: block;
+}

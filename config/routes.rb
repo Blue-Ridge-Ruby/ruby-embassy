@@ -41,7 +41,11 @@ Rails.application.routes.draw do
   get "plan", to: "plan#index"
 
   resources :plan_items, only: %i[create update destroy]
-  resources :schedule_items, only: %i[new create edit update]
+  resources :schedule_items, only: %i[new create edit update] do
+    resources :meal_spots, only: %i[index new create edit update] do
+      resources :rsvps, only: %i[create destroy], controller: "meal_spot_rsvps"
+    end
+  end
 
   # Embassy booking + application — attendee-facing mockup
   resources :embassy_bookings, only: %i[new create]

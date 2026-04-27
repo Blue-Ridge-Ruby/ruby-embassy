@@ -1,0 +1,3 @@
+# Empty by design. Tests that need meal_spots create them inline so the
+# (schedule_item_id, lower(name)) and (user_id, schedule_item_id) unique
+# indexes don't trip on placeholder fixture rows.

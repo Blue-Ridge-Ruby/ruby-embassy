@@ -1,0 +1,103 @@
+<% if meal_spot.errors.any? %>
+  <div class="alert alert-error mb-4">
+    <ul class="list-disc">
+      <% meal_spot.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="card card-compact">
+  <%= form_with model: meal_spot,
+                url:   form_url,
+                method: form_method,
+                scope: :meal_spot,
+                class: "space-y-4" do |f| %>
+
+    <div>
+      <%= f.label :name, "Where are we going?", class: "label" %>
+      <%= f.text_field :name, required: true, class: "input", placeholder: "e.g., Hattie B's Hot Chicken" %>
+    </div>
+
+    <div>
+      <%= f.label :map_url, "Google Maps link (optional)", class: "label" %>
+      <%= f.url_field :map_url, class: "input", placeholder: "https://maps.app.goo.gl/..." %>
+    </div>
+
+    <div class="field-grid-2">
+      <div>
+        <%= f.label :meet_up_spot, "Meet at (optional)", class: "label" %>
+        <%= f.text_field :meet_up_spot, class: "input", placeholder: "e.g., hotel lobby" %>
+      </div>
+      <div>
+        <%= f.label :contact_info, "Contact (optional)", class: "label" %>
+        <%= f.text_field :contact_info, class: "input", placeholder: "e.g., DM me on Slack" %>
+      </div>
+    </div>
+
+    <fieldset style="border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+      <legend class="label" style="padding: 0;">Who can see this spot?</legend>
+      <div class="space-y-2" style="margin-top: 0.5rem;">
+        <label class="flex items-center" style="gap: 0.5rem;">
+          <%= f.radio_button :is_public, true, checked: meal_spot.is_public != false %>
+          <span class="text-navy">Open to others — they can RSVP</span>
+        </label>
+        <label class="flex items-start" style="gap: 0.5rem;">
+          <%= f.radio_button :is_public, false, checked: meal_spot.is_public == false, style: "margin-top: 0.25rem;" %>
+          <span>
+            <span class="text-navy">Just me — going solo</span>
+            <span class="text-sm text-gray" style="display: block;">
+              Hidden from the Schedule page. Nobody else can see or join.
+            </span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
+    <% if local_assigns[:transport] %>
+      <%= fields_for :transport, transport do |t| %>
+        <fieldset class="transport-fields" style="border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+          <legend class="label" style="padding: 0;">How are you getting there?</legend>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end; margin-top: 0.5rem;">
+            <div>
+              <span class="label">Mode</span>
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.375rem;">
+                  <%= t.radio_button :mode, "walking", checked: (transport.mode || "walking") == "walking" %>
+                  <span class="text-navy">Walking</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.375rem;">
+                  <%= t.radio_button :mode, "driving", checked: transport.mode == "driving" %>
+                  <span class="text-navy">Driving</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="seats-field">
+              <%= t.label :seats_offered, "Passenger seats", class: "label" %>
+              <%= t.number_field :seats_offered,
+                                  min: 0,
+                                  value: (transport.seats_offered || 0),
+                                  class: "input",
+                                  style: "max-width: 7rem;" %>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; max-width: 18rem;">
+            <%= t.label :departs_at, "Leaves at", class: "label" %>
+            <%= t.datetime_field :departs_at,
+                                  value: (transport.departs_at || default_departure(@meal)),
+                                  class: "input" %>
+          </div>
+        </fieldset>
+      <% end %>
+    <% end %>
+
+    <div class="flex gap-3 pt-4">
+      <%= f.submit submit_label, class: "btn btn-red" %>
+      <%= link_to "Cancel", schedule_item_meal_spots_path(@meal), class: "btn btn-muted" %>
+    </div>
+  <% end %>
+</div>

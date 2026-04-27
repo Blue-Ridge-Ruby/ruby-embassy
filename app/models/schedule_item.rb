@@ -5,6 +5,7 @@ class ScheduleItem < ApplicationRecord
   has_many :plan_items, dependent: :destroy
   has_many :attendees, through: :plan_items, source: :user
   has_many :embassy_bookings, dependent: :destroy
+  has_many :meal_spots, dependent: :destroy
 
   enum :kind, {
     talk: 0, lightning: 1, embassy: 2, activity: 3,

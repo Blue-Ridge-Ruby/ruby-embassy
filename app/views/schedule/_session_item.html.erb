@@ -60,6 +60,16 @@
         <p class="schedule-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
       <% end %>
 
+      <% if item.meal? %>
+        <% spot_count = item.meal_spots.where("is_public = TRUE OR created_by_id = ?", current_user.id).count %>
+        <p class="schedule-item__description">
+          <%= link_to (spot_count.zero? ? "Plan a spot →" : "View #{spot_count} #{'spot'.pluralize(spot_count)} →"),
+                      schedule_item_meal_spots_path(item),
+                      class: "text-blue underline",
+                      data:  { turbo_frame: "_top" } %>
+        </p>
+      <% end %>
+
       <div class="schedule-item__badges">
         <% if kind_label.present? %>
           <span class="item-badge item-badge--<%= item.kind %>"><%= kind_label %></span>

@@ -96,6 +96,10 @@
           <p class="plan-item__location"><%= location_or_map_link(item) %></p>
         <% end %>
 
+        <% if item.meal? %>
+          <%= render "plan/meal_spot_block", item: item %>
+        <% end %>
+
         <% if item.description.present? %>
           <p class="plan-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
         <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_063932) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_031549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,6 +53,45 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_063932) do
     t.index ["schedule_item_id"], name: "index_embassy_bookings_on_schedule_item_id"
     t.index ["user_id", "schedule_item_id"], name: "index_embassy_bookings_on_user_id_and_schedule_item_id", unique: true
     t.index ["user_id"], name: "index_embassy_bookings_on_user_id"
+  end
+
+  create_table "meal_spot_rsvps", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "meal_spot_transport_id", null: false
+    t.bigint "schedule_item_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["meal_spot_transport_id"], name: "index_meal_spot_rsvps_on_meal_spot_transport_id"
+    t.index ["schedule_item_id"], name: "index_meal_spot_rsvps_on_schedule_item_id"
+    t.index ["user_id", "schedule_item_id"], name: "index_meal_spot_rsvps_on_user_id_and_schedule_item_id", unique: true
+    t.index ["user_id"], name: "index_meal_spot_rsvps_on_user_id"
+  end
+
+  create_table "meal_spot_transports", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "departs_at", null: false
+    t.bigint "meal_spot_id", null: false
+    t.integer "mode", null: false
+    t.integer "seats_offered"
+    t.datetime "updated_at", null: false
+    t.index ["meal_spot_id", "mode"], name: "index_meal_spot_transports_on_meal_spot_id_and_mode", unique: true
+    t.index ["meal_spot_id"], name: "index_meal_spot_transports_on_meal_spot_id"
+  end
+
+  create_table "meal_spots", force: :cascade do |t|
+    t.string "contact_info"
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.boolean "is_public", default: true, null: false
+    t.string "map_url"
+    t.string "meet_up_spot"
+    t.string "name", null: false
+    t.bigint "schedule_item_id", null: false
+    t.datetime "updated_at", null: false
+    t.index "schedule_item_id, lower((name)::text)", name: "index_meal_spots_on_schedule_item_id_and_lower_name", unique: true
+    t.index ["created_by_id"], name: "index_meal_spots_on_created_by_id"
+    t.index ["schedule_item_id", "is_public"], name: "index_meal_spots_on_schedule_item_id_and_is_public"
+    t.index ["schedule_item_id"], name: "index_meal_spots_on_schedule_item_id"
   end
 
   create_table "notary_profiles", force: :cascade do |t|
@@ -106,6 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_063932) do
     t.string "embassy_mode"
     t.boolean "flexible", default: false, null: false
     t.string "host"
+    t.string "host_url"
     t.boolean "is_public", default: false, null: false
     t.integer "kind", null: false
     t.string "location"
@@ -144,6 +184,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_063932) do
   add_foreign_key "embassy_bookings", "plan_items"
   add_foreign_key "embassy_bookings", "schedule_items"
   add_foreign_key "embassy_bookings", "users"
+  add_foreign_key "meal_spot_rsvps", "meal_spot_transports"
+  add_foreign_key "meal_spot_rsvps", "schedule_items"
+  add_foreign_key "meal_spot_rsvps", "users"
+  add_foreign_key "meal_spot_transports", "meal_spots"
+  add_foreign_key "meal_spots", "schedule_items"
+  add_foreign_key "meal_spots", "users", column: "created_by_id"
   add_foreign_key "plan_items", "schedule_items"
   add_foreign_key "plan_items", "users"
   add_foreign_key "schedule_items", "users", column: "created_by_id"

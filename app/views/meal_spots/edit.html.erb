@@ -1,0 +1,17 @@
+<% content_for(:title, "Edit #{@meal_spot.name} · #{@meal.title}") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Edit <%= @meal_spot.name %>
+    </h1>
+
+    <%= render "meal_summary", meal: @meal %>
+
+    <%= render "form",
+               meal_spot:    @meal_spot,
+               form_url:     schedule_item_meal_spot_path(@meal, @meal_spot),
+               form_method:  :patch,
+               submit_label: "Save changes" %>
+  </div>
+</section>
