@@ -1,5 +1,6 @@
 class ScheduleItem < ApplicationRecord
   EMBASSY_MODES = %w[new_passport stamping passport_pickup].freeze
+  DEFAULT_PLAN_KINDS = %w[talk reception].freeze
 
   belongs_to :created_by, class_name: "User", optional: true
   has_many :plan_items, dependent: :destroy
@@ -66,6 +67,12 @@ class ScheduleItem < ApplicationRecord
     day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
   }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
+  # Items every attendee is auto-RSVPed to on signup (and via the backfill
+  # task). Restricted to public, audience: "everyone" so volunteer-only items
+  # are never auto-added to attendees' plans.
+  scope :default_plan, -> {
+    public_items.where(audience: "everyone", kind: kinds.values_at(*DEFAULT_PLAN_KINDS))
+  }
 
   # Creators always get auto-added to their own plan — whether the item is
   # private (only they see it) or public (others can RSVP). The rationale:

@@ -144,4 +144,37 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
     get schedule_path
     assert_match "Volunteer Briefing", response.body
   end
+
+  test "schedule shows 'See new events' toggle by default" do
+    sign_in_as users(:attendee_one)
+    get schedule_path
+
+    assert_match "See new events", response.body
+    assert_no_match "Showing new events", response.body
+  end
+
+  test "?unplanned=1 hides items already on the user's plan" do
+    alice = users(:attendee_one)
+    alice.plan_items.create!(schedule_item: @talk)
+
+    sign_in_as alice
+    get schedule_path(unplanned: 1)
+
+    assert_response :success
+    assert_match "Showing new events", response.body
+    assert_no_match "A Talk About Tests", response.body
+    assert_match "Group Bike Ride", response.body, "non-planned items should still appear"
+  end
+
+  test "?unplanned=1 preserves kind filter via query params" do
+    alice = users(:attendee_one)
+    alice.plan_items.create!(schedule_item: @talk)
+
+    sign_in_as alice
+    get schedule_path(unplanned: 1, kind: "activity")
+
+    assert_response :success
+    assert_no_match "A Talk About Tests", response.body
+    assert_match "Group Bike Ride", response.body
+  end
 end

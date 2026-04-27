@@ -15,6 +15,7 @@ class User < ApplicationRecord
            inverse_of: :created_by
 
   before_save :memorialize_tito_config
+  after_create :materialize_default_plan_items
 
   generates_token_for :login, expires_in: 30.days
 
@@ -59,6 +60,13 @@ class User < ApplicationRecord
 
   def speaking_at?(schedule_item)
     lightning_talk_signups.exists?(schedule_item_id: schedule_item.id)
+  end
+
+  # Idempotent: safe to call from after_create and from the backfill task.
+  def materialize_default_plan_items
+    ScheduleItem.default_plan.find_each do |item|
+      plan_items.find_or_create_by!(schedule_item: item)
+    end
   end
 
   private
