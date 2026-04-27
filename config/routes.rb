@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       end
     end
     resource :embassy_blank_pdfs, only: %i[new create]
+    resources :hack_projects
   end
 
   # Background jobs dashboard (admin-only mount inside /admin/)
@@ -55,6 +56,9 @@ Rails.application.routes.draw do
     resource :lightning_talk_signup, only: %i[create edit update]
     resources :meal_spots, only: %i[index new create edit update] do
       resources :rsvps, only: %i[create update destroy], controller: "meal_spot_rsvps"
+    end
+    resources :hack_projects, only: %i[index show new create edit update] do
+      resource :hack_project_signup, only: %i[create update destroy]
     end
   end
 

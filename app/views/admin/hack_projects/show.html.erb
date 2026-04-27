@@ -1,0 +1,78 @@
+<% content_for :title, "#{@hack_project.title} — Hack Day Admin" %>
+<% content_for :container_width, "max-w-4xl" %>
+
+<p class="text-sm text-muted mb-2">
+  <%= link_to "← Back to Hack Day", admin_hack_projects_path, class: "text-blue underline" %>
+</p>
+
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+  <div>
+    <h1 class="text-2xl font-bold text-navy"><%= @hack_project.title %></h1>
+    <p class="text-muted">
+      Hosted by <strong><%= @hack_project.host.full_name %></strong>
+      <% if @hack_project.skill_level.present? %>
+        · <span class="item-badge item-badge--<%= @hack_project.skill_level %>"><%= @hack_project.skill_level.titleize %></span>
+      <% end %>
+    </p>
+  </div>
+  <div class="flex gap-2">
+    <%= link_to "Edit", edit_admin_hack_project_path(@hack_project), class: "btn btn-navy" %>
+    <%= button_to "Delete", admin_hack_project_path(@hack_project),
+                  method: :delete,
+                  class: "btn btn-muted",
+                  data: { turbo_confirm: "Delete '#{@hack_project.title}'? Mentor and mentee signups will be removed but PlanItems will survive." } %>
+  </div>
+</div>
+
+<% if @hack_project.description.present? %>
+  <div class="card card-compact mb-6">
+    <h2 class="text-lg font-semibold text-navy mb-2">Description</h2>
+    <%= simple_format(@hack_project.description) %>
+  </div>
+<% end %>
+
+<div class="card card-compact mb-6">
+  <h2 class="text-lg font-semibold text-navy mb-2">Links</h2>
+  <p>
+    <strong>Repository:</strong>
+    <%= link_to @hack_project.repo_url, @hack_project.repo_url,
+                target: "_blank", rel: "noopener", class: "text-blue underline" %>
+  </p>
+  <% if @hack_project.contributors_guide_url.present? %>
+    <p>
+      <strong>Contributors guide:</strong>
+      <%= link_to @hack_project.contributors_guide_url, @hack_project.contributors_guide_url,
+                  target: "_blank", rel: "noopener", class: "text-blue underline" %>
+    </p>
+  <% end %>
+</div>
+
+<div class="grid gap-6" style="grid-template-columns: 1fr 1fr;">
+  <div class="card card-compact">
+    <h2 class="text-lg font-semibold text-navy mb-2">
+      Mentors (<%= @hack_project.mentor_signups.size %>)
+    </h2>
+    <ul class="space-y-1">
+      <% @hack_project.mentor_signups.includes(:user).each do |signup| %>
+        <li class="text-navy"><%= signup.user.full_name %></li>
+      <% end %>
+      <% if @hack_project.mentor_signups.empty? %>
+        <li class="text-sm text-muted">No mentors yet.</li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="card card-compact">
+    <h2 class="text-lg font-semibold text-navy mb-2">
+      Mentees (<%= @hack_project.mentee_signups.size %>)
+    </h2>
+    <ul class="space-y-1">
+      <% @hack_project.mentee_signups.includes(:user).each do |signup| %>
+        <li class="text-navy"><%= signup.user.full_name %></li>
+      <% end %>
+      <% if @hack_project.mentee_signups.empty? %>
+        <li class="text-sm text-muted">No mentees yet.</li>
+      <% end %>
+    </ul>
+  </div>
+</div>

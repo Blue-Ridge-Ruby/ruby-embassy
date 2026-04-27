@@ -1,0 +1,30 @@
+<%# locals: (project:) -%>
+<tr>
+  <td>
+    <%= link_to project.title, admin_hack_project_path(project), class: "text-navy underline" %>
+    <% if project.description.present? %>
+      <p class="text-muted text-sm"><%= truncate(project.description, length: 80) %></p>
+    <% end %>
+  </td>
+  <td><%= project.host.full_name %></td>
+  <td>
+    <% if project.skill_level.present? %>
+      <span class="item-badge item-badge--<%= project.skill_level %>">
+        <%= project.skill_level.titleize %>
+      </span>
+    <% else %>
+      <span class="text-muted">—</span>
+    <% end %>
+  </td>
+  <td class="mono"><%= project.mentor_signups.size %></td>
+  <td class="mono"><%= project.mentee_signups.size %></td>
+  <td class="text-right">
+    <%= link_to "Edit", edit_admin_hack_project_path(project),
+                class: "text-blue underline" %>
+    <%= button_to "Delete", admin_hack_project_path(project),
+                  method: :delete,
+                  data: { turbo_confirm: "Delete '#{project.title}'? Mentor and mentee signups will be removed but PlanItems will survive." },
+                  class: "btn-ghost ml-2",
+                  style: "display:inline;color:#C41C1C;padding:0;box-shadow:none" %>
+  </td>
+</tr>

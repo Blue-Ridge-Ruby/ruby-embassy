@@ -48,6 +48,11 @@
     <div class="action-card__description">Manage the lineup — add, remove, reorder speakers.</div>
   <% end %>
 
+  <%= link_to admin_hack_projects_path, class: "action-card" do %>
+    <div class="action-card__title">Hack Day</div>
+    <div class="action-card__description">Manage Hack Day projects — full CRUD, see mentor and mentee signups.</div>
+  <% end %>
+
   <%= link_to admin_embassy_applications_path, class: "action-card" do %>
     <div class="action-card__title">Embassy Applications</div>
     <div class="action-card__description">Review adjudicated applications by serial. Print individual copies for the Attaché.</div>

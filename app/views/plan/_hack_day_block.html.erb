@@ -1,0 +1,42 @@
+<%
+  signup = HackProjectSignup.includes(:hack_project)
+                            .find_by(user: current_user, schedule_item: item)
+  project_count = item.hack_projects.size
+%>
+
+<% if signup %>
+  <div style="margin-top: 0.5rem; padding: 0.625rem 0.75rem; background: #f9fafb; border-left: 3px solid #C41C1C; border-radius: 4px;">
+    <p class="text-sm" style="font-weight: 500; color: #1F2937;">
+      You're a <strong><%= signup.role %></strong> on
+      <%= link_to signup.hack_project.title,
+                  schedule_item_hack_project_path(item, signup.hack_project),
+                  class: "text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    </p>
+    <p style="margin-top: 0.375rem;">
+      <%= link_to "View all projects →",
+                  schedule_item_hack_projects_path(item),
+                  class: "text-sm text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    </p>
+  </div>
+<% elsif plan_item.hack_role.present? %>
+  <div style="margin-top: 0.5rem; padding: 0.625rem 0.75rem; background: #f9fafb; border-left: 3px solid #C41C1C; border-radius: 4px;">
+    <p class="text-sm" style="font-weight: 500; color: #1F2937;">
+      Looking for a project (<%= plan_item.hack_role %>).
+    </p>
+    <p style="margin-top: 0.375rem;">
+      <%= link_to "Browse #{project_count} #{'project'.pluralize(project_count)} →",
+                  schedule_item_hack_projects_path(item),
+                  class: "text-sm text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    </p>
+  </div>
+<% else %>
+  <p style="margin-top: 0.375rem;">
+    <%= link_to (project_count.zero? ? "Propose a project →" : "Browse #{project_count} #{'project'.pluralize(project_count)} →"),
+                schedule_item_hack_projects_path(item),
+                class: "text-sm text-blue underline",
+                data: { turbo_frame: "_top" } %>
+  </p>
+<% end %>

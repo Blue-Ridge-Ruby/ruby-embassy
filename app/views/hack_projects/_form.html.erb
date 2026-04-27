@@ -1,0 +1,71 @@
+<% if hack_project.errors.any? %>
+  <div class="alert alert-error mb-4">
+    <ul class="list-disc">
+      <% hack_project.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="card card-compact">
+  <%= form_with model: hack_project,
+                url:   form_url,
+                method: form_method,
+                scope: :hack_project,
+                class: "space-y-4" do |f| %>
+
+    <div>
+      <%= f.label :title, "Project name", class: "label" %>
+      <%= f.text_field :title, required: true, class: "input",
+                       placeholder: "e.g., Better error messages for ActiveRecord" %>
+    </div>
+
+    <div>
+      <%= f.label :repo_url, "Repository URL", class: "label" %>
+      <%= f.url_field :repo_url, required: true, class: "input",
+                      placeholder: "https://github.com/your-org/your-repo" %>
+    </div>
+
+    <div>
+      <%= f.label :description, "What's the project about? (optional)", class: "label" %>
+      <%= f.text_area :description, rows: 4, class: "input",
+                      placeholder: "A few sentences about the goal, current state, and what you'd like help with." %>
+    </div>
+
+    <div>
+      <%= f.label :contributors_guide_url, "Contributors guide URL (optional)", class: "label" %>
+      <%= f.url_field :contributors_guide_url, class: "input",
+                      placeholder: "https://github.com/your-org/your-repo/blob/main/CONTRIBUTING.md" %>
+    </div>
+
+    <div>
+      <%= f.label :skill_level, "Skill level needed (optional)", class: "label" %>
+      <%= f.select :skill_level,
+                   HackProject.skill_levels.keys.map { |k| [k.titleize, k] },
+                   { include_blank: "Any level" },
+                   class: "input" %>
+    </div>
+
+    <% if local_assigns[:include_host_role] %>
+      <fieldset style="border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+        <legend class="label" style="padding: 0;">Your role on this project</legend>
+        <div class="space-y-2" style="margin-top: 0.5rem;">
+          <label class="flex items-center" style="gap: 0.5rem;">
+            <%= f.radio_button :host_role, "mentor", required: true %>
+            <span class="text-navy"><strong>Mentor</strong> — I know this codebase, ask me for help</span>
+          </label>
+          <label class="flex items-center" style="gap: 0.5rem;">
+            <%= f.radio_button :host_role, "mentee", required: true %>
+            <span class="text-navy"><strong>Mentee</strong> — I'm bringing the project, but I want help leading it</span>
+          </label>
+        </div>
+      </fieldset>
+    <% end %>
+
+    <div class="flex gap-3 pt-4">
+      <%= f.submit submit_label, class: "btn btn-red" %>
+      <%= link_to "Cancel", schedule_item_hack_projects_path(@schedule_item), class: "btn btn-muted" %>
+    </div>
+  <% end %>
+</div>

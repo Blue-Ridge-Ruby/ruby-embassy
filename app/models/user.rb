@@ -8,6 +8,12 @@ class User < ApplicationRecord
   has_many :embassy_bookings, dependent: :destroy
   has_many :embassy_applications, through: :embassy_bookings
   has_many :meal_spot_rsvps, dependent: :destroy
+  has_many :hack_project_signups, dependent: :destroy
+  has_many :hosted_hack_projects,
+           class_name: "HackProject",
+           foreign_key: :host_id,
+           dependent: :restrict_with_error,
+           inverse_of: :host
   has_many :created_schedule_items,
            class_name: "ScheduleItem",
            foreign_key: :created_by_id,

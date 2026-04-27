@@ -1,0 +1,19 @@
+<% content_for(:title, "Edit · #{@hack_project.title}") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <p class="text-sm text-gray mb-2">
+      <%= link_to "← Back to projects", schedule_item_hack_projects_path(@schedule_item), class: "text-blue underline" %>
+    </p>
+
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Edit project
+    </h1>
+
+    <%= render "form",
+               hack_project: @hack_project,
+               form_url:     schedule_item_hack_project_path(@schedule_item, @hack_project),
+               form_method:  :patch,
+               submit_label: "Save changes" %>
+  </div>
+</section>

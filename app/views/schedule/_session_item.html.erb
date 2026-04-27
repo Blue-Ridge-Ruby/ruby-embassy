@@ -68,6 +68,23 @@
         <%= render "schedule/meal_rides_summary", item: item %>
       <% end %>
 
+      <% if item.hack_day? %>
+        <% hack_projects = item.hack_projects.order(:created_at) %>
+        <% project_count = hack_projects.size %>
+        <% if project_count.positive? %>
+          <p class="schedule-item__description">
+            <% preview_titles = hack_projects.first(3).map(&:title) %>
+            <%= preview_titles.join(", ") %><%= " and #{project_count - 3} more" if project_count > 3 %>
+          </p>
+        <% end %>
+        <p class="schedule-item__description">
+          <%= link_to (project_count.zero? ? "Propose a project →" : "View #{project_count} #{'project'.pluralize(project_count)} →"),
+                      schedule_item_hack_projects_path(item),
+                      class: "text-blue underline",
+                      data:  { turbo_frame: "_top" } %>
+        </p>
+      <% end %>
+
       <div class="schedule-item__badges">
         <% if kind_label.present? %>
           <span class="item-badge item-badge--<%= item.kind %>"><%= kind_label %></span>

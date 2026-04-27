@@ -1,0 +1,64 @@
+<% content_for(:title, "#{@schedule_item.title} · Projects") %>
+
+<% day_meta = ScheduleItem::DAY_META[@schedule_item.day] %>
+
+<section class="pb-32">
+  <div class="max-w-3xl mx-auto px-8">
+    <% if flash[:notice] %>
+      <div class="alert alert-success mb-4"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="alert alert-error mb-4"><%= flash[:alert] %></div>
+    <% end %>
+
+    <p class="text-sm text-gray mb-2">
+      <%= link_to "← Back to schedule", schedule_path, class: "text-blue underline" %>
+    </p>
+
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-navy mb-2">
+      <%= @schedule_item.title %>
+    </h1>
+    <p class="text-lg text-gray mb-4">
+      <%= day_meta[:label] %>, <%= day_meta[:date] %> · <%= @schedule_item.time_label %>
+      <% if @schedule_item.location.present? %>
+        · <%= location_or_map_link(@schedule_item) %>
+      <% end %>
+    </p>
+
+    <% if @schedule_item.description.present? %>
+      <p class="text-gray mb-8"><%= simple_format(@schedule_item.description) %></p>
+    <% end %>
+
+    <% if @hack_projects.any? %>
+      <div class="space-y-6 mb-8">
+        <% @hack_projects.each do |project| %>
+          <%= render "hack_project",
+                     hack_project:        project,
+                     current_user_signup: @current_user_signup %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card card-compact text-center mb-8">
+        <p class="text-lg text-gray mb-6">
+          No projects yet — be the first to propose one.
+        </p>
+      </div>
+    <% end %>
+
+    <% if @current_user_hosted_project %>
+      <p class="text-center text-sm text-gray">
+        You're hosting
+        <%= link_to @current_user_hosted_project.title,
+                    schedule_item_hack_project_path(@schedule_item, @current_user_hosted_project),
+                    class: "text-blue underline" %>.
+        Only one hosted project per person.
+      </p>
+    <% else %>
+      <div class="text-center">
+        <%= link_to "+ Propose a project",
+                    new_schedule_item_hack_project_path(@schedule_item),
+                    class: "btn btn-red" %>
+      </div>
+    <% end %>
+  </div>
+</section>
