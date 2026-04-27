@@ -27,7 +27,7 @@ class LightningTalkSignupsController < ApplicationController
   def update
     @signup = current_signup
     if @signup.update(signup_params)
-      redirect_to schedule_path, notice: "Talk details saved."
+      redirect_to schedule_path(anchor: helpers.dom_id(@schedule_item)), notice: "Talk details saved."
     else
       render :edit, status: :unprocessable_content
     end

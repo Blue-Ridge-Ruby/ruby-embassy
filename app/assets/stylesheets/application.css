@@ -3075,15 +3075,43 @@ hr {
   color: #525C66;
   cursor: pointer;
   list-style: none;
-  padding: 0.25rem 0;
+  padding: 0.375rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .lightning-slots__summary::-webkit-details-marker { display: none; }
 
-.lightning-slots__hint {
-  color: #8a8f96;
-  font-size: 0.8125rem;
+.lightning-slots__count { color: #525C66; }
+
+.lightning-slots__toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #C41C1C;
+  font-weight: 500;
 }
+
+.lightning-slots__chevron {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #C41C1C;
+  transition: transform 0.15s ease;
+}
+
+.lightning-slots[open] .lightning-slots__chevron {
+  transform: rotate(90deg);
+}
+
+.lightning-slots__toggle-label { text-decoration: underline; }
+.lightning-slots__toggle-label--open { display: none; }
+.lightning-slots[open] .lightning-slots__toggle-label--closed { display: none; }
+.lightning-slots[open] .lightning-slots__toggle-label--open { display: inline; }
 
 .lightning-slots__list {
   list-style: none;

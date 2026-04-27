@@ -42,7 +42,7 @@
 
         <div class="flex gap-3 pt-4">
           <%= f.submit "Save", class: "btn btn-red" %>
-          <%= link_to "Cancel", schedule_path, class: "btn btn-muted" %>
+          <%= link_to "Cancel", schedule_path(anchor: dom_id(@schedule_item)), class: "btn btn-muted" %>
         </div>
       <% end %>
     </div>

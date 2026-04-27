@@ -30,8 +30,12 @@
 
       <details class="lightning-slots" <%= "open" if user_signup %>>
         <summary class="lightning-slots__summary">
-          <%= signup_count %> of <%= LightningTalkSignup::MAX_SPEAKERS %> speaking slots filled
-          <span class="lightning-slots__hint">— click to see lineup</span>
+          <span class="lightning-slots__count"><%= signup_count %> of <%= LightningTalkSignup::MAX_SPEAKERS %> speaking slots filled</span>
+          <span class="lightning-slots__toggle">
+            <span class="lightning-slots__chevron" aria-hidden="true"></span>
+            <span class="lightning-slots__toggle-label lightning-slots__toggle-label--closed">View lineup</span>
+            <span class="lightning-slots__toggle-label lightning-slots__toggle-label--open">Hide lineup</span>
+          </span>
         </summary>
 
         <ol class="lightning-slots__list">
@@ -46,9 +50,6 @@
                 <% if signup.talk_title.present? %>
                   <span class="lightning-slot__talk-title">&ldquo;<%= signup.talk_title %>&rdquo;</span>
                 <% end %>
-                <% if signup.talk_description.present? %>
-                  <span class="lightning-slot__talk-description"><%= signup.talk_description %></span>
-                <% end %>
                 <% if signup.slides_url.present? %>
                   <%= link_to "Slides", signup.slides_url, class: "lightning-slot__slides", target: "_blank", rel: "noopener" %>
                 <% end %>
@@ -57,6 +58,9 @@
                               edit_schedule_item_lightning_talk_signup_path(item),
                               class: "lightning-slot__edit",
                               data: { turbo_frame: "_top" } %>
+                <% end %>
+                <% if signup.talk_description.present? %>
+                  <span class="lightning-slot__talk-description"><%= signup.talk_description %></span>
                 <% end %>
               <% else %>
                 <span class="lightning-slot__open-label">Open slot</span>
