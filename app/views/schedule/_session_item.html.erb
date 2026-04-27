@@ -2,49 +2,49 @@
   <%= render "schedule/lightning_session_item", item: item %>
 <% else %>
 <%
-  kind_label = {
-    "talk"      => "Talk",
-    "lightning" => "Lightning",
-    "embassy"   => "Embassy",
-    "activity"  => "Activity"
-  }[item.kind]
+  kind_label = kind_display_label(item.kind)
   flexible_classes = item.flexible? ? "schedule-item--flexible" : ""
+  volunteer_classes = item.volunteer_empty? ? "schedule-item--volunteer-empty" : ""
 
   existing_plan = current_user.plan_items.find_by(schedule_item: item) if planned
-  embassy_mode  = FakeEmbassy.mode_for(item.id) if item.embassy?
+  embassy_mode  = item.embassy? ? (item.embassy_mode || "new_passport") : nil
 
   button_label =
     if planned
-      if item.talk?
-        "✓ Added"
-      elsif item.embassy?
+      if item.embassy?
         "✓ Booked"
-      else
+      elsif item.activity?
         "✓ RSVP'd"
+      elsif item.volunteer?
+        "✓ Volunteering"
+      else
+        "✓ Added"
       end
     else
-      if item.talk?
-        "+ Add to plan"
-      elsif item.embassy?
+      if item.embassy?
         "Schedule Appointment"
-      else
+      elsif item.activity?
         "+ RSVP"
+      elsif item.volunteer?
+        "+ Volunteer"
+      else
+        "+ Add to plan"
       end
     end
 
-  rsvp_note = (!item.talk? && !item.embassy? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
+  rsvp_note = (item.activity? && item.rsvp_count > 0) ? "#{item.rsvp_count} going" : nil
 %>
 
 <%= turbo_frame_tag dom_id(item) do %>
-  <article class="schedule-item <%= flexible_classes %>">
+  <article class="schedule-item <%= flexible_classes %> <%= volunteer_classes %>">
     <div class="schedule-item__time">
       <%= item.time_label %>
     </div>
 
     <div class="schedule-item__content">
       <% if item.talk? && item.host.present? %>
-        <h3 class="schedule-item__title"><%= item.host %></h3>
-        <p class="schedule-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
+        <h3 class="schedule-item__title"><%= item.title %></h3>
+        <p class="schedule-item__host"><%= speaker_link(item) %></p>
       <% else %>
         <h3 class="schedule-item__title"><%= item.title %></h3>
         <% if item.host.present? %>
@@ -53,15 +53,25 @@
       <% end %>
 
       <% if item.embassy? %>
-        <p class="embassy-mode-label"><%= FakeEmbassy.mode_label(embassy_mode) %></p>
+        <p class="embassy-mode-label"><%= embassy_mode_label(embassy_mode) %></p>
       <% end %>
 
       <% if item.location.present? %>
-        <p class="schedule-item__location"><%= item.location %></p>
+        <p class="schedule-item__location"><%= location_or_map_link(item) %></p>
       <% end %>
 
       <% if item.description.present? %>
         <p class="schedule-item__description"><%= simple_format(item.description, {}, wrapper_tag: "span") %></p>
+      <% end %>
+
+      <% if item.meal? %>
+        <% spot_count = item.meal_spots.where("is_public = TRUE OR created_by_id = ?", current_user.id).count %>
+        <p class="schedule-item__description">
+          <%= link_to (spot_count.zero? ? "Plan a spot →" : "View #{spot_count} #{'spot'.pluralize(spot_count)} →"),
+                      schedule_item_meal_spots_path(item),
+                      class: "text-blue underline",
+                      data:  { turbo_frame: "_top" } %>
+        </p>
       <% end %>
 
       <div class="schedule-item__badges">
@@ -77,11 +87,10 @@
     <div class="schedule-item__action">
       <% if item.embassy? %>
         <% if planned && existing_plan %>
-          <%= link_to button_label, plan_path,
+          <%= link_to button_label, plan_path(anchor: dom_id(existing_plan)),
                       class: "add-btn add-btn--added",
-                      data: { turbo_frame: "_top" },
-                      aria: { pressed: true } %>
-        <% elsif FakeEmbassy.full?(item.id) %>
+                      data: { turbo_frame: "_top" } %>
+        <% elsif item.full? %>
           <button class="add-btn add-btn--disabled" disabled>Full</button>
         <% else %>
           <%= link_to button_label,
@@ -89,28 +98,42 @@
                       class: "add-btn",
                       data: { turbo_frame: "_top" } %>
         <% end %>
-        <p class="embassy-capacity">
-          <% if FakeEmbassy.full?(item.id) %>
-            <%= FakeEmbassy.capacity_for(item.id) %> of <%= FakeEmbassy.capacity_for(item.id) %> · full
-          <% else %>
-            <%= FakeEmbassy.seats_taken_for(item.id) %> of <%= FakeEmbassy.capacity_for(item.id) %> seats
-          <% end %>
-        </p>
+        <% if item.embassy_capacity %>
+          <p class="embassy-capacity">
+            <% if item.full? %>
+              <%= item.embassy_capacity %> of <%= item.embassy_capacity %> · full
+            <% else %>
+              <%= item.seats_taken %> of <%= item.embassy_capacity %> seats
+            <% end %>
+          </p>
+        <% end %>
+      <% elsif item.volunteer? && !planned && item.volunteer_full? %>
+        <button class="add-btn add-btn--disabled" disabled>Filled</button>
       <% elsif planned && existing_plan %>
-        <%= button_to button_label,
-                      plan_item_path(existing_plan),
-                      method: :delete,
-                      class: "add-btn add-btn--added",
-                      data: { turbo_frame: dom_id(item) },
-                      aria: { pressed: true } %>
+        <%= link_to button_label, plan_path(anchor: dom_id(existing_plan)),
+                    class: "add-btn add-btn--added",
+                    data: { turbo_frame: "_top" } %>
       <% else %>
         <%= button_to button_label,
                       plan_items_path,
                       method: :post,
                       params: { schedule_item_id: item.id },
                       class: "add-btn",
-                      data: { turbo_frame: dom_id(item) },
-                      aria: { pressed: false } %>
+                      data: { turbo_frame: dom_id(item) } %>
+      <% end %>
+
+      <% if item.volunteer? && item.volunteer_capacity %>
+        <% state = item.volunteer_state %>
+        <p class="volunteer-capacity volunteer-capacity--<%= state %>">
+          <% case state
+             when :empty %>
+            Help wanted! 0 of <%= item.volunteer_capacity %>
+          <% when :partial %>
+            <%= item.volunteer_signup_count %> of <%= item.volunteer_capacity %> &mdash; <%= item.volunteer_seats_remaining %> still needed
+          <% when :full %>
+            Filled (<%= item.volunteer_capacity %> of <%= item.volunteer_capacity %>)
+          <% end %>
+        </p>
       <% end %>
 
       <% if rsvp_note %>

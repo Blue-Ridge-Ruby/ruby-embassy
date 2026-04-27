@@ -85,6 +85,40 @@ class PlanTest < ActionDispatch::IntegrationTest
     assert_match "Notes about this session go here.", response.body
   end
 
+  test "/plan meal cards show 'Plan a spot' when the user has no spot RSVP" do
+    alice = users(:attendee_one)
+    meal  = ScheduleItem.create!(day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                  title: "Open Lunch", kind: :meal, is_public: true)
+    alice.plan_items.create!(schedule_item: meal)
+
+    sign_in_as alice
+    get plan_path
+    assert_match "Plan a spot", response.body
+  end
+
+  test "/plan meal cards show the user's spot details when RSVPd" do
+    alice = users(:attendee_one)
+    meal  = ScheduleItem.create!(day: "thu", time_label: "12:00 PM", sort_time: 1200,
+                                  title: "Open Lunch", kind: :meal, is_public: true)
+    spot  = meal.meal_spots.create!(name: "Hattie Hot Chicken", created_by: alice,
+                                     map_url: "https://maps.app.goo.gl/x",
+                                     meet_up_spot: "hotel lobby",
+                                     contact_info: "DM Alice on Slack")
+    transport = spot.transports.create!(mode: :driving, departs_at: Time.zone.local(2026, 4, 30, 12, 15), seats_offered: 3)
+    transport.rsvps.create!(user: alice)
+
+    sign_in_as alice
+    get plan_path
+
+    assert_match "Hattie Hot Chicken", response.body
+    assert_match "Driving", response.body
+    assert_match "12:15 PM", response.body
+    assert_match "0 of 3 passenger seats", response.body
+    assert_match "hotel lobby", response.body
+    assert_match "DM Alice on Slack", response.body
+    assert_match "View all spots", response.body
+  end
+
   test "/plan shows remove button for each plan_item" do
     alice = users(:attendee_one)
     plan = alice.plan_items.create!(schedule_item: @talk)

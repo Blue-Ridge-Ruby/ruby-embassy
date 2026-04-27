@@ -1,0 +1,74 @@
+<% content_for :title, "Delivered Passports — Embassy Admin" %>
+
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+  <div>
+    <h1 class="text-2xl font-bold text-navy">Delivered Passports</h1>
+    <p class="text-muted">
+      <%= @applications.size %> delivered &middot;
+      <%= link_to "← Back to active queue", admin_embassy_applications_path, class: "text-blue underline" %>
+    </p>
+  </div>
+</div>
+
+<%= form_with url: delivered_admin_embassy_applications_path, method: :get, local: true, class: "mb-6 flex gap-2 flex-wrap" do %>
+  <%= text_field_tag :q, @query,
+        placeholder: "Search by name, email, or serial…",
+        class: "input flex-1" %>
+  <%= hidden_field_tag :sort, @sort %>
+  <%= submit_tag "Search", class: "btn btn-navy" %>
+  <% if @query.present? %>
+    <%= link_to "Clear", delivered_admin_embassy_applications_path(sort: @sort), class: "btn btn-ghost" %>
+  <% end %>
+<% end %>
+
+<% if @applications.empty? %>
+  <div class="card text-muted">
+    <% if @query.present? %>
+      No delivered passports match "<%= @query %>".
+    <% else %>
+      No passports have been marked delivered yet.
+    <% end %>
+  </div>
+<% else %>
+  <div class="table-scroll">
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width: 140px;"><%= sort_link("Serial", "serial") %></th>
+        <th><%= sort_link("Attendee", "name") %></th>
+        <th><%= sort_link("Appointment", "appointment") %></th>
+        <th><%= sort_link("Delivered", "delivered") %></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @applications.each do |application| %>
+        <% booking = application.embassy_booking %>
+        <% schedule_item = booking.schedule_item %>
+        <% user = booking.user %>
+        <tr>
+          <td class="mono"><%= application.serial %></td>
+          <td>
+            <div><%= user.full_name %></div>
+            <div class="text-muted text-sm"><%= user.email %></div>
+          </td>
+          <td>
+            <%= ScheduleItem::DAY_META.dig(schedule_item.day, :date) %>
+            · <%= schedule_item.time_label %>
+          </td>
+          <td><%= application.passport_received_at&.strftime("%b %-d · %-l:%M %p") %></td>
+          <td class="text-right whitespace-nowrap">
+            <%= link_to "View", admin_embassy_application_path(application),
+                        class: "text-blue underline mr-3" %>
+            <%= button_to "Undo",
+                          unmark_received_admin_embassy_application_path(application),
+                          method: :patch,
+                          class: "btn btn-ghost",
+                          form: { class: "inline-block" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </div>
+<% end %>

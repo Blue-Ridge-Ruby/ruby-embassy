@@ -2,11 +2,11 @@
 
 <h1 class="text-2xl font-bold text-navy mb-2">Generate Blank Applications</h1>
 <p class="text-muted mb-6">
-  Print blank, randomized applications for on-site walk-ins. Each generated form
-  contains a unique, randomly-drawn set of questions from the active bank
-  <strong>and a unique notary assignment</strong>. Forms are serialized
-  sequentially (RE-0427-A, RE-0427-B, …) so paper can be reconciled with
-  Embassy records later.
+  Print blank applications for on-site walk-ins. Each blank shows the
+  current Section 1, 2, 4, and 5 questions; Section 3 questions and the
+  notary assignment are filled in by the Embassy Attaché when an applicant
+  picks one up. Submit the form below to download a single PDF containing
+  all the blanks you need.
 </p>
 
 <div class="card card-compact mb-8">
@@ -19,25 +19,8 @@
     </div>
 
     <div class="flex gap-3 pt-4">
-      <button type="submit" class="btn btn-red">Generate Combined PDF</button>
+      <button type="submit" class="btn btn-red">Download PDF</button>
       <%= link_to "Cancel", admin_embassy_applications_path, class: "btn btn-muted" %>
     </div>
   <% end %>
-</div>
-
-<h2 class="text-lg font-semibold text-navy mb-2">Preview · one blank form</h2>
-<p class="text-muted mb-4">
-  A randomly-generated blank with serial <span class="mono"><%= @preview_serial %></span>
-  and notary assignment <span class="mono"><%= @preview_notary[:id] %></span>
-  (&ldquo;<%= @preview_notary[:description] %>&rdquo;).
-  The real batch will randomize both per form.
-</p>
-
-<div class="application-canvas application-canvas--pdf application-canvas--blank">
-  <%= render "embassy_applications/pdf",
-             serial: @preview_serial,
-             schedule_item: ScheduleItem.embassy.first || ScheduleItem.first,
-             sections: @preview_sections,
-             notary: @preview_notary,
-             blank: true %>
 </div>

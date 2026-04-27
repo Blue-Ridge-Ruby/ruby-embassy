@@ -1,0 +1,84 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<div class="mb-4">
+  <%= link_to "← All slots", admin_volunteer_slots_path, class: "text-blue underline" %>
+</div>
+
+<% state = @slot.volunteer_state %>
+
+<div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
+  <div>
+    <h1 class="text-2xl font-bold text-navy"><%= @slot.title %></h1>
+    <p class="text-gray">
+      <%= ScheduleItem::DAY_META.dig(@slot.day, :label) %> &middot; <%= @slot.time_label %>
+      <% if @slot.location.present? %> &middot; <%= @slot.location %><% end %>
+    </p>
+  </div>
+  <span class="volunteer-capacity volunteer-capacity--<%= state %>" style="text-align: left; font-size: 0.875rem;">
+    <% case state
+       when :empty %>
+      Help wanted! 0 of <%= @slot.volunteer_capacity %>
+    <% when :partial %>
+      <%= @slot.volunteer_signup_count %> of <%= @slot.volunteer_capacity %>
+    <% when :full %>
+      Filled (<%= @slot.volunteer_capacity %> of <%= @slot.volunteer_capacity %>)
+    <% end %>
+  </span>
+</div>
+
+<%= render "admin/volunteers/tabs" %>
+
+<div class="flex justify-end mb-6">
+  <%= link_to "Edit slot", edit_admin_schedule_item_path(@slot), class: "btn btn-muted" %>
+</div>
+
+<h2 class="text-lg font-semibold text-navy mb-4">
+  Signed up
+  <span class="text-gray text-sm font-normal">(<%= @signups.size %>)</span>
+</h2>
+
+<% if @signups.any? %>
+  <ul class="space-y-2 mb-12">
+    <% @signups.each do |plan_item| %>
+      <li class="card card-compact flex items-center justify-between gap-4">
+        <div>
+          <div class="font-medium text-navy"><%= plan_item.user.full_name %></div>
+          <div class="text-gray text-sm"><%= plan_item.user.email %></div>
+        </div>
+        <%= button_to "Remove",
+              admin_volunteer_signup_path(plan_item),
+              method: :delete,
+              data: { turbo_confirm: "Remove #{plan_item.user.full_name} from #{@slot.title}?" },
+              class: "btn btn-muted" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-gray mb-12">Nobody has signed up yet.</p>
+<% end %>
+
+<h2 class="text-lg font-semibold text-navy mb-4">Add a volunteer</h2>
+
+<% if @slot.volunteer_full? %>
+  <p class="text-gray">This slot is full. Remove someone above to free up capacity.</p>
+<% elsif @available_volunteers.any? %>
+  <div class="card card-compact">
+    <%= form_with url: admin_volunteer_signups_path, method: :post, class: "space-y-4" do |f| %>
+      <%= hidden_field_tag :schedule_item_id, @slot.id %>
+      <div>
+        <%= label_tag :user_id, "Volunteer", class: "label" %>
+        <%= select_tag :user_id,
+              options_from_collection_for_select(@available_volunteers, :id, :full_name),
+              include_blank: "— Select a volunteer —", class: "select" %>
+      </div>
+      <div>
+        <%= f.submit "Add to this slot", class: "btn btn-navy" %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-gray">
+    Everyone with the volunteer role is already signed up. Promote more attendees from
+    <%= link_to "Attendees", admin_users_path, class: "text-blue underline" %>.
+  </p>
+<% end %>

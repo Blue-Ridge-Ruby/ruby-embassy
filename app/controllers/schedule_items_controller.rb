@@ -5,7 +5,7 @@ class ScheduleItemsController < ApplicationController
     @schedule_item = current_user.created_schedule_items.build(
       day: params[:day] || "sat",
       flexible: false,
-      is_public: false
+      is_public: ActiveModel::Type::Boolean.new.cast(params.dig(:schedule_item, :is_public))
     )
   end
 
@@ -67,7 +67,7 @@ class ScheduleItemsController < ApplicationController
   #   :created_by_id — forced by association scope (current_user.created_schedule_items)
   def schedule_item_params
     params.require(:schedule_item).permit(
-      :day, :time_label, :title, :location, :description, :flexible, :is_public
+      :day, :time_label, :title, :location, :map_url, :description, :flexible, :is_public
     )
   end
 

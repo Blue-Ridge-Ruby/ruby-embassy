@@ -66,6 +66,33 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal "injected", other_plan.reload.notes
   end
 
+  test "attendee POST to a volunteers_only item returns 404 (visibility guard)" do
+    hidden = ScheduleItem.create!(
+      slug: "vol-only", day: "fri", title: "Vol-only briefing",
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
+    )
+    sign_in_as users(:attendee_one)
+
+    assert_no_difference -> { users(:attendee_one).plan_items.count } do
+      post plan_items_path, params: { schedule_item_id: hidden.id }
+    end
+    assert_response :not_found
+  end
+
+  test "volunteer can RSVP to a volunteers_only item" do
+    hidden = ScheduleItem.create!(
+      slug: "vol-only", day: "fri", title: "Vol-only briefing",
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
+    )
+    sign_in_as users(:volunteer_one)
+
+    assert_difference -> { users(:volunteer_one).plan_items.count }, 1 do
+      post plan_items_path, params: { schedule_item_id: hidden.id }
+    end
+  end
+
   test "turbo_stream DELETE response removes plan_item frame AND updates schedule_item frame" do
     sign_in_as users(:attendee_one)
     plan = users(:attendee_one).plan_items.create!(schedule_item: @item)

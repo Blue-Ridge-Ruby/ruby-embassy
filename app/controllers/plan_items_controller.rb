@@ -2,7 +2,7 @@ class PlanItemsController < ApplicationController
   before_action :set_plan_item, only: %i[update destroy]
 
   def create
-    schedule_item = ScheduleItem.find(params[:schedule_item_id])
+    schedule_item = ScheduleItem.visible_to(current_user).find(params[:schedule_item_id])
     @plan_item = current_user.plan_items.find_or_create_by(schedule_item: schedule_item)
 
     respond_to do |format|

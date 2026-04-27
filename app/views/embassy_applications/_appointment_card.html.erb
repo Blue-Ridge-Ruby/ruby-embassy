@@ -1,6 +1,6 @@
-<%# locals: (serial:, schedule_item:, mode: "new_passport", state: "default") -%>
+<%# locals: (application:, schedule_item:, state: "default") -%>
 <article class="embassy-appointment-card embassy-appointment-card--<%= state %>">
-  <div class="embassy-appointment-card__serial mono"><%= serial %></div>
+  <div class="embassy-appointment-card__serial mono"><%= application.serial %></div>
 
   <p class="embassy-appointment-card__eyebrow">Ruby Embassy Appointment</p>
 
@@ -16,9 +16,9 @@
 
   <dl class="embassy-appointment-card__dl">
     <dt>Classification</dt>
-    <dd><%= FakeEmbassy.mode_label(mode) %></dd>
+    <dd><%= embassy_mode_label(application.embassy_booking.mode) %></dd>
 
     <dt>Applicant</dt>
-    <dd><%= current_user.full_name %></dd>
+    <dd><%= application.user.full_name %></dd>
   </dl>
 </article>

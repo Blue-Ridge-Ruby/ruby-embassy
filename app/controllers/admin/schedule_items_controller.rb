@@ -3,7 +3,8 @@ module Admin
     before_action :set_schedule_item, only: %i[edit update destroy]
 
     def index
-      @schedule_items = ScheduleItem.ordered
+      @selected_kind  = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : nil
+      @schedule_items = ScheduleItem.by_kind(@selected_kind).ordered
     end
 
     def new
@@ -45,10 +46,17 @@ module Admin
     # :slug is intentionally omitted — it's a seed idempotency key for
     # config/schedule.yml items and should never be set by hand.
     def schedule_item_params
-      params.require(:schedule_item).permit(
+      attrs = params.require(:schedule_item).permit(
         :day, :time_label, :sort_time, :title, :host,
-        :location, :description, :kind, :flexible, :is_public
+        :location, :map_url, :description, :kind, :flexible, :is_public, :audience,
+        :embassy_mode, :embassy_capacity, :volunteer_capacity
       )
+      unless attrs[:kind] == "embassy"
+        attrs[:embassy_mode] = nil
+        attrs[:embassy_capacity] = nil
+      end
+      attrs[:volunteer_capacity] = nil unless attrs[:kind] == "volunteer"
+      attrs
     end
   end
 end

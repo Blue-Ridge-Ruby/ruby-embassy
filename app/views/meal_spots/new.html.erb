@@ -1,0 +1,22 @@
+<% content_for(:title, "Suggest a spot · #{@meal.title}") %>
+
+<section class="pb-32">
+  <div class="max-w-2xl mx-auto px-8">
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-center text-navy mb-4">
+      Suggest a spot
+    </h1>
+
+    <%= render "meal_summary", meal: @meal %>
+
+    <p class="plan-intro">
+      Tell folks where you're going and how you're getting there.
+    </p>
+
+    <%= render "form",
+               meal_spot:    @meal_spot,
+               transport:    @transport,
+               form_url:     schedule_item_meal_spots_path(@meal),
+               form_method:  :post,
+               submit_label: "Add this spot" %>
+  </div>
+</section>

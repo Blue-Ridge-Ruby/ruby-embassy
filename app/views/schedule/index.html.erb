@@ -10,17 +10,26 @@
       Browse the full conference agenda. Tap <span class="font-medium">Add to plan</span> on any talk or <span class="font-medium">RSVP</span> on any activity to save it to your Plan.
     </p>
 
-    <nav class="day-nav" aria-label="Jump to day">
-      <% ScheduleItem::DAY_META.each do |day_key, meta| %>
-        <% next unless @items_by_day.key?(day_key) %>
-        <a href="#<%= day_key %>"><%= meta[:label] %></a>
-      <% end %>
-    </nav>
+    <%= render "shared/kind_filter", base_path: schedule_path, selected_kind: @selected_kind %>
 
-    <% ScheduleItem::DAY_META.each do |day_key, meta| %>
-      <% items = @items_by_day[day_key] %>
-      <% next if items.blank? %>
-      <%= render "day", day_key: day_key, meta: meta, items: items, planned_ids: @planned_ids %>
+    <% if @items_by_day.empty? %>
+      <p class="text-center text-gray py-12">
+        No items match this filter.
+        <%= link_to "Clear filter", schedule_path, class: "text-blue underline" %>
+      </p>
+    <% else %>
+      <nav class="day-nav" aria-label="Jump to day">
+        <% ScheduleItem::DAY_META.each do |day_key, meta| %>
+          <% next unless @items_by_day.key?(day_key) %>
+          <a href="#<%= day_key %>"><%= meta[:label] %></a>
+        <% end %>
+      </nav>
+
+      <% ScheduleItem::DAY_META.each do |day_key, meta| %>
+        <% items = @items_by_day[day_key] %>
+        <% next if items.blank? %>
+        <%= render "day", day_key: day_key, meta: meta, items: items, planned_ids: @planned_ids %>
+      <% end %>
     <% end %>
   </div>
 </section>

@@ -50,6 +50,10 @@ gem "csv"
 # Postmark for transactional email in production
 gem "postmark-rails"
 
+# PDF generation for the passport application form
+gem "prawn"
+gem "prawn-table"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

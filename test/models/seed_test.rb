@@ -45,19 +45,37 @@ class SeedTest < ActiveSupport::TestCase
     assert talk.talk?
   end
 
-  test "seeded logistics (registration/welcome/coffee) are kind: embassy" do
+  test "seeded reception items (registration/welcome/breaks/coffee/closing) are kind: reception" do
     Rails.application.load_seed
 
-    %w[thu-registration thu-welcome fri-coffee].each do |slug|
+    %w[thu-registration thu-welcome thu-break-1 thu-closing fri-coffee fri-welcome fri-closing].each do |slug|
       item = ScheduleItem.find_by(slug: slug)
-      assert_equal "embassy", item.kind, "#{slug} should be kind: embassy"
+      assert_equal "reception", item.kind, "#{slug} should be kind: reception"
     end
   end
 
-  test "seeded social items are kind: activity" do
+  test "seeded meal items (lunches and dinners) are kind: meal" do
     Rails.application.load_seed
 
-    %w[wed-meetup thu-lunch thu-dinner fri-afterparty sat-evening].each do |slug|
+    %w[thu-lunch thu-dinner fri-lunch fri-dinner].each do |slug|
+      item = ScheduleItem.find_by(slug: slug)
+      assert_equal "meal", item.kind, "#{slug} should be kind: meal"
+    end
+  end
+
+  test "seeded community items (in-event participatory + offsite social) are kind: community" do
+    Rails.application.load_seed
+
+    %w[wed-meetup thu-mystery thu-roundtable fri-afterparty sat-hackday].each do |slug|
+      item = ScheduleItem.find_by(slug: slug)
+      assert_equal "community", item.kind, "#{slug} should be kind: community"
+    end
+  end
+
+  test "seeded activity items (external with capacity concerns) are kind: activity" do
+    Rails.application.load_seed
+
+    %w[sat-dinner].each do |slug|
       item = ScheduleItem.find_by(slug: slug)
       assert_equal "activity", item.kind, "#{slug} should be kind: activity"
     end

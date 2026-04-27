@@ -22,9 +22,21 @@ Rails.application.routes.draw do
         collection { patch :reorder }
       end
     end
+    resources :volunteers, only: %i[index show]
+    resources :volunteer_slots, only: %i[index show]
+    resources :volunteer_signups, only: %i[create destroy]
     resources :embassy_questions
-    resources :embassy_applications, only: %i[index show]
-    resource  :embassy_blank_pdfs, only: %i[new create]
+    resources :notary_profiles
+    resources :embassy_applications, only: %i[index show] do
+      member do
+        patch :mark_received
+        patch :unmark_received
+      end
+      collection do
+        get :delivered
+      end
+    end
+    resource :embassy_blank_pdfs, only: %i[new create]
   end
 
   # Background jobs dashboard (admin-only mount inside /admin/)
@@ -39,6 +51,9 @@ Rails.application.routes.draw do
   resources :plan_items, only: %i[create update destroy]
   resources :schedule_items, only: %i[new create edit update] do
     resource :lightning_talk_signup, only: %i[create edit update]
+    resources :meal_spots, only: %i[index new create edit update] do
+      resources :rsvps, only: %i[create destroy], controller: "meal_spot_rsvps"
+    end
   end
 
   # Embassy booking + application — attendee-facing mockup

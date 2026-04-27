@@ -28,12 +28,16 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_includes item.errors[:kind], "can't be blank"
   end
 
-  test "kind enum exposes talk/lightning/embassy/activity" do
-    assert_equal %w[talk lightning embassy activity], ScheduleItem.kinds.keys
+  test "kind enum exposes all 8 kinds with stable integer values" do
+    assert_equal %w[talk lightning embassy activity reception meal community volunteer], ScheduleItem.kinds.keys
     assert_equal 0, ScheduleItem.kinds["talk"]
     assert_equal 1, ScheduleItem.kinds["lightning"]
     assert_equal 2, ScheduleItem.kinds["embassy"]
     assert_equal 3, ScheduleItem.kinds["activity"]
+    assert_equal 4, ScheduleItem.kinds["reception"]
+    assert_equal 5, ScheduleItem.kinds["meal"]
+    assert_equal 6, ScheduleItem.kinds["community"]
+    assert_equal 7, ScheduleItem.kinds["volunteer"]
   end
 
   test "is_public defaults to false" do
@@ -81,6 +85,57 @@ class ScheduleItemTest < ActiveSupport::TestCase
     private_item = ScheduleItem.create!(valid_attrs(title: "Private", is_public: false))
     assert_includes ScheduleItem.public_items, public_item
     assert_not_includes ScheduleItem.public_items, private_item
+  end
+
+  test "audience defaults to everyone" do
+    item = ScheduleItem.create!(valid_attrs)
+    assert_equal "everyone", item.audience
+    assert item.audience_everyone?
+  end
+
+  test "visible_to admin returns all public items including volunteers_only" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+    private_   = ScheduleItem.create!(valid_attrs(title: "Private", is_public: false))
+
+    visible = ScheduleItem.visible_to(users(:jeremy))
+    assert_includes visible, everyone
+    assert_includes visible, volunteers
+    assert_not_includes visible, private_
+  end
+
+  test "visible_to volunteer returns all public items including volunteers_only" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+
+    visible = ScheduleItem.visible_to(users(:volunteer_one))
+    assert_includes visible, everyone
+    assert_includes visible, volunteers
+  end
+
+  test "visible_to attendee returns only audience: everyone items" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+
+    visible = ScheduleItem.visible_to(users(:attendee_one))
+    assert_includes visible, everyone
+    assert_not_includes visible, volunteers
+  end
+
+  test "visible_to nil (signed-out) returns only audience: everyone items" do
+    everyone   = ScheduleItem.create!(valid_attrs(title: "Everyone", audience: "everyone"))
+    volunteers = ScheduleItem.create!(valid_attrs(title: "Volunteers", audience: "volunteers_only"))
+
+    visible = ScheduleItem.visible_to(nil)
+    assert_includes visible, everyone
+    assert_not_includes visible, volunteers
+  end
+
+  test "visible_to never returns private items regardless of role" do
+    private_ = ScheduleItem.create!(valid_attrs(title: "Private", is_public: false))
+    [ users(:jeremy), users(:volunteer_one), users(:attendee_one), nil ].each do |user|
+      assert_not_includes ScheduleItem.visible_to(user), private_, "private items must not appear for #{user&.role || 'nil'}"
+    end
   end
 
   test "ordered scope orders by day then sort_time" do
@@ -133,5 +188,73 @@ class ScheduleItemTest < ActiveSupport::TestCase
         created_by: nil
       ))
     end
+  end
+
+  # ----- Volunteer capacity ----------------------------------------------
+
+  def volunteer_attrs(overrides = {})
+    valid_attrs(kind: :volunteer, title: "Stamp passports", volunteer_capacity: 3).merge(overrides)
+  end
+
+  test "volunteer_capacity is required when kind is volunteer" do
+    item = ScheduleItem.new(volunteer_attrs(volunteer_capacity: nil))
+    assert_not item.valid?
+    assert_includes item.errors[:volunteer_capacity], "can't be blank"
+  end
+
+  test "volunteer_capacity not required for non-volunteer kinds" do
+    item = ScheduleItem.new(valid_attrs(kind: :activity, volunteer_capacity: nil))
+    assert item.valid?, item.errors.full_messages.inspect
+  end
+
+  test "volunteer_capacity must be a positive integer" do
+    item = ScheduleItem.new(volunteer_attrs(volunteer_capacity: 0))
+    assert_not item.valid?
+    assert_includes item.errors[:volunteer_capacity], "must be greater than 0"
+  end
+
+  test "volunteer_state returns :empty when no signups" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 3))
+    assert item.volunteer_empty?
+    assert_equal :empty, item.volunteer_state
+  end
+
+  test "volunteer_state returns :partial when some signups but not full" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 3))
+    item.plan_items.create!(user: users(:volunteer_one))
+    assert item.reload.volunteer_partial?
+    assert_equal :partial, item.volunteer_state
+  end
+
+  test "volunteer_state returns :full when capacity reached" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 2))
+    item.plan_items.create!(user: users(:volunteer_one))
+    item.plan_items.create!(user: users(:jeremy))
+    assert item.reload.volunteer_full?
+    assert_equal :full, item.volunteer_state
+  end
+
+  test "volunteer_state returns nil for non-volunteer kinds" do
+    item = ScheduleItem.create!(valid_attrs(kind: :talk))
+    assert_nil item.volunteer_state
+  end
+
+  test "volunteer_seats_remaining decrements with signups" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 3))
+    assert_equal 3, item.volunteer_seats_remaining
+    item.plan_items.create!(user: users(:volunteer_one))
+    assert_equal 2, item.reload.volunteer_seats_remaining
+  end
+
+  test "volunteer_empty scope returns only volunteer-kind items with zero signups" do
+    empty   = ScheduleItem.create!(volunteer_attrs(title: "Empty"))
+    filled  = ScheduleItem.create!(volunteer_attrs(title: "Filled", volunteer_capacity: 1))
+    filled.plan_items.create!(user: users(:volunteer_one))
+    other   = ScheduleItem.create!(valid_attrs(kind: :talk, title: "Talk"))
+
+    result = ScheduleItem.volunteer_empty
+    assert_includes result, empty
+    assert_not_includes result, filled
+    assert_not_includes result, other
   end
 end

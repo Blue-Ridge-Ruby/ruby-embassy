@@ -22,6 +22,10 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
 body { min-height: 100vh; }
 
 img, svg { display: block; max-width: 100%; }
@@ -276,6 +280,7 @@ hr {
 .mb-1 { margin-bottom: 0.25rem; }
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-6 { margin-bottom: 1.5rem; }
+.mb-10 { margin-bottom: 2.5rem; }
 .mb-8 { margin-bottom: 2rem; }
 .mb-16 { margin-bottom: 4rem; }
 
@@ -302,6 +307,18 @@ hr {
 .space-y-12 > * + * { margin-top: 3rem; }
 
 .grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
 .inline-block { display: inline-block; }
 
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -347,71 +364,91 @@ hr {
 .day-nav {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0 3rem;
+  column-gap: 1rem;
+  margin: 0 0 2.5rem;
 }
 
 .day-nav a {
+  padding: 0.5rem;
+  color: #2672B5;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+
+/* ---------- Kind filter pills ----------------------------- */
+
+.kind-filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 2rem;
+}
+
+.kind-filter__label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #7a8189;
+  margin-right: 0.25rem;
+}
+
+.kind-filter__btn {
   display: inline-block;
   padding: 0.375rem 1rem;
   border: 1px solid #d9dee1;
   border-radius: 999px;
+  background-color: transparent;
   color: #2672B5;
   font-weight: 500;
   font-size: 0.95rem;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.day-nav a:hover {
+.kind-filter__btn:hover {
   background-color: #f4f7fa;
   border-color: #2672B5;
   opacity: 1;
 }
 
+.kind-filter__btn--active {
+  background-color: #0C2866;
+  border-color: #0C2866;
+  color: #ffffff;
+}
 
-/* ---------- Schedule day sections ------------------------- */
+.kind-filter__btn--active:hover {
+  background-color: #0C2866;
+  border-color: #0C2866;
+  color: #ffffff;
+}
+
+
+/* ---------- Schedule day sections (blueridgeruby.com style) -- */
 
 .schedule-day {
-  padding-top: 2rem;
-  border-top: 1px solid #d9dee1;
+  margin-bottom: 5rem;
 }
 
-.schedule-day + .schedule-day {
-  margin-top: 3rem;
-}
-
-.schedule-day__header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 1.5rem;
-}
-
-@media (min-width: 640px) {
-  .schedule-day__header {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 1rem;
-  }
-}
-
-.schedule-day__label {
+.schedule-day__heading {
   font-size: 1.75rem;
   font-weight: 500;
   color: #0C2866;
-  line-height: 1.1;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 1rem;
 }
 
-.schedule-day__date {
-  font-size: 1.125rem;
-  color: #404040;
+.schedule-day__heading sup {
+  font-size: 0.6em;
+  vertical-align: super;
+  margin-left: 0.05em;
 }
 
-.schedule-day__subtitle {
-  font-size: 0.95rem;
-  color: #7a8189;
-  font-style: italic;
+.schedule-day__items {
+  border-top: 4px solid #0C2866;
+  padding-top: 0.25rem;
 }
 
 
@@ -469,9 +506,39 @@ hr {
   line-height: 1.4;
 }
 
+.schedule-item__host {
+  font-size: 1rem;
+  color: #404040;
+  line-height: 1.4;
+}
+
+.schedule-item__host a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.schedule-item__host a:hover {
+  color: #C41C1C;
+}
+
 .schedule-item__location {
   font-size: 0.875rem;
   color: #7a8189;
+}
+
+.schedule-item__location a,
+.plan-item__location a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.schedule-item__location a:hover,
+.plan-item__location a:hover {
+  color: #C41C1C;
 }
 
 .schedule-item__description {
@@ -507,12 +574,12 @@ hr {
   color: #ffffff;
 }
 
-.item-badge--social {
+.item-badge--meal {
   background-color: #FEF3C7;
   color: #8A5A00;
 }
 
-.item-badge--logistics {
+.item-badge--reception {
   background-color: #EEF1F4;
   color: #525C66;
 }
@@ -530,6 +597,16 @@ hr {
 .item-badge--embassy {
   background-color: #DCEBF5;
   color: #1E5A8A;
+}
+
+.item-badge--community {
+  background-color: #E6F4EC;
+  color: #1F6B45;
+}
+
+.item-badge--volunteer {
+  background-color: #FFEDD5;
+  color: #9A3412;
 }
 
 .item-badge--custom {
@@ -659,6 +736,18 @@ hr {
 @media (min-width: 640px) {
   .field-grid-3 {
     grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.field-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .field-grid-2 {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -1074,6 +1163,22 @@ hr {
 
 .table tr:first-child td { border-top: 0; }
 
+/* Horizontal scroll wrapper for wide tables on narrow screens.
+   The table inside keeps width: 100% but expands beyond the wrapper
+   when its content min-width exceeds the available space — at which
+   point overflow-x lets the user swipe through it. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08);
+}
+
+.table-scroll .table {
+  box-shadow: none;
+  border-radius: 0;
+}
+
 
 /* ---------- Role/status badges ---------------------------- */
 
@@ -1128,6 +1233,50 @@ hr {
 }
 
 .admin-nav-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Burger button for the admin nav — only renders below the lg breakpoint
+   (≤1023.98px). On desktop it's display:none and stays out of the way so
+   the original navbar layout is byte-identical to pre-mobile-work. */
+.admin-nav__burger {
+  display: none;
+  background: none;
+  border: 0;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: auto;
+}
+
+.admin-nav__drawer {
+  background: #0C2866;
+  color: #ffffff;
+  padding: 0.5rem 2rem 1rem;
+}
+
+.admin-nav__drawer a,
+.admin-nav__drawer .nav-disabled {
+  display: block;
+  padding: 0.5rem 0;
+  color: #ffffff;
+}
+
+.admin-nav__drawer a:hover { text-decoration: underline; }
+
+.admin-nav__drawer > div { padding-top: 0.5rem; }
+
+@media (max-width: 1023.98px) {
+  /* Hide every admin-nav child except the brand (first) and the burger so
+     the navy bar collapses to brand + burger. The drawer below the nav
+     reveals the full link list when toggled. */
+  .admin-nav { padding: 0.875rem 1.25rem; gap: 0.75rem; }
+  .admin-nav > *:not(:first-child):not(.admin-nav__burger) { display: none; }
+  .admin-nav__burger { display: inline-flex; }
+}
+
+@media (min-width: 1024px) {
+  /* Drawer is mobile-only; never reveal it on desktop even if toggled. */
+  .admin-nav__drawer { display: none !important; }
+}
 
 
 /* ---------- Section heading helper ------------------------ */
@@ -1209,6 +1358,16 @@ hr {
   transform: translateX(2px);
 }
 
+/* Tighter variant for dense dashboards — title only, no description */
+.action-card--compact {
+  padding: 0.875rem 1.125rem;
+}
+.action-card--compact .action-card__title {
+  font-size: 1rem;
+  margin-bottom: 0;
+  padding-right: 0;
+}
+
 .action-card--soon {
   background-color: #fafbfc;
   border-style: dashed;
@@ -1242,6 +1401,88 @@ hr {
   border-radius: 999px;
 }
 
+/* Volunteer/admin "Volunteers Needed" hero — sits above the grid */
+.action-card--hero {
+  background-color: #C41C1C;
+  border-color: #C41C1C;
+  padding: 1.75rem 2rem;
+}
+
+.action-card--hero:hover {
+  border-color: #0C2866;
+  box-shadow: 0 6px 20px -6px rgba(196, 28, 28, 0.45);
+}
+
+.action-card--hero .action-card__title {
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.action-card--hero .action-card__description {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  max-width: 56ch;
+}
+
+.action-card--hero .action-card__arrow {
+  color: #ffffff;
+  top: 1.75rem;
+  right: 2rem;
+}
+
+/* ============================================================
+   ADMIN DASHBOARD STAT CARDS
+   ============================================================ */
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card__label {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.stat-card__value {
+  font-family: "Playfair Display", serif;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  color: #0C2866;
+  margin-top: 0.25rem;
+}
+
+.stat-card__sub {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* Disabled "coming soon" item inside the admin navbar */
+.admin-nav .nav-disabled {
+  color: rgba(255, 255, 255, 0.55);
+  cursor: not-allowed;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-nav .nav-soon {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+}
+
 /* ============================================================
    EMBASSY (mockup)
    ============================================================ */
@@ -1251,6 +1492,13 @@ hr {
 }
 
 .flex-1 { flex: 1 1 auto; }
+.whitespace-nowrap { white-space: nowrap; }
+
+/* Sortable column header — used by app/helpers/application_helper.rb#sort_link */
+.table th a { color: inherit; text-decoration: none; }
+.table th a:hover { text-decoration: underline; }
+.table th .sort-active,
+.table th a.sort-active { color: #0C2866; font-weight: 700; }
 
 /* Embassy page wrappers ------------------------------------------------ */
 
@@ -1345,6 +1593,239 @@ hr {
   margin: 0;
 }
 
+/* Admin: embassy application — interview view ------------------------- */
+/* Dense single-page layout. The attaché scans down a tight 3-column grid
+   (label / question / answer), so each Q&A occupies one or two lines. */
+
+.qa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.qa-header__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0C2866;
+  margin: 0;
+}
+
+.qa-header__sub {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 0.125rem 0 0;
+}
+
+.qa-header__sub strong { color: #0C2866; }
+
+.qa-header__actions {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.qa-header__actions .btn {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* Compact info strip — notary + pool draw on one row */
+.qa-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  background: #fffaf0;
+  border: 1px solid #e6d3a3;
+  border-left: 4px solid #c89b3c;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.qa-strip__cell {
+  flex: 1 1 18rem;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.qa-strip__label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a6d2a;
+  white-space: nowrap;
+}
+
+.qa-strip__value {
+  color: #0C2866;
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+/* Section block */
+.qa-section {
+  margin-bottom: 1.25rem;
+}
+
+.qa-section__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0 0 0.25rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid #0C2866;
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+.qa-section__num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.qa-section__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0C2866;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.qa-section__badge {
+  margin-left: auto;
+  display: inline-block;
+  padding: 0.1875rem 0.625rem;
+  background: #fbbf24;
+  color: #78350f;
+  border-radius: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Section 3 — randomized pool gets a distinct background tint
+   and a thicker yellow accent so the eye lands on it instantly. */
+.qa-section--pool {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0.375rem;
+  padding: 0.625rem 0.875rem 0.5rem;
+  margin: 1.25rem 0;
+}
+
+.qa-section--pool .qa-section__head {
+  border-bottom-color: #f59e0b;
+}
+
+/* One Q&A row: label · question · answer */
+.qa-row {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(10rem, 17rem) 1fr;
+  gap: 0.5rem 0.75rem;
+  align-items: baseline;
+  padding: 0.4rem 0.25rem;
+  border-bottom: 1px solid #f1f3f5;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.qa-row:last-child { border-bottom: none; }
+
+.qa-row__num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #0C2866;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  align-self: center;
+  justify-self: start;
+}
+
+.qa-section--pool .qa-row__num {
+  background: #f59e0b;
+  color: #78350f;
+}
+
+.qa-row__q {
+  font-size: 0.8125rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.qa-row__a {
+  color: #111827;
+  font-weight: 500;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.qa-row__a p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #111827;
+}
+
+.qa-row__a p + p { margin-top: 0.25rem; }
+
+.qa-blank {
+  font-style: italic;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+}
+
+.qa-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.qa-pill {
+  display: inline-block;
+  padding: 0.0625rem 0.5rem;
+  background: #e0e7ff;
+  color: #1e3a8a;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.qa-affirm {
+  color: #047857;
+  font-weight: 700;
+}
+
+.qa-decline {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+/* On narrow screens the question column gets too cramped; stack instead. */
+@media (max-width: 640px) {
+  .qa-row {
+    grid-template-columns: 2.25rem 1fr;
+  }
+  .qa-row__q { grid-column: 2; }
+  .qa-row__a { grid-column: 2; }
+}
+
 /* Booking confirm actions --------------------------------------------- */
 
 /* button_to wraps its button in a <form>, which is block-level by default.
@@ -1431,6 +1912,66 @@ hr {
   margin: 0.375rem 0 0;
   text-align: right;
   letter-spacing: 0.04em;
+}
+
+/* Volunteer slot capacity states --------------------------------------- */
+
+.volunteer-capacity {
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  margin: 0.375rem 0 0;
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+.volunteer-capacity--empty {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.volunteer-capacity--partial {
+  color: #9A3412;
+}
+
+.volunteer-capacity--full {
+  color: #7a8189;
+}
+
+.schedule-item.schedule-item--volunteer-empty {
+  border-left: 4px solid #b91c1c;
+  background: #fef2f2;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Admin tabs ----------------------------------------------------------- */
+
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+}
+
+.admin-tab {
+  padding: 0.5rem 1rem;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.9375rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.admin-tab:hover {
+  color: #1e3a8a;
+  opacity: 1;
+}
+
+.admin-tab--active {
+  color: #1e3a8a;
+  border-bottom-color: #1e3a8a;
+  font-weight: 600;
 }
 
 .add-btn--disabled {
@@ -1856,6 +2397,49 @@ hr {
 
 .embassy-ceremony__back { display: flex; gap: 0.75rem; justify-content: center; }
 
+/* Organizer note ------------------------------------------------------- */
+
+.organizer-note {
+  margin-top: 1.25rem;
+  padding: 1.5rem 1.75rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.organizer-note__heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #6B4220;
+  margin: 0;
+}
+
+.organizer-note p {
+  margin: 0;
+  color: #525C66;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.organizer-note__list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #525C66;
+  font-size: 0.9375rem;
+}
+
+.organizer-note__list li { line-height: 1.55; }
+
+.organizer-note__signoff {
+  font-style: italic;
+}
+
 /* Expired state -------------------------------------------------------- */
 
 .embassy-expired {
@@ -1935,8 +2519,6 @@ hr {
 
 .plan-item__embassy-action {
   padding: 0.875rem 1.25rem 1rem;
-  border-top: 1px solid #eef1f4;
-  background: #fbfcfd;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
@@ -1971,7 +2553,8 @@ hr {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
   margin-bottom: 0.625rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eef1f4;
@@ -2443,6 +3026,7 @@ hr {
   .embassy-ceremony__download,
   .embassy-ceremony__etiquette,
   .embassy-ceremony__back,
+  .organizer-note,
   .embassy-ceremony__preview > h2,
   .embassy-ceremony__preview > p,
   .flex.items-center.justify-between,  /* admin page h1 + actions row */
@@ -2578,3 +3162,12 @@ hr {
 .speakers-list__title    { color: #525C66; font-size: 0.9375rem; }
 
 .btn-small { padding: 0.25rem 0.625rem; font-size: 0.8125rem; }
+
+/* ---------- Meal-spot transport form: hide passenger seats unless driving --- */
+/* Uses :has() to react to the radio's checked state — no JS needed. */
+.transport-fields .seats-field {
+  display: none;
+}
+.transport-fields:has(input[type="radio"][value="driving"]:checked) .seats-field {
+  display: block;
+}
