@@ -1,29 +1,31 @@
 class Admin::EmbassyApplicationsController < AdminController
-  ACTIVE_SORTS = {
-    "appointment" => "schedule_items.day ASC, schedule_items.sort_time ASC",
-    "name"        => "users.last_name ASC, users.first_name ASC",
-    "serial"      => "embassy_applications.serial ASC"
+  ACTIVE_SORTABLE_COLUMNS = {
+    "appointment" => "schedule_items.day, schedule_items.sort_time",
+    "name"        => "users.last_name, users.first_name",
+    "serial"      => "embassy_applications.serial"
   }.freeze
+  ACTIVE_DEFAULT_ORDER = "schedule_items.day ASC, schedule_items.sort_time ASC"
 
-  DELIVERED_SORTS = ACTIVE_SORTS.merge(
-    "delivered" => "embassy_applications.passport_received_at DESC"
+  DELIVERED_SORTABLE_COLUMNS = ACTIVE_SORTABLE_COLUMNS.merge(
+    "delivered" => "embassy_applications.passport_received_at"
   ).freeze
+  DELIVERED_DEFAULT_ORDER = "embassy_applications.passport_received_at DESC"
 
   def index
-    @sort  = ACTIVE_SORTS.key?(params[:sort]) ? params[:sort] : "appointment"
+    order_clause = apply_sort(ACTIVE_SORTABLE_COLUMNS) || ACTIVE_DEFAULT_ORDER
     @query = params[:q].to_s.strip
     @applications = filtered_scope
       .where(passport_received_at: nil)
-      .reorder(Arel.sql(ACTIVE_SORTS[@sort]))
+      .reorder(Arel.sql(order_clause))
     @pickups_by_user_id = preload_pickups_for(@applications)
   end
 
   def delivered
-    @sort  = DELIVERED_SORTS.key?(params[:sort]) ? params[:sort] : "delivered"
+    order_clause = apply_sort(DELIVERED_SORTABLE_COLUMNS) || DELIVERED_DEFAULT_ORDER
     @query = params[:q].to_s.strip
     @applications = filtered_scope
       .where.not(passport_received_at: nil)
-      .reorder(Arel.sql(DELIVERED_SORTS[@sort]))
+      .reorder(Arel.sql(order_clause))
     @pickups_by_user_id = preload_pickups_for(@applications)
   end
 

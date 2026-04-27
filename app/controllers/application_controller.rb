@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   before_action :authenticate_user!
+  before_action :touch_last_seen
 
   helper_method :current_user, :admin?
 
@@ -22,6 +23,12 @@ class ApplicationController < ActionController::Base
       session[:return_to] = request.url if request.get?
       redirect_to new_session_path, alert: "Please sign in."
     end
+  end
+
+  def touch_last_seen
+    return unless current_user
+    return if current_user.last_seen_at && current_user.last_seen_at > 5.minutes.ago
+    current_user.update_columns(last_seen_at: Time.current)
   end
 
   def require_admin!
