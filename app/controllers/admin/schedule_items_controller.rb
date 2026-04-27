@@ -3,8 +3,23 @@ module Admin
     before_action :set_schedule_item, only: %i[edit update destroy]
 
     def index
-      @selected_kind  = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : nil
-      @selected_day   = ScheduleItem::DAY_META.key?(params[:day].to_s) ? params[:day] : nil
+      # Filters persist in the admin's session so they survive redirects after
+      # edit/update/delete and "back from another page" navigation. An explicit
+      # blank param (sent by the "All" pill) clears that session slot.
+      if params.key?(:kind)
+        @selected_kind = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : nil
+        session[:admin_schedule_kind] = @selected_kind
+      else
+        @selected_kind = session[:admin_schedule_kind]
+      end
+
+      if params.key?(:day)
+        @selected_day = ScheduleItem::DAY_META.key?(params[:day].to_s) ? params[:day] : nil
+        session[:admin_schedule_day] = @selected_day
+      else
+        @selected_day = session[:admin_schedule_day]
+      end
+
       @schedule_items = ScheduleItem.by_kind(@selected_kind).by_day(@selected_day).ordered
     end
 

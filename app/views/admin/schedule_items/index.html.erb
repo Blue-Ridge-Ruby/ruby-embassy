@@ -11,7 +11,7 @@
 <% if @schedule_items.empty? %>
   <p class="text-gray py-8">
     No items match this filter.
-    <%= link_to "Clear filter", admin_schedule_items_path, class: "text-blue underline" %>
+    <%= link_to "Clear filter", admin_schedule_items_path(kind: "", day: ""), class: "text-blue underline" %>
   </p>
 <% else %>
   <div class="table-scroll">

@@ -3,12 +3,11 @@
     base_path    - String, e.g. admin_schedule_items_path
     selected_day - String or nil, the currently active day key ("wed", "thu", etc.)
 %>
-<% qp_clear = request.query_parameters.except(:day) %>
 <nav class="kind-filter" aria-label="Filter by day">
   <span class="kind-filter__label">Day:</span>
 
   <%= link_to "All",
-        base_path + (qp_clear.any? ? "?#{qp_clear.to_query}" : ""),
+        base_path + "?#{request.query_parameters.merge(day: "").to_query}",
         class: "kind-filter__btn #{'kind-filter__btn--active' if selected_day.blank?}" %>
 
   <% ScheduleItem::DAY_META.each do |day_key, meta| %>
