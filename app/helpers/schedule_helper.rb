@@ -1,5 +1,5 @@
 module ScheduleHelper
-  KIND_DISPLAY_OVERRIDES = { "lightning" => "Lightning Talks" }.freeze
+  KIND_DISPLAY_OVERRIDES = { "lightning" => "⚡ Lightning Talks" }.freeze
 
   def kind_display_label(kind)
     return nil if kind.blank?
