@@ -1187,7 +1187,10 @@ hr {
 .admin-nav {
   background: #0C2866;
   color: #ffffff;
-  padding: 0.875rem 1.5rem;
+  padding: 0.875rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .admin-nav a { color: #ffffff; }
@@ -1205,6 +1208,50 @@ hr {
 }
 
 .admin-nav-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Burger button for the admin nav — only renders below the lg breakpoint
+   (≤1023.98px). On desktop it's display:none and stays out of the way so
+   the original navbar layout is byte-identical to pre-mobile-work. */
+.admin-nav__burger {
+  display: none;
+  background: none;
+  border: 0;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: auto;
+}
+
+.admin-nav__drawer {
+  background: #0C2866;
+  color: #ffffff;
+  padding: 0.5rem 2rem 1rem;
+}
+
+.admin-nav__drawer a,
+.admin-nav__drawer .nav-disabled {
+  display: block;
+  padding: 0.5rem 0;
+  color: #ffffff;
+}
+
+.admin-nav__drawer a:hover { text-decoration: underline; }
+
+.admin-nav__drawer > div { padding-top: 0.5rem; }
+
+@media (max-width: 1023.98px) {
+  /* Hide every admin-nav child except the brand (first) and the burger so
+     the navy bar collapses to brand + burger. The drawer below the nav
+     reveals the full link list when toggled. */
+  .admin-nav { padding: 0.875rem 1.25rem; gap: 0.75rem; }
+  .admin-nav > *:not(:first-child):not(.admin-nav__burger) { display: none; }
+  .admin-nav__burger { display: inline-flex; }
+}
+
+@media (min-width: 1024px) {
+  /* Drawer is mobile-only; never reveal it on desktop even if toggled. */
+  .admin-nav__drawer { display: none !important; }
+}
 
 
 /* ---------- Section heading helper ------------------------ */
