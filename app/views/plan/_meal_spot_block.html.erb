@@ -1,0 +1,50 @@
+<%
+  user_rsvp = current_user.meal_spot_rsvps
+                          .includes(meal_spot_transport: :meal_spot)
+                          .find_by(schedule_item: item)
+  visible_spots = item.meal_spots.where("is_public = TRUE OR created_by_id = ?", current_user.id)
+  spot_count = visible_spots.count
+%>
+
+<% if user_rsvp %>
+  <% spot      = user_rsvp.meal_spot %>
+  <% transport = user_rsvp.meal_spot_transport %>
+  <div style="margin-top: 0.5rem; padding: 0.625rem 0.75rem; background: #f9fafb; border-left: 3px solid #C41C1C; border-radius: 4px;">
+    <p class="text-sm" style="font-weight: 500; color: #1F2937;">
+      Going to
+      <% if spot.map_url.present? %>
+        <%= link_to spot.name, spot.map_url, target: "_blank", rel: "noopener noreferrer", class: "text-blue underline" %>
+      <% else %>
+        <span class="text-navy"><%= spot.name %></span>
+      <% end %>
+      <% unless spot.is_public %>
+        · <span class="item-badge item-badge--private">Private</span>
+      <% end %>
+    </p>
+    <p class="text-sm" style="color: #525C66;">
+      <%= transport.mode_label %> · leaves <%= transport.departs_at.strftime("%-l:%M %p") %>
+      <% if transport.driving? %>
+        · <%= transport.passenger_count %> of <%= transport.seats_offered %> passenger seats
+      <% end %>
+    </p>
+    <% if spot.meet_up_spot.present? %>
+      <p class="text-sm" style="color: #525C66;">Meet at <%= spot.meet_up_spot %></p>
+    <% end %>
+    <% if spot.contact_info.present? %>
+      <p class="text-sm" style="color: #525C66;">Contact: <%= spot.contact_info %></p>
+    <% end %>
+    <p style="margin-top: 0.375rem;">
+      <%= link_to "View all spots →",
+                  schedule_item_meal_spots_path(item),
+                  class: "text-sm text-blue underline",
+                  data: { turbo_frame: "_top" } %>
+    </p>
+  </div>
+<% else %>
+  <p style="margin-top: 0.375rem;">
+    <%= link_to (spot_count.zero? ? "Plan a spot →" : "View #{spot_count} #{'spot'.pluralize(spot_count)} →"),
+                schedule_item_meal_spots_path(item),
+                class: "text-sm text-blue underline",
+                data: { turbo_frame: "_top" } %>
+  </p>
+<% end %>

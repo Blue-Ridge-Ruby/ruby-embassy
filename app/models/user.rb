@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :planned_schedule_items, through: :plan_items, source: :schedule_item
   has_many :embassy_bookings, dependent: :destroy
   has_many :embassy_applications, through: :embassy_bookings
+  has_many :meal_spot_rsvps, dependent: :destroy
   has_many :created_schedule_items,
            class_name: "ScheduleItem",
            foreign_key: :created_by_id,

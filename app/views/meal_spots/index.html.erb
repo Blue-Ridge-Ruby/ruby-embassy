@@ -1,0 +1,62 @@
+<% content_for(:title, "#{@meal.title} · Where to eat") %>
+
+<% day_meta = ScheduleItem::DAY_META[@meal.day] %>
+<% current_spot_id = @current_user_rsvp&.meal_spot_transport&.meal_spot_id %>
+
+<section class="pb-32">
+  <div class="max-w-3xl mx-auto px-8">
+    <% if flash[:notice] %>
+      <div class="alert alert-success mb-4"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="alert alert-error mb-4"><%= flash[:alert] %></div>
+    <% end %>
+
+    <p class="text-sm text-gray mb-2">
+      <%= link_to "← Back to schedule", schedule_path, class: "text-blue underline" %>
+    </p>
+
+    <h1 class="text-2xl sm:text-3xl md:text-hero leading-tight font-medium text-navy mb-2">
+      <%= @meal.title %>
+    </h1>
+    <p class="text-lg text-gray mb-8">
+      <%= day_meta[:label] %>, <%= day_meta[:date] %> · <%= @meal.time_label %>
+      <% if @meal.location.present? %>
+        · <%= location_or_map_link(@meal) %>
+      <% end %>
+    </p>
+
+    <% if @meal_spots.any? %>
+      <div class="space-y-6 mb-8">
+        <% @meal_spots.each do |spot| %>
+          <%= render "meal_spot",
+                     spot:             spot,
+                     meal:             @meal,
+                     current_spot_id:  current_spot_id,
+                     current_user_rsvp: @current_user_rsvp %>
+        <% end %>
+      </div>
+
+      <% if @current_user_hosted_spot %>
+        <p class="text-center text-sm text-gray">
+          You're hosting <strong><%= @current_user_hosted_spot.name %></strong>. Only one hosted spot per person per meal.
+        </p>
+      <% else %>
+        <div class="text-center">
+          <%= link_to "+ Suggest another spot",
+                      new_schedule_item_meal_spot_path(@meal),
+                      class: "btn btn-navy" %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="card card-compact text-center">
+        <p class="text-lg text-gray mb-6">
+          No plans yet, be the first to suggest a spot.
+        </p>
+        <%= link_to "Suggest a spot",
+                    new_schedule_item_meal_spot_path(@meal),
+                    class: "btn btn-red" %>
+      </div>
+    <% end %>
+  </div>
+</section>

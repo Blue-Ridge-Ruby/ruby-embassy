@@ -1,0 +1,63 @@
+<%
+  user_on_this_transport = current_user_rsvp&.meal_spot_transport_id == transport.id
+  user_has_other_rsvp    = current_user_rsvp.present? && !user_on_this_transport
+  attendees = transport.rsvps.map { |r| meal_spot_attendee_name(r.user) }
+  depart_label = transport.departs_at.strftime("%-l:%M %p")
+  mode_label   = transport.mode_label.downcase
+
+  button_label =
+    if user_on_this_transport
+      "✓ You're #{mode_label}"
+    elsif transport.full?
+      "Full"
+    elsif user_has_other_rsvp
+      "Switch to #{mode_label} (#{depart_label})"
+    else
+      "I'm in (#{mode_label}, #{depart_label})"
+    end
+%>
+
+<div class="flex items-center" style="justify-content: space-between; gap: 1rem; padding: 0.75rem; background: #f9fafb; border-radius: 8px;">
+  <div style="flex: 1;">
+    <p class="text-navy" style="font-weight: 500;">
+      <%= transport.mode_label %> · leaves <%= depart_label %>
+      <% if transport.driving? %>
+        · <span class="text-sm text-gray">
+          <% if transport.full? %>
+            <%= transport.seats_offered %> of <%= transport.seats_offered %> passenger seats · full
+          <% else %>
+            <%= transport.passenger_count %> of <%= transport.seats_offered %> passenger seats
+          <% end %>
+        </span>
+      <% end %>
+    </p>
+    <p class="text-sm text-gray">
+      <% if attendees.any? %>
+        <%= attendees.to_sentence %>
+      <% else %>
+        Nobody yet
+      <% end %>
+    </p>
+  </div>
+
+  <% if user_on_this_transport && current_user_rsvp %>
+    <% if transport.started_by?(current_user) %>
+      <button class="add-btn add-btn--added" disabled aria-pressed="true"
+              title="You started this group, so you can't remove yourself. Switch to another spot or join a different way to leave.">
+        <%= button_label %>
+      </button>
+    <% else %>
+      <%= button_to button_label,
+                    schedule_item_meal_spot_rsvp_path(meal, spot, current_user_rsvp),
+                    method: :delete,
+                    class: "add-btn add-btn--added" %>
+    <% end %>
+  <% elsif transport.full? %>
+    <button class="add-btn add-btn--disabled" disabled><%= button_label %></button>
+  <% else %>
+    <%= button_to button_label,
+                  schedule_item_meal_spot_rsvps_path(meal, spot, transport_id: transport.id),
+                  method: :post,
+                  class: "add-btn" %>
+  <% end %>
+</div>
