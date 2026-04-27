@@ -22,7 +22,6 @@
     <div data-controller="toggle" data-toggle-toggle-class="hidden">
       <nav class="admin-nav">
         <%= link_to "Ruby Embassy Admin", admin_root_path, class: "font-semibold" %>
-        <%= link_to "Admin Dashboard", admin_root_path %>
         <%= link_to "Attendees", admin_users_path %>
         <%= link_to "Volunteers", admin_volunteers_path %>
         <%= link_to "Schedule", admin_schedule_items_path %>
@@ -41,7 +40,6 @@
       </nav>
 
       <div data-toggle-target="toggleable" class="admin-nav__drawer hidden">
-        <%= link_to "Admin Dashboard", admin_root_path %>
         <%= link_to "Attendees", admin_users_path %>
         <%= link_to "Volunteers", admin_volunteers_path %>
         <%= link_to "Schedule", admin_schedule_items_path %>
