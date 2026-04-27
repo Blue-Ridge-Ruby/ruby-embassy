@@ -25,7 +25,12 @@
         <% @slots.each do |slot| %>
           <% state = slot.volunteer_state %>
           <tr>
-            <td class="font-medium text-navy"><%= slot.title %></td>
+            <td>
+              <div class="font-medium text-navy"><%= slot.title %></div>
+              <% if slot.description.present? %>
+                <div class="text-gray text-sm"><%= slot.description %></div>
+              <% end %>
+            </td>
             <td>
               <%= ScheduleItem::DAY_META.dig(slot.day, :label) %><br>
               <span class="text-gray text-sm"><%= slot.time_label %></span>
@@ -43,7 +48,10 @@
               </span>
             </td>
             <td class="text-right">
-              <%= link_to "View", admin_volunteer_slot_path(slot), class: "btn btn-muted" %>
+              <div class="flex gap-2 justify-end">
+                <%= link_to "View", admin_volunteer_slot_path(slot), class: "btn btn-muted" %>
+                <%= link_to "Edit", edit_admin_schedule_item_path(slot, return_to: admin_volunteer_slots_path), class: "btn btn-muted" %>
+              </div>
             </td>
           </tr>
         <% end %>
