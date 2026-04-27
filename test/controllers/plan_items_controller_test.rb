@@ -69,7 +69,8 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
   test "attendee POST to a volunteers_only item returns 404 (visibility guard)" do
     hidden = ScheduleItem.create!(
       slug: "vol-only", day: "fri", title: "Vol-only briefing",
-      kind: :volunteer, is_public: true, audience: "volunteers_only"
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
     )
     sign_in_as users(:attendee_one)
 
@@ -82,7 +83,8 @@ class PlanItemsControllerTest < ActionDispatch::IntegrationTest
   test "volunteer can RSVP to a volunteers_only item" do
     hidden = ScheduleItem.create!(
       slug: "vol-only", day: "fri", title: "Vol-only briefing",
-      kind: :volunteer, is_public: true, audience: "volunteers_only"
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
     )
     sign_in_as users(:volunteer_one)
 

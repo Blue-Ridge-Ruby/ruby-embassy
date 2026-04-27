@@ -1,0 +1,6 @@
+<nav class="admin-tabs mb-6" aria-label="Volunteer views">
+  <%= link_to "By person", admin_volunteers_path,
+        class: "admin-tab #{'admin-tab--active' if controller_name == 'volunteers'}" %>
+  <%= link_to "By slot", admin_volunteer_slots_path,
+        class: "admin-tab #{'admin-tab--active' if controller_name == 'volunteer_slots'}" %>
+</nav>

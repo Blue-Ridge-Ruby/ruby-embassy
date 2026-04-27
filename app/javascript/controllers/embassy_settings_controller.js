@@ -1,17 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Toggles visibility of the embassy-only settings (capacity, mode) on the
-// admin schedule-item form based on the kind dropdown.
+// Toggles visibility of kind-specific settings panels (embassy and volunteer)
+// on the admin schedule-item form based on the kind dropdown.
 export default class extends Controller {
-  static targets = ["kindSelect", "extras"]
+  static targets = ["kindSelect", "extras", "volunteerExtras"]
 
   connect() {
     this.toggle()
   }
 
   toggle() {
-    if (!this.hasExtrasTarget || !this.hasKindSelectTarget) return
-    const isEmbassy = this.kindSelectTarget.value === "embassy"
-    this.extrasTarget.hidden = !isEmbassy
+    if (!this.hasKindSelectTarget) return
+    const kind = this.kindSelectTarget.value
+    if (this.hasExtrasTarget) this.extrasTarget.hidden = kind !== "embassy"
+    if (this.hasVolunteerExtrasTarget) this.volunteerExtrasTarget.hidden = kind !== "volunteer"
   }
 }

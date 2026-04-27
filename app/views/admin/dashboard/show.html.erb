@@ -32,11 +32,10 @@
     <div class="action-card__description">Manage attendees, volunteers, and admins. Sync from Tito.</div>
   <% end %>
 
-  <div class="action-card action-card--soon">
+  <%= link_to admin_volunteers_path, class: "action-card" do %>
     <div class="action-card__title">Volunteers</div>
     <div class="action-card__description">Coordinate volunteer signups, shifts, and assignments.</div>
-    <span class="action-card__badge">Soon</span>
-  </div>
+  <% end %>
 
   <%= link_to admin_schedule_items_path, class: "action-card" do %>
     <div class="action-card__title">Schedule</div>

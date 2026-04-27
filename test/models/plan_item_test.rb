@@ -32,4 +32,25 @@ class PlanItemTest < ActiveSupport::TestCase
     plan = PlanItem.new(user: users(:attendee_one), schedule_item: item)
     assert plan.valid?
   end
+
+  test "cannot create plan_item for a full volunteer slot" do
+    slot = ScheduleItem.create!(
+      day: "thu", title: "Stamp passports",
+      kind: :volunteer, is_public: true, volunteer_capacity: 1
+    )
+    PlanItem.create!(user: users(:volunteer_one), schedule_item: slot)
+
+    overflow = PlanItem.new(user: users(:jeremy), schedule_item: slot)
+    assert_not overflow.valid?
+    assert_includes overflow.errors[:base], "This volunteer slot is full"
+  end
+
+  test "non-full volunteer slot accepts a signup" do
+    slot = ScheduleItem.create!(
+      day: "thu", title: "Stamp passports",
+      kind: :volunteer, is_public: true, volunteer_capacity: 2
+    )
+    plan = PlanItem.new(user: users(:volunteer_one), schedule_item: slot)
+    assert plan.valid?
+  end
 end

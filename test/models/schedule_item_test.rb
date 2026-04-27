@@ -189,4 +189,72 @@ class ScheduleItemTest < ActiveSupport::TestCase
       ))
     end
   end
+
+  # ----- Volunteer capacity ----------------------------------------------
+
+  def volunteer_attrs(overrides = {})
+    valid_attrs(kind: :volunteer, title: "Stamp passports", volunteer_capacity: 3).merge(overrides)
+  end
+
+  test "volunteer_capacity is required when kind is volunteer" do
+    item = ScheduleItem.new(volunteer_attrs(volunteer_capacity: nil))
+    assert_not item.valid?
+    assert_includes item.errors[:volunteer_capacity], "can't be blank"
+  end
+
+  test "volunteer_capacity not required for non-volunteer kinds" do
+    item = ScheduleItem.new(valid_attrs(kind: :activity, volunteer_capacity: nil))
+    assert item.valid?, item.errors.full_messages.inspect
+  end
+
+  test "volunteer_capacity must be a positive integer" do
+    item = ScheduleItem.new(volunteer_attrs(volunteer_capacity: 0))
+    assert_not item.valid?
+    assert_includes item.errors[:volunteer_capacity], "must be greater than 0"
+  end
+
+  test "volunteer_state returns :empty when no signups" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 3))
+    assert item.volunteer_empty?
+    assert_equal :empty, item.volunteer_state
+  end
+
+  test "volunteer_state returns :partial when some signups but not full" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 3))
+    item.plan_items.create!(user: users(:volunteer_one))
+    assert item.reload.volunteer_partial?
+    assert_equal :partial, item.volunteer_state
+  end
+
+  test "volunteer_state returns :full when capacity reached" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 2))
+    item.plan_items.create!(user: users(:volunteer_one))
+    item.plan_items.create!(user: users(:jeremy))
+    assert item.reload.volunteer_full?
+    assert_equal :full, item.volunteer_state
+  end
+
+  test "volunteer_state returns nil for non-volunteer kinds" do
+    item = ScheduleItem.create!(valid_attrs(kind: :talk))
+    assert_nil item.volunteer_state
+  end
+
+  test "volunteer_seats_remaining decrements with signups" do
+    item = ScheduleItem.create!(volunteer_attrs(volunteer_capacity: 3))
+    assert_equal 3, item.volunteer_seats_remaining
+    item.plan_items.create!(user: users(:volunteer_one))
+    assert_equal 2, item.reload.volunteer_seats_remaining
+  end
+
+  test "volunteer_empty scope returns only volunteer-kind items with zero signups" do
+    empty   = ScheduleItem.create!(volunteer_attrs(title: "Empty"))
+    filled  = ScheduleItem.create!(volunteer_attrs(title: "Filled", volunteer_capacity: 1))
+    filled.plan_items.create!(user: users(:volunteer_one))
+    other   = ScheduleItem.create!(valid_attrs(kind: :talk, title: "Talk"))
+
+    result = ScheduleItem.volunteer_empty
+    assert_includes result, empty
+    assert_not_includes result, filled
+    assert_not_includes result, other
+  end
 end

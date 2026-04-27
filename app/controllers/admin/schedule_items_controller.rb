@@ -49,12 +49,13 @@ module Admin
       attrs = params.require(:schedule_item).permit(
         :day, :time_label, :sort_time, :title, :host,
         :location, :map_url, :description, :kind, :flexible, :is_public, :audience,
-        :embassy_mode, :embassy_capacity
+        :embassy_mode, :embassy_capacity, :volunteer_capacity
       )
       unless attrs[:kind] == "embassy"
         attrs[:embassy_mode] = nil
         attrs[:embassy_capacity] = nil
       end
+      attrs[:volunteer_capacity] = nil unless attrs[:kind] == "volunteer"
       attrs
     end
   end
