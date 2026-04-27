@@ -86,12 +86,25 @@ class EmbassyApplicationsController < ApplicationController
 
   def finalize_or_redirect(application)
     if params[:intent] == "submit"
-      application.update!(state: "submitted", submitted_at: Time.current)
-      redirect_to embassy_application_path(application),
-                  notice: "Application submitted. Your serial is #{application.serial}."
+      if application.valid?(:submit)
+        application.update!(state: "submitted", submitted_at: Time.current)
+        redirect_to embassy_application_path(application),
+                    notice: "Application submitted. Your serial is #{application.serial}."
+      else
+        re_render_form_with_errors(application)
+      end
     else
       redirect_to plan_path, notice: "Draft saved. Pick up where you left off any time."
     end
+  end
+
+  def re_render_form_with_errors(application)
+    @application   = application
+    @booking       = application.embassy_booking
+    @sections      = sections_for(application)
+    @schedule_item = @booking.schedule_item
+    flash.now[:alert] = "Please answer the required questions before submitting."
+    render :new, status: :unprocessable_entity
   end
 
   def save_answers!(application, q_params)
