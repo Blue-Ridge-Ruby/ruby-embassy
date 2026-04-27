@@ -15,4 +15,12 @@ class EmbassyApplicationAnswer < ApplicationRecord
   def blank_value?
     value_text.blank? && value_array.blank?
   end
+
+  def satisfies_required?
+    case question.field_type
+    when "checkbox"       then value_text == "true"
+    when "checkbox_group" then value_array.present?
+    else                       value_text.present?
+    end
+  end
 end

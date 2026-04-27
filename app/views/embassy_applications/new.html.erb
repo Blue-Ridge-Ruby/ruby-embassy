@@ -27,6 +27,17 @@
     discretion, to reject applications deemed insufficiently Ruby.
   </p>
 
+  <% if @application.errors.any? %>
+    <div class="alert alert-error mb-4">
+      <p><strong>Please answer the following required questions:</strong></p>
+      <ul class="list-disc">
+        <% @application.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <%= form_with url: form_url,
                 method: form_method,
                 local: true,

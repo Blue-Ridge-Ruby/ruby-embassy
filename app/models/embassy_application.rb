@@ -8,6 +8,7 @@ class EmbassyApplication < ApplicationRecord
   enum :state, { draft: "draft", submitted: "submitted" }
 
   validates :serial, presence: true, uniqueness: true
+  validate :required_questions_answered, on: :submit
 
   before_validation :assign_serial, on: :create
 
@@ -25,9 +26,26 @@ class EmbassyApplication < ApplicationRecord
     embassy_application_answers.find_by(question_id: question.id)
   end
 
+  def required_questions_for_form
+    common = Question.active.where(section: [ 1, 2, 4, 5 ], required: true).ordered
+    drawn  = Question.active.where(external_id: drawn_question_ids, required: true).ordered
+    common.to_a + drawn.to_a
+  end
+
   private
 
   def assign_serial
     self.serial ||= EmbassyApplicationSerialGenerator.next
+  end
+
+  def required_questions_answered
+    answers_by_qid = embassy_application_answers.includes(:question).index_by(&:question_id)
+
+    required_questions_for_form.each do |question|
+      answer = answers_by_qid[question.id]
+      if answer.nil? || !answer.satisfies_required?
+        errors.add(:base, "#{question.label} is required")
+      end
+    end
   end
 end

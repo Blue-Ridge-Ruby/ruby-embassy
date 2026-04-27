@@ -13,15 +13,12 @@ module EmbassyQuestionsHelper
 
   EMBASSY_ETIQUETTE = [
     "Please arrive 5 minutes before your appointment time.",
-    "Bring your printed application. Unprinted applications will be filled out on-site — paper only, please.",
-    "Stamping appointments require an existing Ruby passport. No passport, no stamp.",
-    "Photography is permitted inside the Embassy Office, but please do not photograph other attendees without their consent.",
-    "The Embassy Office is located in the Main Hall. Look for the ruby-red awning."
+    "Bring your printed application — if you forget, we can pull it up on-site."
   ].freeze
 
   EMBASSY_HOURS = [
-    "Saturday, May 2 · 1:00 PM – 5:00 PM",
-    "Sunday, May 3 · 9:00 AM – 12:00 PM (stamping only)"
+    "Thursday, April 30 · 9:00 AM – 4:30 PM",
+    "Friday, May 1 · 9:00 AM – 5:00 PM"
   ].freeze
 
   SECTION_META = {
