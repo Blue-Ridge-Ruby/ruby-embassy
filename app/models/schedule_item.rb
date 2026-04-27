@@ -76,6 +76,14 @@ class ScheduleItem < ApplicationRecord
     plan_items.count
   end
 
+  def admin_rsvp_count
+    case kind
+    when "embassy"   then seats_taken
+    when "lightning" then lightning_talk_signups.count
+    else                  plan_items.count
+    end
+  end
+
   def seats_taken_for(mode)
     embassy_bookings.active.where(mode: mode).count
   end
