@@ -1171,10 +1171,7 @@ hr {
 .admin-nav {
   background: #0C2866;
   color: #ffffff;
-  padding: 0.875rem 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  padding: 0.875rem 1.5rem;
 }
 
 .admin-nav a { color: #ffffff; }
