@@ -54,6 +54,22 @@ class UserTest < ActiveSupport::TestCase
     assert_not_includes user.planned_schedule_items, volunteers_only_reception, "volunteers_only items should not be auto-added to attendees"
   end
 
+  test "new user is auto-RSVPed to slug-allowlisted items even when kind isn't a default" do
+    mystery = ScheduleItem.create!(
+      slug: "thu-mystery", day: "thu", title: "Mystery Activity",
+      kind: :community, is_public: true
+    )
+    other_community = ScheduleItem.create!(
+      slug: "wed-meetup", day: "wed", title: "Pre-Conference Meetup",
+      kind: :community, is_public: true
+    )
+
+    user = User.create!(email: "mystery@example.com", first_name: "M", last_name: "Y")
+
+    assert_includes user.planned_schedule_items, mystery, "slug-allowlisted item should be auto-added"
+    assert_not_includes user.planned_schedule_items, other_community, "other community items should not auto-add"
+  end
+
   test "materialize_default_plan_items is idempotent" do
     ScheduleItem.create!(day: "thu", title: "Default Talk", kind: :talk, is_public: true)
     user = User.create!(email: "idem@example.com", first_name: "I", last_name: "D")
