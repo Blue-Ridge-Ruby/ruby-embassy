@@ -32,6 +32,22 @@ class PlanItemsController < ApplicationController
   end
 
   def destroy
+    if @plan_item.embassy_booking&.embassy_application&.submitted?
+      message = "Submitted embassy applications can't be cancelled here."
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = message
+          render turbo_stream: turbo_stream.replace(
+            helpers.dom_id(@plan_item),
+            partial: "plan/plan_item",
+            locals: { plan_item: @plan_item }
+          ), status: :forbidden
+        end
+        format.html { redirect_to plan_path, alert: message }
+      end
+      return
+    end
+
     schedule_item    = @plan_item.schedule_item
     plan_item_dom_id = helpers.dom_id(@plan_item)
 

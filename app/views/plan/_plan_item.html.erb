@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      <% unless state == "pickup" %>
+      <% unless %w[pickup submitted].include?(state) %>
         <%= button_to "×",
                       plan_item_path(plan_item),
                       method: :delete,
