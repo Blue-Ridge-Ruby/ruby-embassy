@@ -1,0 +1,16 @@
+<%
+  is_self = rsvp.user_id == current_user.id
+%>
+<li style="margin-bottom: 0.25rem;">
+  <span class="text-navy">
+    <%= meal_spot_attendee_name(rsvp.user) %><%= " (you)" if is_self %>
+  </span>
+  <% if is_self %>
+    <% if rsvp.contact_method.present? %>
+      <span class="text-sm text-gray">· <%= rsvp.contact_method %></span>
+    <% end %>
+    <%= render "meal_spot_rsvps/contact_form", rsvp: rsvp, meal: meal, spot: spot %>
+  <% elsif contacts_visible && rsvp.contact_method.present? %>
+    <span class="text-sm text-gray">· <%= rsvp.contact_method %></span>
+  <% end %>
+</li>

@@ -34,6 +34,19 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "admin schedule index shows RSVPs column with kind-aware counts and small action buttons" do
+    ScheduleItem.create!(day: "fri", time_label: "9:00 AM", sort_time: 900,
+                         title: "Talk fixture", kind: "talk", is_public: true, flexible: false)
+    sign_in_as users(:jeremy)
+    get admin_schedule_items_path
+    assert_response :success
+
+    assert_select "th", text: "RSVPs"
+    assert_select "a.btn.btn-muted.btn-small", text: "Edit"
+    assert_select "form button.btn.btn-red.btn-small", text: "Delete"
+    assert_match "max-w-7xl", @response.body
+  end
+
   test "admin can create an item of kind: talk" do
     sign_in_as users(:jeremy)
     assert_difference -> { ScheduleItem.count }, 1 do

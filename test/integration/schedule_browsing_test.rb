@@ -178,6 +178,30 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
     assert_match "Group Bike Ride", response.body
   end
 
+  test "activity attendee names show on /schedule to non-RSVPers (no contacts)" do
+    users(:volunteer_one).plan_items.create!(
+      schedule_item: @activity, contact_method: "@vic on Slack"
+    )
+    sign_in_as users(:jeremy) # admin, but has not RSVP'd to this activity
+    get schedule_path
+
+    assert_match "Going (1)",    response.body
+    assert_match "Vic",          response.body
+    assert_no_match "@vic on Slack", response.body
+  end
+
+  test "RSVPers see other attendees' contacts on /schedule" do
+    users(:volunteer_one).plan_items.create!(
+      schedule_item: @activity, contact_method: "@vic on Slack"
+    )
+    users(:attendee_one).plan_items.create!(schedule_item: @activity)
+    sign_in_as users(:attendee_one)
+    get schedule_path
+
+    assert_match "@vic on Slack", response.body
+    assert_match "How to reach you", response.body, "current user sees their own contact form"
+  end
+
   # ----- Meal rides summary on /schedule ---------------------------------
 
   test "meal cards on /schedule show 'Suggest a spot' for non-hosted meals with no rides" do

@@ -76,6 +76,10 @@
           <span class="item-badge item-badge--tbd">TBD</span>
         <% end %>
       </div>
+
+      <% if item.activity? %>
+        <%= render "plan_items/attendees", schedule_item: item %>
+      <% end %>
     </div>
 
     <div class="schedule-item__action">

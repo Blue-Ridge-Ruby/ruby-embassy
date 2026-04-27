@@ -39,6 +39,19 @@ class ScheduleItem < ApplicationRecord
     "sun" => { label: "Sunday",    date: "May 3",    subtitle: "Departures" }
   }.freeze
 
+  CONFERENCE_DATES = {
+    "wed" => Date.new(2026, 4, 29),
+    "thu" => Date.new(2026, 4, 30),
+    "fri" => Date.new(2026, 5,  1),
+    "sat" => Date.new(2026, 5,  2),
+    "sun" => Date.new(2026, 5,  3)
+  }.freeze
+  private_constant :CONFERENCE_DATES
+
+  def self.upcoming_day_keys(today = Date.current)
+    CONFERENCE_DATES.select { |_, date| date >= today }.keys
+  end
+
   scope :public_items, -> { where(is_public: true) }
   # Public items filtered to what `user` is allowed to see. Admins and
   # volunteers see all public items; everyone else (attendees, signed-out)
@@ -88,6 +101,14 @@ class ScheduleItem < ApplicationRecord
 
   def rsvp_count
     plan_items.count
+  end
+
+  def admin_rsvp_count
+    case kind
+    when "embassy"   then seats_taken
+    when "lightning" then lightning_talk_signups.count
+    else                  plan_items.count
+    end
   end
 
   def hosted?
