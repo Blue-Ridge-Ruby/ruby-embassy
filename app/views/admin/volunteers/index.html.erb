@@ -1,0 +1,35 @@
+<% content_for :container_width, "max-w-6xl" %>
+
+<h1 class="text-2xl font-bold text-navy mb-6">Volunteers</h1>
+
+<%= render "admin/volunteers/tabs" %>
+
+<% if @volunteers.empty? %>
+  <p class="text-gray">No volunteers yet. Promote attendees from <%= link_to "Attendees", admin_users_path, class: "text-blue underline" %>.</p>
+<% else %>
+  <div class="table-scroll">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Slots signed up for</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @volunteers.each do |volunteer| %>
+          <% count = @slot_counts[volunteer.id].to_i %>
+          <tr>
+            <td class="font-medium text-navy"><%= volunteer.full_name %></td>
+            <td><span class="badge badge-<%= volunteer.role %>"><%= volunteer.role.humanize %></span></td>
+            <td><%= count %></td>
+            <td class="text-right">
+              <%= link_to "View", admin_volunteer_path(volunteer), class: "btn btn-muted" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

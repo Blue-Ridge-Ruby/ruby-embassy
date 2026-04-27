@@ -109,7 +109,8 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
       slug: "volunteer-briefing",
       day: "fri", time_label: "8:00 AM", sort_time: 800,
       title: "Volunteer Briefing",
-      kind: :volunteer, is_public: true, audience: "volunteers_only"
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
     )
     sign_in_as users(:attendee_one)
     get schedule_path
@@ -121,7 +122,8 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
       slug: "volunteer-briefing",
       day: "fri", time_label: "8:00 AM", sort_time: 800,
       title: "Volunteer Briefing",
-      kind: :volunteer, is_public: true, audience: "volunteers_only"
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
     )
     sign_in_as users(:volunteer_one)
     get schedule_path
@@ -133,7 +135,8 @@ class ScheduleBrowsingTest < ActionDispatch::IntegrationTest
       slug: "volunteer-briefing",
       day: "fri", time_label: "8:00 AM", sort_time: 800,
       title: "Volunteer Briefing",
-      kind: :volunteer, is_public: true, audience: "volunteers_only"
+      kind: :volunteer, is_public: true, audience: "volunteers_only",
+      volunteer_capacity: 3
     )
     sign_in_as users(:jeremy)
     get schedule_path
