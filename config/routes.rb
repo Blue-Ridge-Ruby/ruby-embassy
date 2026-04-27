@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     end
     resources :schedule_items
     resources :embassy_questions
+    resources :notary_profiles
     resources :embassy_applications, only: %i[index show] do
       member do
         patch :mark_received

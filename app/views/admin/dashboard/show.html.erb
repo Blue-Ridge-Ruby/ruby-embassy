@@ -53,6 +53,11 @@
     <div class="action-card__description">Add, edit, and archive application questions. Randomization draws from the active pool.</div>
   <% end %>
 
+  <%= link_to admin_notary_profiles_path, class: "action-card" do %>
+    <div class="action-card__title">Notary Pool</div>
+    <div class="action-card__description">Add, edit, and archive notary descriptions. One is drawn per printed application.</div>
+  <% end %>
+
   <%= link_to new_admin_embassy_blank_pdfs_path, class: "action-card" do %>
     <div class="action-card__title">Generate Blank Forms</div>
     <div class="action-card__description">Print N blank randomized applications for walk-ins and stragglers.</div>

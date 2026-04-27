@@ -1,0 +1,79 @@
+<% content_for :title, "Notary Pool — Embassy Admin" %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-navy">Notary Pool</h1>
+    <p class="text-muted">
+      <%= @notaries.count(&:active?) %> active notary descriptions ·
+      one is drawn per printed application
+    </p>
+  </div>
+  <%= link_to "+ Add Notary", new_admin_notary_profile_path, class: "btn btn-red" %>
+</div>
+
+<% active = @notaries.select(&:active?) %>
+<% if active.any? %>
+  <section class="embassy-bank-section">
+    <header class="embassy-bank-section__header">
+      <div>
+        <h2 class="embassy-bank-section__title">Active · PDF addendum</h2>
+        <p class="embassy-bank-section__hint">
+          The ice-breaker. Users locate someone matching the description at the Embassy
+          and have them sign.
+        </p>
+      </div>
+      <div>
+        <span class="badge-scope badge-scope--notary">
+          <%= active.size %> descriptions · draws 1 per form
+        </span>
+      </div>
+    </header>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 60px;">ID</th>
+          <th>Description (&ldquo;Someone who&hellip;&rdquo;)</th>
+          <th>Follow-up prompt</th>
+          <th style="width: 100px;">Usage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% active.each do |n| %>
+          <%= render "notary_row", notary: n %>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+<% end %>
+
+<% archived = @notaries.select(&:archived?) %>
+<% if archived.any? %>
+  <section class="embassy-bank-section">
+    <header class="embassy-bank-section__header">
+      <div>
+        <h2 class="embassy-bank-section__title">Archived</h2>
+        <p class="embassy-bank-section__hint">
+          Excluded from new applications. Historical applications still reference these.
+        </p>
+      </div>
+    </header>
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 60px;">ID</th>
+          <th>Description</th>
+          <th>Follow-up prompt</th>
+          <th style="width: 100px;">Usage</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% archived.each do |n| %>
+          <%= render "notary_row", notary: n %>
+        <% end %>
+      </tbody>
+    </table>
+  </section>
+<% end %>
