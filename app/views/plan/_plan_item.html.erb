@@ -96,14 +96,9 @@
       <div class="plan-item__time"><%= item.time_label %></div>
 
       <div class="plan-item__content">
-        <% if item.talk? && item.host.present? %>
-          <h3 class="plan-item__title"><%= item.host %></h3>
-          <p class="plan-item__talk-title">&ldquo;<%= item.title %>&rdquo;</p>
-        <% else %>
-          <h3 class="plan-item__title"><%= item.title %></h3>
-          <% if item.host.present? %>
-            <p class="plan-item__talk-title"><%= item.host %></p>
-          <% end %>
+        <h3 class="plan-item__title"><%= item.title %></h3>
+        <% if item.host.present? %>
+          <p class="plan-item__talk-title"><%= item.talk? ? speaker_link(item) : item.host %></p>
         <% end %>
 
         <% if item.location.present? %>
