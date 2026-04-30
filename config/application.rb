@@ -21,7 +21,7 @@ module RubyEmbassy
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
+    config.time_zone = "Eastern Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     MissionControl::Jobs.http_basic_auth_user = ENV["MISSION_CONTROL_USER"]
     MissionControl::Jobs.http_basic_auth_password = ENV["MISSION_CONTROL_PASSWORD"]
