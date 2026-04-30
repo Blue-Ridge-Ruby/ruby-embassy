@@ -72,6 +72,16 @@
     </div>
 
     <div>
+      <%= f.label :host_url, "Speaker profile URL", class: "label" %>
+      <%= f.url_field :host_url, class: "input",
+            placeholder: "https://blueridgeruby.com/speakers/..." %>
+      <p class="text-muted text-sm mt-1">
+        Optional. If set, the speaker's name links to this URL on /schedule and /plan.
+        Update this whenever you change the host so the link points to the right person.
+      </p>
+    </div>
+
+    <div>
       <%= f.label :location, class: "label" %>
       <%= f.text_field :location, class: "input" %>
     </div>

@@ -134,6 +134,37 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "admin edit form exposes a host_url field so name and link stay paired" do
+    item = ScheduleItem.create!(
+      day: "thu", title: "Keynote", host: "John Athayde",
+      host_url: "https://blueridgeruby.com/speakers/john-athayde/",
+      kind: :talk, is_public: true
+    )
+    sign_in_as users(:jeremy)
+    get edit_admin_schedule_item_path(item)
+
+    assert_select "input[name='schedule_item[host_url]'][value=?]",
+                  "https://blueridgeruby.com/speakers/john-athayde/"
+  end
+
+  test "admin update persists host_url alongside host" do
+    item = ScheduleItem.create!(
+      day: "thu", title: "Keynote", host: "John Athayde",
+      host_url: "https://blueridgeruby.com/speakers/john-athayde/",
+      kind: :talk, is_public: true
+    )
+    sign_in_as users(:jeremy)
+
+    patch admin_schedule_item_path(item), params: valid_form_params(
+      title: "Keynote", host: "Joël Quenneville",
+      host_url: "https://blueridgeruby.com/speakers/joel-quenneville/"
+    )
+
+    item.reload
+    assert_equal "Joël Quenneville", item.host
+    assert_equal "https://blueridgeruby.com/speakers/joel-quenneville/", item.host_url
+  end
+
   test "admin can create a volunteers_only public item" do
     sign_in_as users(:jeremy)
     post admin_schedule_items_path, params: valid_form_params(
