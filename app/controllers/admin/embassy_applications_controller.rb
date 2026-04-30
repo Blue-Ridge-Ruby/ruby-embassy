@@ -69,6 +69,17 @@ class Admin::EmbassyApplicationsController < AdminController
                   notice: "Moved #{application.serial} back to the active queue."
   end
 
+  def destroy
+    application = EmbassyApplication.find_by!(serial: params[:id])
+    booking = application.embassy_booking
+    applicant_name = booking.user.full_name
+    serial = application.serial
+    # Cascade via plan_item: deleting the application alone leaves a stale booking + plan slot that breaks the user's plan view.
+    booking.plan_item.destroy!
+    redirect_to admin_embassy_applications_path,
+                notice: "Deleted application #{serial} for #{applicant_name}. They'll need to rebook the appointment from the schedule."
+  end
+
   def schedule_pickup
     application   = EmbassyApplication.find_by!(serial: params[:id])
     applicant     = application.embassy_booking.user
