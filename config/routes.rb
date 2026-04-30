@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       post :sync, on: :collection
     end
     resources :schedule_items do
+      member { patch :toggle_passed }
       resources :lightning_talk_signups, only: %i[index create update destroy] do
         collection { patch :reorder }
       end

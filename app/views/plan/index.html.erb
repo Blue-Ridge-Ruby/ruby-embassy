@@ -10,6 +10,8 @@
       Your personal conference itinerary.
     </p>
 
+    <%= render "shared/show_past_filter", base_path: plan_path, show_past: @show_past %>
+
     <%# Travel section hidden — keep code in place for possible future implementation. %>
     <% if false %>
       <div class="travel-section">
@@ -28,7 +30,9 @@
     <% end %>
 
     <% ScheduleItem::DAY_META.each do |day_key, meta| %>
-      <%= render "day", day_key: day_key, meta: meta, plan_items: @plan_items_by_day[day_key] || [] %>
+      <% items = @plan_items_by_day[day_key] || [] %>
+      <% next if items.empty? && @days_with_any_plan_items.include?(day_key) %>
+      <%= render "day", day_key: day_key, meta: meta, plan_items: items %>
     <% end %>
   </div>
 </section>

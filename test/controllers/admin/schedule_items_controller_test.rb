@@ -196,6 +196,53 @@ class Admin::ScheduleItemsControllerTest < ActionDispatch::IntegrationTest
     assert_match "Clear-meal", response.body
   end
 
+  test "admin index hides passed items by default and shows them with show_past=1" do
+    upcoming = ScheduleItem.create!(day: "fri", title: "Still upcoming", kind: :talk, is_public: true)
+    finished = ScheduleItem.create!(day: "fri", title: "Already done", kind: :talk, is_public: true, passed: true)
+    sign_in_as users(:jeremy)
+
+    get admin_schedule_items_path
+    assert_match upcoming.title, response.body
+    assert_no_match finished.title, response.body
+
+    get admin_schedule_items_path, params: { show_past: "1" }
+    assert_match upcoming.title, response.body
+    assert_match finished.title, response.body
+  end
+
+  test "admin index remembers show_past across param-less revisits" do
+    upcoming = ScheduleItem.create!(day: "fri", title: "Persist-upcoming", kind: :talk, is_public: true)
+    finished = ScheduleItem.create!(day: "fri", title: "Persist-done", kind: :talk, is_public: true, passed: true)
+    sign_in_as users(:jeremy)
+
+    get admin_schedule_items_path, params: { show_past: "1" }
+    assert_match finished.title, response.body
+
+    get admin_schedule_items_path
+    assert_match finished.title, response.body
+    assert_match upcoming.title, response.body
+  end
+
+  test "admin toggle_passed flips the boolean" do
+    item = ScheduleItem.create!(day: "thu", title: "Toggle target", kind: :talk, is_public: true)
+    assert_equal false, item.passed
+
+    sign_in_as users(:jeremy)
+    patch toggle_passed_admin_schedule_item_path(item)
+    assert_equal true, item.reload.passed
+
+    patch toggle_passed_admin_schedule_item_path(item)
+    assert_equal false, item.reload.passed
+  end
+
+  test "non-admin cannot toggle_passed" do
+    item = ScheduleItem.create!(day: "thu", title: "Locked", kind: :talk, is_public: true)
+    sign_in_as users(:attendee_one)
+    patch toggle_passed_admin_schedule_item_path(item)
+    assert_response :not_found
+    assert_equal false, item.reload.passed
+  end
+
   test "admin filter survives edit→update→redirect" do
     keep   = ScheduleItem.create!(day: "fri", title: "Survives-talk", kind: :talk, is_public: true)
     other  = ScheduleItem.create!(day: "fri", title: "Hidden-meal",  kind: :meal, is_public: true)

@@ -100,6 +100,11 @@
       <%= f.label :is_public, "Public (appears on /schedule for all attendees)" %>
     </div>
 
+    <div class="flex items-center gap-2">
+      <%= f.check_box :passed %>
+      <%= f.label :passed, "Marked passed (hidden from /schedule and /plan unless 'Show past events')" %>
+    </div>
+
     <div>
       <%= f.label :audience, "Visible to", class: "label" %>
       <%= f.select :audience,

@@ -1,0 +1,10 @@
+<%#
+  locals:
+    base_path - String, e.g. schedule_path or admin_schedule_items_path
+    show_past - Boolean, true when past events are currently included
+%>
+<nav class="kind-filter" aria-label="Show past events">
+  <%= link_to (show_past ? "Hide past events" : "Show past events"),
+        base_path + "?#{request.query_parameters.merge(show_past: show_past ? nil : "1").compact.to_query}",
+        class: "kind-filter__btn #{'kind-filter__btn--active' if show_past}" %>
+</nav>

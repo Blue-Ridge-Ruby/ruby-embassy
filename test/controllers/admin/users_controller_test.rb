@@ -32,6 +32,25 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_match "Alice planned activity", response.body
   end
 
+  test "admin show hides passed plan items by default and shows them with show_past=1" do
+    alice = users(:attendee_one)
+    upcoming = ScheduleItem.create!(day: "fri", title: "Show-upcoming", kind: :activity,
+                                    is_public: true, time_label: "10:00 AM", sort_time: 1000)
+    finished = ScheduleItem.create!(day: "fri", title: "Show-done", kind: :activity,
+                                    is_public: true, time_label: "11:00 AM", sort_time: 1100, passed: true)
+    alice.plan_items.create!(schedule_item: upcoming)
+    alice.plan_items.create!(schedule_item: finished)
+
+    sign_in_as users(:jeremy)
+    get admin_user_path(alice)
+    assert_match upcoming.title, response.body
+    assert_no_match finished.title, response.body
+
+    get admin_user_path(alice), params: { show_past: "1" }
+    assert_match upcoming.title, response.body
+    assert_match finished.title, response.body
+  end
+
   test "admin show page hides talks and receptions from the plan section" do
     alice = users(:attendee_one)
     talk = ScheduleItem.create!(

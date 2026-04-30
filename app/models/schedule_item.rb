@@ -85,6 +85,8 @@ class ScheduleItem < ApplicationRecord
     day.present? && DAY_META.key?(day.to_s) ? where(day: day) : all
   }
   scope :volunteer_empty, -> { volunteer.where.missing(:plan_items) }
+  scope :passed,     -> { where(passed: true) }
+  scope :not_passed, -> { where(passed: false) }
   # Items every attendee is auto-RSVPed to on signup (and via the backfill
   # task). Restricted to public, audience: "everyone" so volunteer-only items
   # are never auto-added to attendees' plans. Matches by kind OR by an

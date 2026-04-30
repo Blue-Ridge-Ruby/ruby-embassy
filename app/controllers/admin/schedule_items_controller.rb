@@ -1,6 +1,6 @@
 module Admin
   class ScheduleItemsController < AdminController
-    before_action :set_schedule_item, only: %i[edit update destroy]
+    before_action :set_schedule_item, only: %i[edit update destroy toggle_passed]
 
     def index
       # Filters persist in the admin's session so they survive redirects after
@@ -20,7 +20,16 @@ module Admin
         @selected_day = session[:admin_schedule_day]
       end
 
-      @schedule_items = ScheduleItem.by_kind(@selected_kind).by_day(@selected_day).ordered
+      if params.key?(:show_past)
+        @show_past = params[:show_past].present?
+        session[:admin_schedule_show_past] = @show_past
+      else
+        @show_past = session[:admin_schedule_show_past] || false
+      end
+
+      scope = ScheduleItem.by_kind(@selected_kind).by_day(@selected_day).ordered
+      scope = scope.not_passed unless @show_past
+      @schedule_items = scope
     end
 
     def new
@@ -53,6 +62,12 @@ module Admin
       redirect_to admin_schedule_items_path, notice: "Schedule item deleted."
     end
 
+    def toggle_passed
+      @schedule_item.update!(passed: !@schedule_item.passed)
+      notice = @schedule_item.passed? ? "Marked passed." : "Marked upcoming."
+      redirect_to safe_return_to || admin_schedule_items_path, notice: notice
+    end
+
     private
 
     def set_schedule_item
@@ -73,7 +88,7 @@ module Admin
         :location, :map_url, :description, :kind, :flexible, :is_public, :audience,
         :offers_new_passport, :offers_stamping, :offers_passport_pickup,
         :new_passport_capacity, :stamping_capacity, :passport_pickup_capacity,
-        :volunteer_capacity
+        :volunteer_capacity, :passed
       )
       if attrs[:kind] == "embassy"
         ScheduleItem::EMBASSY_MODES.each do |mode|
