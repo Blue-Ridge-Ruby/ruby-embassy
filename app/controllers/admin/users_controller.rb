@@ -37,6 +37,7 @@ module Admin
 
     def show
       @user = User.find(params[:id])
+      @show_past = params[:show_past].present?
 
       all_plan_items = @user.plan_items
                             .includes(:schedule_item)
@@ -46,6 +47,8 @@ module Admin
                                 pi.schedule_item.sort_time.to_i
                               ]
                             }
+      all_plan_items = all_plan_items.reject { |pi| pi.schedule_item.passed? } unless @show_past
+
       @embassy_plan_items = all_plan_items.select { |pi| pi.schedule_item.embassy? }
       @other_plan_items = all_plan_items.reject do |pi|
         pi.schedule_item.embassy? || ScheduleItem::DEFAULT_PLAN_KINDS.include?(pi.schedule_item.kind)
@@ -55,7 +58,9 @@ module Admin
       # full_name. Catches both admin-dropdown assignments and user-created
       # custom blocks (the user-facing controller auto-sets host to
       # current_user.full_name on create).
-      @hosted_items = ScheduleItem.where(host: @user.full_name).ordered
+      hosted_scope = ScheduleItem.where(host: @user.full_name).ordered
+      hosted_scope = hosted_scope.not_passed unless @show_past
+      @hosted_items = hosted_scope
     end
 
     def new

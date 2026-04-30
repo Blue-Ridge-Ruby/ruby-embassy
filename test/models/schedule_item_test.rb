@@ -175,6 +175,25 @@ class ScheduleItemTest < ActiveSupport::TestCase
     assert_equal [],                      ScheduleItem.upcoming_day_keys(Date.new(2026, 5, 4))
   end
 
+  test "passed defaults to false" do
+    item = ScheduleItem.create!(valid_attrs)
+    assert_equal false, item.passed
+  end
+
+  test "passed scope returns only items marked passed" do
+    upcoming = ScheduleItem.create!(valid_attrs(title: "Upcoming"))
+    finished = ScheduleItem.create!(valid_attrs(title: "Finished", passed: true))
+    scope = ScheduleItem.where(id: [ upcoming.id, finished.id ]).passed
+    assert_equal [ finished ], scope.to_a
+  end
+
+  test "not_passed scope excludes items marked passed" do
+    upcoming = ScheduleItem.create!(valid_attrs(title: "Upcoming"))
+    finished = ScheduleItem.create!(valid_attrs(title: "Finished", passed: true))
+    scope = ScheduleItem.where(id: [ upcoming.id, finished.id ]).not_passed
+    assert_equal [ upcoming ], scope.to_a
+  end
+
   test "after_create auto-plans private items for creator" do
     assert_difference -> { PlanItem.count }, 1 do
       ScheduleItem.create!(valid_attrs(

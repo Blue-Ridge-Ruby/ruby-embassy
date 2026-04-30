@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_27_185402) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_30_033810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -199,6 +199,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_27_185402) do
     t.boolean "offers_new_passport", default: false, null: false
     t.boolean "offers_passport_pickup", default: false, null: false
     t.boolean "offers_stamping", default: false, null: false
+    t.boolean "passed", default: false, null: false
     t.integer "passport_pickup_capacity"
     t.string "slug"
     t.integer "sort_time"

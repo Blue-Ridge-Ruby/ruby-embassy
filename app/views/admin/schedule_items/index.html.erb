@@ -5,8 +5,9 @@
   <%= link_to "Add item", new_admin_schedule_item_path, class: "btn btn-red" %>
 </div>
 
-<%= render "shared/kind_filter", base_path: admin_schedule_items_path, selected_kind: @selected_kind %>
-<%= render "shared/day_filter",  base_path: admin_schedule_items_path, selected_day:  @selected_day %>
+<%= render "shared/kind_filter",      base_path: admin_schedule_items_path, selected_kind: @selected_kind %>
+<%= render "shared/day_filter",       base_path: admin_schedule_items_path, selected_day:  @selected_day %>
+<%= render "shared/show_past_filter", base_path: admin_schedule_items_path, show_past:     @show_past %>
 
 <% if @schedule_items.empty? %>
   <p class="text-gray py-8">
@@ -65,6 +66,10 @@
           </td>
           <td class="text-right">
             <div class="flex gap-2 justify-end">
+              <%= button_to (item.passed? ? "Mark upcoming" : "Mark passed"),
+                    toggle_passed_admin_schedule_item_path(item, return_to: request.fullpath),
+                    method: :patch,
+                    class: "btn btn-muted btn-small" %>
               <%= link_to "Edit", edit_admin_schedule_item_path(item), class: "btn btn-muted btn-small" %>
               <%= button_to "Delete", admin_schedule_item_path(item),
                     method: :delete,

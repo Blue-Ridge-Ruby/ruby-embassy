@@ -2,10 +2,12 @@ class ScheduleController < ApplicationController
   def index
     @selected_kind  = ScheduleItem.kinds.key?(params[:kind].to_s) ? params[:kind] : nil
     @show_unplanned = params[:unplanned].present?
+    @show_past      = params[:show_past].present?
     @planned_ids    = current_user.plan_items.pluck(:schedule_item_id).to_set
 
     scope = ScheduleItem.visible_to(current_user).by_kind(@selected_kind).ordered
     scope = scope.where.not(id: @planned_ids) if @show_unplanned
+    scope = scope.not_passed unless @show_past
 
     @items_by_day = scope.group_by(&:day)
   end
