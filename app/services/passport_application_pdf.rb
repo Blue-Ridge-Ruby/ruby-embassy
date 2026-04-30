@@ -59,10 +59,13 @@ class PassportApplicationPdf
     if @application
       render_application(pdf, @application)
     else
+      blank_fills = build_blank_fills(@count)
       @count.times do |i|
+        @current_blank = blank_fills[i]
         render_application(pdf, nil)
         pdf.start_new_page if i < @count - 1
       end
+      @current_blank = nil
     end
 
     paginate(pdf)
@@ -70,6 +73,22 @@ class PassportApplicationPdf
   end
 
   private
+
+  # Pre-pick a notary and a fresh random sample of supplementary questions for
+  # each blank in the batch. Sampled in Ruby (one query each) so every blank
+  # gets an independent pick — ActiveRecord's per-request query cache would
+  # otherwise return identical rows for repeated `random_pool_active.limit(N)`
+  # calls within a single render.
+  def build_blank_fills(count)
+    notaries = NotaryProfile.active.to_a
+    pool     = Question.random_pool_active.to_a
+    Array.new(count) do
+      {
+        notary:          notaries.sample,
+        drawn_questions: pool.sample(EmbassyApplicationDraw::POOL_SIZE)
+      }
+    end
+  end
 
   # ============================================================ orchestration
 
@@ -113,7 +132,7 @@ class PassportApplicationPdf
     pdf.move_down 10
     pdf.text "A.1  The Notary must be an attendee who:", size: 9, style: :bold
     pdf.move_down 4
-    notary = application&.notary_profile
+    notary = application&.notary_profile || @current_blank&.dig(:notary)
     boxed_text(pdf, notary&.description, height: 32)
 
     pdf.move_down 14
@@ -322,7 +341,9 @@ class PassportApplicationPdf
 
   def section_questions(application, section_number, drawn:)
     if drawn
-      application ? application.drawn_questions.to_a : Question.random_pool_active.limit(EmbassyApplicationDraw::POOL_SIZE).to_a
+      return application.drawn_questions.to_a            if application
+      return @current_blank[:drawn_questions]            if @current_blank
+      Question.random_pool_active.limit(EmbassyApplicationDraw::POOL_SIZE).to_a
     else
       Question.active.for_section(section_number).to_a
     end
@@ -339,12 +360,12 @@ class PassportApplicationPdf
     pdf.stroke_horizontal_rule
     pdf.move_down 3
 
-    serial      = application&.serial || "[BLANK]"
+    serial      = application&.serial.to_s
     booking     = application&.embassy_booking
     schedule    = booking&.schedule_item
-    when_text   = schedule ? "#{ScheduleItem::DAY_META.dig(schedule.day, :date)} · #{schedule.time_label}" : "—"
-    applicant   = booking&.user&.full_name || "—"
-    submitted   = application&.submitted_at&.strftime("%b %-d, %Y · %-l:%M %p") || "—"
+    when_text   = schedule ? "#{ScheduleItem::DAY_META.dig(schedule.day, :date)} · #{schedule.time_label}" : ""
+    applicant   = booking&.user&.full_name.to_s
+    submitted   = application&.submitted_at&.strftime("%b %-d, %Y · %-l:%M %p") || ""
 
     metadata_row(pdf, [
       [ "Serial No.",  serial ],
@@ -560,7 +581,7 @@ class PassportApplicationPdf
   # ============================================================== pagination
 
   def paginate(pdf)
-    serial = @application&.serial || "[BLANK]"
+    serial = @application&.serial
     total  = pdf.page_count
     pdf.repeat(:all, dynamic: true) do
       pdf.canvas do
@@ -571,8 +592,11 @@ class PassportApplicationPdf
         pdf.stroke_color "999999"
         pdf.stroke_line [ x, y + 14 ], [ x + w, y + 14 ]
         pdf.fill_color  "666666"
-        pdf.draw_text "Form RE-1 · Serial #{serial} · Page #{pdf.page_number} of #{total}",
-                      at: [ x + (w / 2.0) - 90, y ], size: 7
+        footer_text = serial.present? \
+          ? "Form RE-1 · Serial #{serial} · Page #{pdf.page_number} of #{total}" \
+          : "Form RE-1 · Page #{pdf.page_number} of #{total}"
+        pdf.text_box footer_text, at: [ x, y + 8 ], width: w, height: 10,
+                     size: 7, align: :center
         pdf.fill_color "000000"
         pdf.stroke_color "000000"
       end

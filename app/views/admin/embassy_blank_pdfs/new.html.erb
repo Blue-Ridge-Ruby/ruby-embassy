@@ -10,7 +10,7 @@
 </p>
 
 <div class="card card-compact mb-8">
-  <%= form_with url: admin_embassy_blank_pdfs_path, method: :post, local: true, class: "space-y-4" do |f| %>
+  <%= form_with url: admin_embassy_blank_pdfs_path, method: :post, data: { turbo: false }, class: "space-y-4" do |f| %>
     <div>
       <label class="label">How many blank applications do you need?</label>
       <input type="number" name="count" value="<%= @default_count %>"
