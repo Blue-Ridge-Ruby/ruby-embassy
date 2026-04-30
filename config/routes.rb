@@ -33,6 +33,8 @@ Rails.application.routes.draw do
       member do
         patch :mark_received
         patch :unmark_received
+        patch :mark_ready
+        patch :unmark_ready
         post  :schedule_pickup
       end
       collection do

@@ -2146,6 +2146,32 @@ hr {
 .embassy-appointment-card--stamping  { border-top-color: #2672B5; }
 .embassy-appointment-card--pending   { border-top-color: #C41C1C; border-top-style: dashed; }
 .embassy-appointment-card--expired   { border-top-color: #7a8189; border-top-style: dashed; opacity: 0.9; }
+.embassy-appointment-card--ready {
+  border-top-color: #16A34A;
+  background-color: #F0FDF4;
+  box-shadow: 0 0 0 2px #BBF7D0 inset;
+}
+
+.embassy-ready-badge {
+  display: inline-block;
+  background: #16A34A;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.btn-green {
+  background: #16A34A;
+  color: #fff;
+  border-color: #15803D;
+}
+.btn-green:hover { background: #15803D; }
 
 /* Notary callout ------------------------------------------------------- */
 

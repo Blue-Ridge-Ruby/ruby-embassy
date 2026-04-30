@@ -15,6 +15,7 @@
         if booking.nil? then "stamping"
         elsif booking.passport_pickup? then "pickup"
         elsif booking.stamping? then "stamping"
+        elsif application&.ready_at.present? then "ready"
         elsif application&.submitted? then "submitted"
         else "pending"
         end
@@ -71,6 +72,20 @@
                         class: "btn btn-navy",
                         data: { turbo_frame: "_top" } %>
 
+          <% when "ready" %>
+            <p class="plan-item__embassy-note">
+              <span class="embassy-ready-badge">Ready</span>
+              Your passport is finished. Please present your application and notarization paperwork at the side table in the auditorium.
+              Serial <span class="mono"><%= application.serial %></span>
+            </p>
+            <% if application.notary_profile.present? %>
+              <%= render "embassy_applications/notary_callout", notary: application.notary_profile %>
+            <% end %>
+            <%= link_to "View / Download PDF",
+                        embassy_application_path(application),
+                        class: "btn btn-navy",
+                        data: { turbo_frame: "_top" } %>
+
           <% when "pickup" %>
             <p class="plan-item__embassy-note">
               <strong>Passport pickup.</strong>
@@ -81,7 +96,7 @@
         </div>
       </div>
 
-      <% unless %w[pickup submitted].include?(state) %>
+      <% unless %w[pickup submitted ready].include?(state) %>
         <%= button_to "×",
                       plan_item_path(plan_item),
                       method: :delete,
