@@ -1,7 +1,8 @@
 module MealSpotsHelper
   def meal_spot_attendee_name(user)
     return "Someone" if user.nil?
-    user.first_name.presence || user.email.to_s.split("@").first
+    full = [ user.first_name.presence, user.last_name.presence ].compact.join(" ")
+    full.presence || user.email.to_s.split("@").first
   end
 
   # Visibility rule for an RSVP's contact_method:
