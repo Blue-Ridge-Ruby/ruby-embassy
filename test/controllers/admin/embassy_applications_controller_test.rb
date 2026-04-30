@@ -72,4 +72,42 @@ class Admin::EmbassyApplicationsControllerTest < ActionDispatch::IntegrationTest
          params: { schedule_item_id: @pickup_block.id }
     assert_response :not_found
   end
+
+  test "destroy wipes the application, booking, plan_item, and answers" do
+    question = Question.create!(
+      external_id: "Q-DESTROY-1", section: 1, position: 1,
+      label: "Sample", field_type: "short", scope: "common", status: "active"
+    )
+    EmbassyApplicationAnswer.create!(embassy_application: @application, question: question, value_text: "hi")
+    booking = @application.embassy_booking
+    booking_id = booking.id
+    plan_item_id = booking.plan_item_id
+    application_id = @application.id
+
+    sign_in_as users(:jeremy)
+    assert_difference -> { EmbassyApplication.count }, -1 do
+      assert_difference -> { EmbassyApplicationAnswer.count }, -1 do
+        assert_difference -> { EmbassyBooking.count }, -1 do
+          assert_difference -> { PlanItem.count }, -1 do
+            delete admin_embassy_application_path(@application.serial)
+          end
+        end
+      end
+    end
+
+    assert_redirected_to admin_embassy_applications_path
+    assert_match(/Deleted application/, flash[:notice])
+    assert_not EmbassyApplication.exists?(application_id)
+    assert_not EmbassyBooking.exists?(booking_id)
+    assert_not PlanItem.exists?(plan_item_id)
+    assert Question.exists?(question.id), "question should not be touched"
+  end
+
+  test "non-admins cannot destroy applications" do
+    sign_in_as users(:attendee_one)
+    assert_no_difference -> { EmbassyApplication.count } do
+      delete admin_embassy_application_path(@application.serial)
+    end
+    assert_response :not_found
+  end
 end

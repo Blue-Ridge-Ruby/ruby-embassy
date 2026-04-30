@@ -98,3 +98,15 @@
     <% end %>
   </section>
 <% end %>
+
+<div class="mt-8 pt-4 border-t border-gray-200">
+  <%= button_to "Delete Application",
+                admin_embassy_application_path(@application),
+                method: :delete,
+                class: "btn btn-red",
+                form: { class: "inline-block" },
+                data: { turbo_confirm: "Delete application #{@application.serial} for #{@booking.user.full_name}? This also removes their embassy booking and plan slot. They'll need to rebook from the schedule to refile." } %>
+  <p class="text-muted text-sm mt-2">
+    Wipes the application, the embassy booking, and the plan slot. The attendee will need to rebook from the schedule to start a new application.
+  </p>
+</div>
