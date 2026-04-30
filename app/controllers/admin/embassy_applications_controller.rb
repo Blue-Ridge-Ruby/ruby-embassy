@@ -2,7 +2,8 @@ class Admin::EmbassyApplicationsController < AdminController
   ACTIVE_SORTABLE_COLUMNS = {
     "appointment" => "schedule_items.day, schedule_items.sort_time",
     "name"        => "users.last_name, users.first_name",
-    "serial"      => "embassy_applications.serial"
+    "serial"      => "embassy_applications.serial",
+    "submitted"   => "embassy_applications.submitted_at"
   }.freeze
   ACTIVE_DEFAULT_ORDER = "schedule_items.day ASC, schedule_items.sort_time ASC"
 
