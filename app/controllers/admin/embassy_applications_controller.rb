@@ -69,6 +69,20 @@ class Admin::EmbassyApplicationsController < AdminController
                   notice: "Moved #{application.serial} back to the active queue."
   end
 
+  def mark_ready
+    application = EmbassyApplication.find_by!(serial: params[:id])
+    application.update!(ready_at: Time.current)
+    redirect_back fallback_location: admin_embassy_applications_path,
+                  notice: "Marked #{application.serial} as ready for pickup."
+  end
+
+  def unmark_ready
+    application = EmbassyApplication.find_by!(serial: params[:id])
+    application.update!(ready_at: nil)
+    redirect_back fallback_location: admin_embassy_applications_path,
+                  notice: "Cleared ready status for #{application.serial}."
+  end
+
   def destroy
     application = EmbassyApplication.find_by!(serial: params[:id])
     booking = application.embassy_booking

@@ -110,4 +110,27 @@ class Admin::EmbassyApplicationsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_response :not_found
   end
+
+  test "mark_ready stamps ready_at on the application" do
+    sign_in_as users(:jeremy)
+    assert_nil @application.ready_at
+    patch mark_ready_admin_embassy_application_path(@application.serial)
+    assert_not_nil @application.reload.ready_at
+    assert_match(/ready for pickup/, flash[:notice])
+  end
+
+  test "unmark_ready clears ready_at" do
+    @application.update!(ready_at: Time.current)
+    sign_in_as users(:jeremy)
+    patch unmark_ready_admin_embassy_application_path(@application.serial)
+    assert_nil @application.reload.ready_at
+    assert_match(/Cleared ready status/, flash[:notice])
+  end
+
+  test "non-admins cannot mark ready" do
+    sign_in_as users(:attendee_one)
+    patch mark_ready_admin_embassy_application_path(@application.serial)
+    assert_response :not_found
+    assert_nil @application.reload.ready_at
+  end
 end
