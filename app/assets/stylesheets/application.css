@@ -2152,9 +2152,9 @@ hr {
   box-shadow: 0 0 0 2px #BBF7D0 inset;
 }
 
-.embassy-ready-badge {
+.embassy-ready-badge,
+.embassy-processing-badge {
   display: inline-block;
-  background: #16A34A;
   color: #fff;
   font-size: 0.6875rem;
   font-weight: 700;
@@ -2165,6 +2165,9 @@ hr {
   margin-right: 0.5rem;
   vertical-align: middle;
 }
+
+.embassy-ready-badge      { background: #16A34A; }
+.embassy-processing-badge { background: #CA8A04; }
 
 .btn-green {
   background: #16A34A;
