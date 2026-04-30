@@ -1,0 +1,15 @@
+<%# locals: (notary:) -%>
+<aside class="embassy-notary-callout">
+  <p class="embassy-notary-callout__eyebrow">
+    Notary Certification
+    <span class="embassy-notary-callout__id mono"><%= notary.external_id %></span>
+  </p>
+
+  <dl class="embassy-notary-callout__dl">
+    <dt>Find someone who</dt>
+    <dd><%= notary.description %></dd>
+
+    <dt>Then ask them</dt>
+    <dd><%= notary.followup_prompt %></dd>
+  </dl>
+</aside>
