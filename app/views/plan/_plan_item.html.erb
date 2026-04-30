@@ -63,6 +63,9 @@
             <p class="plan-item__embassy-note">
               Application filed · Serial <span class="mono"><%= application.serial %></span>
             </p>
+            <% if application.notary_profile.present? %>
+              <%= render "embassy_applications/notary_callout", notary: application.notary_profile %>
+            <% end %>
             <%= link_to "View / Download PDF",
                         embassy_application_path(application),
                         class: "btn btn-navy",

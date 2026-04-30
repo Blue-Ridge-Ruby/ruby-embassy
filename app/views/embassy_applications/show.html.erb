@@ -13,6 +13,10 @@
                schedule_item: @schedule_item,
                state: "submitted" %>
 
+    <% if @notary.present? %>
+      <%= render "notary_callout", notary: @notary %>
+    <% end %>
+
     <section class="embassy-ceremony__callout">
       <p class="embassy-ceremony__serial-label">OFFICIAL SERIAL</p>
       <p class="embassy-ceremony__serial-value mono"><%= @application.serial %></p>
