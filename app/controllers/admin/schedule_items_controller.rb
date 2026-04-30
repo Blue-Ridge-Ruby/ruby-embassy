@@ -84,7 +84,7 @@ module Admin
     # config/schedule.yml items and should never be set by hand.
     def schedule_item_params
       attrs = params.require(:schedule_item).permit(
-        :day, :time_label, :sort_time, :title, :host,
+        :day, :time_label, :sort_time, :title, :host, :host_url,
         :location, :map_url, :description, :kind, :flexible, :is_public, :audience,
         :offers_new_passport, :offers_stamping, :offers_passport_pickup,
         :new_passport_capacity, :stamping_capacity, :passport_pickup_capacity,
