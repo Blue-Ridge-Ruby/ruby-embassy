@@ -1,11 +1,10 @@
 require "prawn"
 
-Prawn::Fonts::AFM.hide_m17n_warning = true
-
 # Builds the official Ruby Embassy passport application PDF.
 #
 # Aesthetic: as formal as a US tax form. No logo, no flourishes.
-# Helvetica throughout (built-in, broad UTF-8). Fine 0.5pt rules,
+# DejaVu Sans throughout (TTF, broad Unicode coverage so user-typed glyphs
+# outside Windows-1252 don't crash the renderer). Fine 0.5pt rules,
 # OMB-style form code in the top-right, "FOR OFFICIAL EMBASSY USE ONLY"
 # stamp area on the notary page, page numbering in the bottom margin.
 #
@@ -29,6 +28,10 @@ class PassportApplicationPdf
   LONG_BOX_MIN      = 22
   LONG_BOX_MAX      = 38
 
+  FONT_DIR            = Rails.root.join("vendor", "fonts", "dejavu").freeze
+  FONT_NAME           = "DejaVuSans".freeze
+  FONT_NAME_CONDENSED = "DejaVuSansCondensed".freeze
+
   def initialize(application: nil, count: 1)
     @application = application
     @count       = count
@@ -36,7 +39,21 @@ class PassportApplicationPdf
 
   def render
     pdf = Prawn::Document.new(page_size: PAGE_SIZE, margin: MARGIN)
-    pdf.font "Helvetica"
+    pdf.font_families.update(
+      FONT_NAME => {
+        normal:      FONT_DIR.join("DejaVuSans.ttf").to_s,
+        bold:        FONT_DIR.join("DejaVuSans-Bold.ttf").to_s,
+        italic:      FONT_DIR.join("DejaVuSans-Oblique.ttf").to_s,
+        bold_italic: FONT_DIR.join("DejaVuSans-BoldOblique.ttf").to_s
+      },
+      FONT_NAME_CONDENSED => {
+        normal:      FONT_DIR.join("DejaVuSansCondensed.ttf").to_s,
+        bold:        FONT_DIR.join("DejaVuSansCondensed-Bold.ttf").to_s,
+        italic:      FONT_DIR.join("DejaVuSansCondensed-Oblique.ttf").to_s,
+        bold_italic: FONT_DIR.join("DejaVuSansCondensed-BoldOblique.ttf").to_s
+      }
+    )
+    pdf.font FONT_NAME
     pdf.default_leading 1
 
     if @application
@@ -451,33 +468,26 @@ class PassportApplicationPdf
 
   FOOTER_RESERVE = 20 # space the page footer occupies at the bottom
 
-  # Section titles that should always start at the top of a fresh column,
-  # so they don't get orphaned at the bottom of a previous one.
-  COLUMN_BREAK_BEFORE = [
-    "SCHEDULE C — RULES OF CONSTRUCTION"
-  ].freeze
-
   def render_instructions(pdf)
     pdf.move_down 12
     box_top    = pdf.cursor
     box_height = box_top - FOOTER_RESERVE
 
-    pdf.column_box([ 0, box_top ], columns: 3, width: pdf.bounds.width,
-                   height: box_height, spacer: 10) do
-      INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
-        if COLUMN_BREAK_BEFORE.include?(title)
-          # Force the next column by overflowing the current one.
-          pdf.move_down(pdf.cursor + 1)
-        elsif i > 0
-          pdf.move_down 5
-        end
+    # Condensed face for the legal text only — narrower glyphs let the full
+    # body of ordinances and schedules pack into one page's 3-column block.
+    pdf.font(FONT_NAME_CONDENSED) do
+      pdf.column_box([ 0, box_top ], columns: 3, width: pdf.bounds.width,
+                     height: box_height, spacer: 10) do
+        INSTRUCTIONS.each_with_index do |(title, paragraphs), i|
+          pdf.move_down 5 if i > 0
 
-        pdf.text title, size: 6.5, style: :bold
-        pdf.stroke_horizontal_rule
-        pdf.move_down 3
-        paragraphs.each do |para|
-          pdf.text para, size: 5.5, leading: 0.5, color: "333333", align: :justify
-          pdf.move_down 2
+          pdf.text title, size: 6.5, style: :bold
+          pdf.stroke_horizontal_rule
+          pdf.move_down 3
+          paragraphs.each do |para|
+            pdf.text para, size: 5.5, leading: 0.5, color: "333333", align: :justify
+            pdf.move_down 1
+          end
         end
       end
     end
