@@ -3292,7 +3292,7 @@ hr {
 
 .speakers-list__item {
   display: grid;
-  grid-template-columns: auto 2.5rem 5rem 1fr 2fr auto;
+  grid-template-columns: auto 2.5rem 5rem 1fr 2fr auto auto;
   gap: 0.75rem;
   align-items: center;
   padding: 0.5rem 0.75rem;
@@ -3308,6 +3308,8 @@ hr {
 .speakers-list__time     { color: #1F6B45; font-variant-numeric: tabular-nums; }
 .speakers-list__name     { font-weight: 500; color: #1f242a; }
 .speakers-list__title    { color: #525C66; font-size: 0.9375rem; }
+.speakers-list__slides a        { color: #C41C1C; font-weight: 600; text-decoration: underline; white-space: nowrap; }
+.speakers-list__slides--missing { color: #9aa1a8; font-style: italic; font-size: 0.875rem; white-space: nowrap; }
 
 .btn-small { padding: 0.25rem 0.625rem; font-size: 0.8125rem; }
 

@@ -9,6 +9,16 @@
       <span class="speakers-list__time"><%= signup.slot_start_label %></span>
       <span class="speakers-list__name"><%= signup.user.full_name %></span>
       <span class="speakers-list__title"><%= signup.talk_title.presence || "—" %></span>
+      <span class="speakers-list__slides">
+        <% if signup.slides_url.present? %>
+          <%= link_to "Open slides ↗",
+                      signup.slides_url,
+                      target: "_blank",
+                      rel: "noopener noreferrer" %>
+        <% else %>
+          <span class="speakers-list__slides--missing">no slides yet</span>
+        <% end %>
+      </span>
       <%= button_to "Remove",
                     admin_schedule_item_lightning_talk_signup_path(schedule_item, signup),
                     method: :delete,
