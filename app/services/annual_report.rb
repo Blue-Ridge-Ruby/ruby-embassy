@@ -101,9 +101,10 @@ class AnnualReport
   def self.sentimental_version_stat(question)
     raw = submitted_answers_for(question).pluck(:value_text).compact.reject(&:blank?)
     cleaned = raw.reject { |v| REFUSAL_PHRASES.any? { |p| v.downcase.include?(p) } }
-    versions = cleaned.filter_map { |v| v[/\d+(?:\.\d+){0,2}/] }
-    counts = versions.tally.sort_by { |_, c| -c }.first(5).to_h
-    parseable = versions.filter_map { |v| Gem::Version.new(v) rescue nil }.sort
+    raw_versions = cleaned.filter_map { |v| v[/\d+(?:\.\d+){0,2}/] }
+    normalized   = raw_versions.map { |v| v.split(".").first(2).join(".") }
+    counts = normalized.tally.sort_by { |_, c| -c }.first(5).to_h
+    parseable = raw_versions.filter_map { |v| Gem::Version.new(v) rescue nil }.sort
     Stat.new(
       question: question,
       total_respondents: raw.count,

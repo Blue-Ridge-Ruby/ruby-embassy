@@ -14,6 +14,7 @@
             <%= link_to "Schedule", schedule_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <%= link_to "My Plan", plan_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <a href="https://blueridgeruby.com/guide" target="_blank" rel="noopener" class="text-blue px-3 py-1 text-lg font-medium">Guide</a>
+            <%= link_to "Annual Report", report_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <% if admin? %>
               <%= link_to "Admin", admin_root_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <% end %>
@@ -21,6 +22,7 @@
           <% else %>
             <a href="https://blueridgeruby.com/schedule" class="text-blue px-3 py-1 text-lg font-medium">Schedule</a>
             <a href="https://blueridgeruby.com/#speakers" class="text-blue px-3 py-1 text-lg font-medium">Speakers</a>
+            <%= link_to "Annual Report", report_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <%= link_to "Log In", new_session_path, class: "text-blue px-3 py-1 text-lg font-medium" %>
             <a href="https://blueridgeruby.com/#register" class="bg-red-gradient text-white font-medium py-2 px-4 shadow-sm rounded-sm cursor-pointer">Register</a>
           <% end %>
@@ -44,6 +46,7 @@
           <%= link_to "Schedule", schedule_path, class: "text-blue block py-2 font-medium" %>
           <%= link_to "My Plan", plan_path, class: "text-blue block py-2 font-medium" %>
           <a href="https://blueridgeruby.com/guide" target="_blank" rel="noopener" class="text-blue block py-2 font-medium">Guide</a>
+          <%= link_to "Annual Report", report_path, class: "text-blue block py-2 font-medium" %>
           <% if admin? %>
             <%= link_to "Admin", admin_root_path, class: "text-blue block py-2 font-medium" %>
           <% end %>
@@ -51,6 +54,7 @@
         <% else %>
           <a href="https://blueridgeruby.com/schedule" class="text-blue block py-2 font-medium">Schedule</a>
           <a href="https://blueridgeruby.com/#speakers" class="text-blue block py-2 font-medium">Speakers</a>
+          <%= link_to "Annual Report", report_path, class: "text-blue block py-2 font-medium" %>
           <%= link_to "Log In", new_session_path, class: "text-blue block py-2 font-medium" %>
           <div class="py-2">
             <a href="https://blueridgeruby.com/#register" class="bg-red-gradient text-white font-medium py-2 px-4 shadow-sm rounded-sm cursor-pointer">Register</a>

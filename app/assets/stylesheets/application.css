@@ -3589,7 +3589,7 @@ hr {
 
 .report-bar-row {
   display: grid;
-  grid-template-columns: minmax(8rem, 1fr) 2fr auto;
+  grid-template-columns: 11rem 1fr 5.5rem;
   gap: 1rem;
   align-items: center;
 }
@@ -3624,6 +3624,7 @@ hr {
   color: #0C2866;
   font-size: 0.9375rem;
   white-space: nowrap;
+  text-align: right;
 }
 
 .report-bar-row__count {
