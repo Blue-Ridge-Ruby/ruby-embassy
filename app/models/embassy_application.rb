@@ -11,6 +11,7 @@ class EmbassyApplication < ApplicationRecord
   validate :required_questions_answered, on: :submit
 
   before_validation :assign_serial, on: :create
+  after_update_commit :bust_annual_report_cache, if: :saved_change_to_state?
 
   def to_param = serial
 
@@ -36,6 +37,10 @@ class EmbassyApplication < ApplicationRecord
 
   def assign_serial
     self.serial ||= EmbassyApplicationSerialGenerator.next
+  end
+
+  def bust_annual_report_cache
+    Rails.cache.delete("annual_report:v1") if submitted?
   end
 
   def required_questions_answered

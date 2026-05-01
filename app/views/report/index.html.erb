@@ -168,7 +168,7 @@
             <p class="report-block__sub"><strong><%= s.total_respondents %></strong> diplomats declared one or more sentiments. Percentages reflect share of diplomats who selected each.</p>
 
             <div class="report-callouts">
-              <% s.breakdown.each do |label, count| %>
+              <% s.breakdown.sort_by { |_, c| -c }.each do |label, count| %>
                 <div class="report-callout">
                   <div class="report-callout__value"><%= percent.call(count) %>%</div>
                   <div class="report-callout__label"><%= label %></div>
@@ -186,7 +186,7 @@
             <p class="report-block__sub"><strong><%= s.total_respondents %></strong> diplomats claimed one or more identities.</p>
 
             <div class="report-callouts">
-              <% s.breakdown.each do |label, count| %>
+              <% s.breakdown.sort_by { |_, c| -c }.each do |label, count| %>
                 <div class="report-callout report-callout--alt">
                   <div class="report-callout__value"><%= percent.call(count) %>%</div>
                   <div class="report-callout__label"><%= label %></div>
