@@ -2153,7 +2153,8 @@ hr {
 }
 
 .embassy-ready-badge,
-.embassy-processing-badge {
+.embassy-processing-badge,
+.embassy-received-badge {
   display: inline-block;
   color: #fff;
   font-size: 0.6875rem;
@@ -2168,6 +2169,7 @@ hr {
 
 .embassy-ready-badge      { background: #16A34A; }
 .embassy-processing-badge { background: #CA8A04; }
+.embassy-received-badge   { background: #1E3A8A; }
 
 .btn-green {
   background: #16A34A;

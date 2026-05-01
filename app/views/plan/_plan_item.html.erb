@@ -15,6 +15,7 @@
         if booking.nil? then "stamping"
         elsif booking.passport_pickup? then "pickup"
         elsif booking.stamping? then "stamping"
+        elsif application&.passport_received_at.present? then "received"
         elsif application&.ready_at.present? then "ready"
         elsif application&.submitted? then "submitted"
         else "pending"
@@ -88,6 +89,17 @@
                         class: "btn btn-navy",
                         data: { turbo_frame: "_top" } %>
 
+          <% when "received" %>
+            <p class="plan-item__embassy-note">
+              <span class="embassy-received-badge">Received</span>
+              Passport's in your hands &mdash; you're all set.
+              Serial <span class="mono"><%= application.serial %></span>
+            </p>
+            <%= link_to "View / Download PDF",
+                        embassy_application_path(application),
+                        class: "btn btn-navy",
+                        data: { turbo_frame: "_top" } %>
+
           <% when "pickup" %>
             <p class="plan-item__embassy-note">
               <strong>Passport pickup.</strong>
@@ -98,7 +110,7 @@
         </div>
       </div>
 
-      <% unless %w[pickup submitted ready].include?(state) %>
+      <% unless %w[pickup submitted ready received].include?(state) %>
         <%= button_to "×",
                       plan_item_path(plan_item),
                       method: :delete,
