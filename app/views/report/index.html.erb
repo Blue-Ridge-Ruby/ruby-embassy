@@ -1,0 +1,296 @@
+<% content_for(:title, "The Annual Ruby Embassy Report") %>
+
+<%
+  total = @report.total_passport_holders
+  percent = ->(count) { total.zero? ? 0 : ((count.to_f / total) * 100).round }
+%>
+
+<section class="pb-32">
+  <div class="max-w-4xl mx-auto px-8">
+
+    <%# === Hero =================================================== %>
+    <header class="report-hero">
+      <p class="report-hero__eyebrow">For the Public Record</p>
+      <h1 class="report-hero__title">The Annual Ruby<br>Embassy Report</h1>
+      <p class="report-hero__dateline">
+        Filed <%= @report.generated_at.strftime("%B %Y") %> · <strong><%= total %></strong> Ruby passport <%= "holder".pluralize(total) %> responded
+      </p>
+      <div class="report-hero__lede">
+        <p>
+          This document hereby attests, on behalf of the Embassy and for the public record, the aggregate sentiments declared during this year's passport applications. The figures herein reflect <strong><%= total %></strong> adjudicated <%= "submission".pluralize(total) %> as of the date of filing.
+        </p>
+        <p>
+          Free-text declarations have been omitted from the public record except where noted. All standings are anonymous.
+        </p>
+      </div>
+    </header>
+
+    <% if total.zero? %>
+      <p class="report-empty">
+        The Embassy has not yet received any adjudicated submissions. This page will populate automatically as applications are processed.
+      </p>
+    <% else %>
+
+      <%# === Article I — Demographics =============================== %>
+      <article class="report-article">
+        <h2 class="report-article__eyebrow">Article I</h2>
+        <h3 class="report-article__title">Demographics &amp; Standing</h3>
+        <p class="report-article__lede">
+          The Embassy first examined the basic vital statistics of its diplomats — declared experience, fluencies beyond Ruby, and self-reported proficiency.
+        </p>
+
+        <%# 1d — Coding Years %>
+        <% if (s = @report.stats["1d"]) %>
+          <% ext = s.extra %>
+          <div class="report-block">
+            <h4 class="report-block__label">§1 · Age, in Coding Years</h4>
+            <p class="report-block__sub">Self-reported. Of <strong><%= s.total_respondents %></strong> declarations, <strong><%= ext[:parsed_count] %></strong> contained a parseable figure.</p>
+
+            <% if ext[:median] %>
+              <div class="report-bignum">
+                <div class="report-bignum__value"><%= ext[:median] %></div>
+                <div class="report-bignum__caption">years (median), ranging <%= ext[:min] %>–<%= ext[:max] %></div>
+              </div>
+            <% end %>
+
+            <% if ext[:quotes].any? %>
+              <div class="report-pullquotes">
+                <div class="report-pullquotes__label">Notable declarations on the record</div>
+                <ul class="report-pullquotes__list">
+                  <% ext[:quotes].each do |q| %>
+                    <li class="report-pullquote">&ldquo;<%= q %>&rdquo;</li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# 1f — Primary Other Language %>
+        <% if (s = @report.stats["1f"]) %>
+          <div class="report-block">
+            <h4 class="report-block__label">§2 · Primary Language Other Than Ruby</h4>
+            <p class="report-block__sub">Of <strong><%= s.total_respondents %></strong> declarations, the following languages were named most frequently. Multi-language responses are counted individually.</p>
+
+            <ol class="report-ranked">
+              <% s.breakdown.each_with_index do |(lang, count), i| %>
+                <li class="report-ranked__row">
+                  <span class="report-ranked__rank"><%= i + 1 %></span>
+                  <span class="report-ranked__name"><%= lang %></span>
+                  <span class="report-ranked__count"><%= count %> <%= "mention".pluralize(count) %></span>
+                </li>
+              <% end %>
+            </ol>
+
+            <% if s.extra[:notable_mentions].any? %>
+              <div class="report-notable">
+                <div class="report-notable__label">Notable mentions, for the record</div>
+                <p class="report-notable__list">
+                  <% s.extra[:notable_mentions].each_with_index do |m, i| %><span class="report-notable__item">&ldquo;<%= m %>&rdquo;</span><%= "  ·  ".html_safe unless i == s.extra[:notable_mentions].length - 1 %><% end %>
+                </p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%# 1e — Declared Ruby Proficiency (BAR CHART) %>
+        <% if (s = @report.stats["1e"]) %>
+          <div class="report-block">
+            <h4 class="report-block__label">§3 · Declared Ruby Proficiency</h4>
+            <p class="report-block__sub">Self-rated. <strong><%= s.total_respondents %></strong> diplomats responded.</p>
+
+            <div class="report-bars">
+              <% s.breakdown.each do |label, count| %>
+                <div class="report-bar-row">
+                  <div class="report-bar-row__label"><%= label %></div>
+                  <div class="report-bar-row__track">
+                    <div class="report-bar-row__fill" style="width: <%= percent.call(count) %>%;"></div>
+                  </div>
+                  <div class="report-bar-row__value"><%= percent.call(count) %>%<span class="report-bar-row__count"> · <%= count %></span></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </article>
+
+      <%# === Article II — Statement of Purpose ====================== %>
+      <article class="report-article">
+        <h2 class="report-article__eyebrow">Article II</h2>
+        <h3 class="report-article__title">Statement of Purpose &amp; Character</h3>
+        <p class="report-article__lede">
+          Diplomats were asked to declare their reasons for visit, their current emotional standing, and their personal coding constitution. Their responses are recorded below.
+        </p>
+
+        <%# 1g — Purpose of Visit (DONUT) %>
+        <% if (s = @report.stats["1g"]) %>
+          <%
+            total_picks = s.breakdown.values.sum
+            colors = ["#0C2866", "#C7374C", "#F5BE3D", "#525C66"]
+            stops = []
+            cumulative = 0.0
+            s.breakdown.each_with_index do |(_, count), i|
+              pct = total_picks.zero? ? 0 : (count.to_f / total_picks * 100)
+              stops << "#{colors[i % colors.length]} #{cumulative}% #{cumulative + pct}%"
+              cumulative += pct
+            end
+            gradient = stops.empty? ? "#e5e7eb 0% 100%" : stops.join(", ")
+          %>
+          <div class="report-block">
+            <h4 class="report-block__label">§1 · Stated Purpose of Visit</h4>
+            <p class="report-block__sub"><strong><%= s.total_respondents %></strong> diplomats declared one or more purposes. Multi-select, so percentages reflect share of total selections (<%= total_picks %>).</p>
+
+            <div class="report-donut-wrap">
+              <div class="report-donut" style="background: conic-gradient(<%= gradient %>);">
+                <div class="report-donut__hole">
+                  <div class="report-donut__hole-value"><%= s.total_respondents %></div>
+                  <div class="report-donut__hole-caption">declared</div>
+                </div>
+              </div>
+              <ul class="report-donut-legend">
+                <% s.breakdown.each_with_index do |(label, count), i| %>
+                  <% pct = total_picks.zero? ? 0 : (count.to_f / total_picks * 100).round %>
+                  <li class="report-donut-legend__row">
+                    <span class="report-donut-legend__swatch" style="background: <%= colors[i % colors.length] %>;"></span>
+                    <span class="report-donut-legend__name"><%= label %></span>
+                    <span class="report-donut-legend__pct"><%= pct %>%</span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
+        <%# 1h — Most Recent Sentiment (CALLOUTS) %>
+        <% if (s = @report.stats["1h"]) %>
+          <div class="report-block">
+            <h4 class="report-block__label">§2 · Most Recent Sentiment Experienced While Programming</h4>
+            <p class="report-block__sub"><strong><%= s.total_respondents %></strong> diplomats declared one or more sentiments. Percentages reflect share of diplomats who selected each.</p>
+
+            <div class="report-callouts">
+              <% s.breakdown.each do |label, count| %>
+                <div class="report-callout">
+                  <div class="report-callout__value"><%= percent.call(count) %>%</div>
+                  <div class="report-callout__label"><%= label %></div>
+                  <div class="report-callout__sub"><%= count %> of <%= total %></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <%# 1i — Developer Persona (CALLOUTS) %>
+        <% if (s = @report.stats["1i"]) %>
+          <div class="report-block">
+            <h4 class="report-block__label">§3 · Declared Developer Persona</h4>
+            <p class="report-block__sub"><strong><%= s.total_respondents %></strong> diplomats claimed one or more identities.</p>
+
+            <div class="report-callouts">
+              <% s.breakdown.each do |label, count| %>
+                <div class="report-callout report-callout--alt">
+                  <div class="report-callout__value"><%= percent.call(count) %>%</div>
+                  <div class="report-callout__label"><%= label %></div>
+                  <div class="report-callout__sub"><%= count %> of <%= total %></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </article>
+
+      <%# === Article III — Heritage ================================= %>
+      <article class="report-article">
+        <h2 class="report-article__eyebrow">Article III</h2>
+        <h3 class="report-article__title">Heritage &amp; Lineage</h3>
+        <p class="report-article__lede">
+          Each diplomat traces their own arc through Ruby. The Embassy invited declarations of first encounter and lasting attachment.
+        </p>
+
+        <%# 2b — First Ruby release (RANKED LIST) %>
+        <% if (s = @report.stats["2b"]) %>
+          <div class="report-block">
+            <h4 class="report-block__label">§1 · First Ruby Release Remembered</h4>
+            <p class="report-block__sub"><strong><%= s.total_respondents %></strong> diplomats responded.</p>
+
+            <div class="report-bars">
+              <% s.breakdown.each do |label, count| %>
+                <div class="report-bar-row">
+                  <div class="report-bar-row__label"><%= label %></div>
+                  <div class="report-bar-row__track">
+                    <div class="report-bar-row__fill report-bar-row__fill--alt" style="width: <%= percent.call(count) %>%;"></div>
+                  </div>
+                  <div class="report-bar-row__value"><%= percent.call(count) %>%<span class="report-bar-row__count"> · <%= count %></span></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <%# 2c — Sentimental Ruby version (RANKED + RANGE) %>
+        <% if (s = @report.stats["2c"]) %>
+          <% ext = s.extra %>
+          <div class="report-block">
+            <h4 class="report-block__label">§2 · Ruby Release Held in Sentimental Attachment</h4>
+            <p class="report-block__sub">
+              <strong><%= s.total_respondents %></strong> of <strong><%= total %></strong> diplomats declared an attachment.
+              <% if ext[:min_version] && ext[:max_version] && ext[:min_version] != ext[:max_version] %>
+                Declarations span from <strong><%= ext[:min_version] %></strong> to <strong><%= ext[:max_version] %></strong>.
+              <% end %>
+            </p>
+
+            <% if s.breakdown.any? %>
+              <ol class="report-ranked">
+                <% s.breakdown.each_with_index do |(version, count), i| %>
+                  <li class="report-ranked__row">
+                    <span class="report-ranked__rank"><%= i + 1 %></span>
+                    <span class="report-ranked__name">Ruby <%= version %></span>
+                    <span class="report-ranked__count"><%= count %> <%= "mention".pluralize(count) %></span>
+                  </li>
+                <% end %>
+              </ol>
+            <% end %>
+          </div>
+        <% end %>
+      </article>
+
+      <%# === Article IV — Material Declarations ===================== %>
+      <article class="report-article">
+        <h2 class="report-article__eyebrow">Article IV</h2>
+        <h3 class="report-article__title">Material Declarations</h3>
+        <p class="report-article__lede">
+          Finally, a matter of customs.
+        </p>
+
+        <%# 5c — Possession of unreleased gems (PULL-QUOTE STAT) %>
+        <% if (s = @report.stats["5c"]) %>
+          <%
+            yes_count = s.breakdown["Yes"] || 0
+            fifth_count = s.breakdown["I plead the fifth"] || 0
+            no_count = s.breakdown["No"] || 0
+          %>
+          <div class="report-block">
+            <h4 class="report-block__label">§1 · Possession of Unreleased Gems of Unknown Provenance</h4>
+            <p class="report-block__sub">Mandatory affidavit. <strong><%= s.total_respondents %></strong> diplomats responded.</p>
+
+            <blockquote class="report-pullquote-stat">
+              <div class="report-pullquote-stat__value"><%= percent.call(fifth_count) %>%</div>
+              <div class="report-pullquote-stat__caption">of diplomats <em>plead the fifth</em></div>
+              <div class="report-pullquote-stat__detail">
+                <%= percent.call(no_count) %>% answered &ldquo;No&rdquo; · <%= percent.call(yes_count) %>% answered &ldquo;Yes&rdquo;
+              </div>
+            </blockquote>
+          </div>
+        <% end %>
+      </article>
+
+      <%# === Closing Dispatch ======================================= %>
+      <footer class="report-closing">
+        <p class="report-closing__sigil">⁂</p>
+        <p>
+          Filed in Asheville on <strong><%= @report.generated_at.strftime("%B %-d, %Y") %></strong>, on behalf of the Embassy. Subject to revision pending further submissions.
+        </p>
+      </footer>
+
+    <% end %>
+  </div>
+</section>
