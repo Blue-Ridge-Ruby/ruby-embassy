@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # Public — The Annual Ruby Embassy Report
+  get "report", to: "report#index", as: :report
+
   # Public — magic-link auth
   resource :session, only: %i[new create destroy], controller: "sessions" do
     get  :callback, on: :collection
