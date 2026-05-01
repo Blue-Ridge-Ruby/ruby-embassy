@@ -227,6 +227,35 @@ class PlanTest < ActionDispatch::IntegrationTest
                     "cancel button is hidden once the embassy says ready")
   end
 
+  test "/plan shows Received badge on embassy card once passport_received_at is set" do
+    alice = users(:attendee_one)
+    passport_block = ScheduleItem.create!(
+      day: "thu", time_label: "9:00 AM", sort_time: 900,
+      title: "Passport Block", kind: :embassy, is_public: true,
+      offers_new_passport: true, new_passport_capacity: 4
+    )
+    plan_item = alice.plan_items.create!(schedule_item: passport_block)
+    booking = EmbassyBooking.create!(
+      user: alice, schedule_item: passport_block, plan_item: plan_item,
+      mode: "new_passport", state: "confirmed"
+    )
+    application = EmbassyApplication.create!(
+      embassy_booking: booking, state: "submitted", submitted_at: Time.current,
+      drawn_question_ids: [], notary_profile_id: nil,
+      ready_at: 1.hour.ago, passport_received_at: Time.current
+    )
+
+    sign_in_as alice
+    get plan_path
+
+    assert_match "embassy-received-badge", response.body
+    assert_match application.serial, response.body
+    assert_no_match "embassy-ready-badge", response.body,
+                    "received state takes precedence over ready"
+    assert_no_match(/aria-label="Cancel appointment"/, response.body,
+                    "cancel button stays hidden once received")
+  end
+
   test "/plan shows activity attendees, contact form for self, and contacts of co-RSVPers" do
     alice = users(:attendee_one)
     vic   = users(:volunteer_one)
